@@ -111,7 +111,7 @@ class BaseTestFilter:
 
         # Re-initialize the translation store object in order to get an unfuzzy
         # unit with no filter notes.
-        self.setup_method(self)  # ty:ignore[unresolved-attribute]
+        self.setup_method(self)  # ty:ignore[missing-attribute]
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--fuzzy"])
         assert headerless_len(filter_result.units) == 0
@@ -131,7 +131,7 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
         # Re-initialize the translation store object.
-        self.setup_method(self)  # ty:ignore[unresolved-attribute]
+        self.setup_method(self)  # ty:ignore[missing-attribute]
 
         filter_result = self.filter(self.translationstore, cmdlineoptions=["--review"])
         assert headerless_len(filter_result.units) == 0

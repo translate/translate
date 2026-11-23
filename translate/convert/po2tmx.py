@@ -125,8 +125,8 @@ class tmxmultifile:
             pass
 
         outputfile = wStringIO.CatchStringOutput(onclose)
-        outputfile.filename = subfile  # ty:ignore[unresolved-attribute]
-        outputfile.tmxfile = self.tmxfile  # ty:ignore[unresolved-attribute]
+        outputfile.filename = subfile  # ty:ignore[missing-attribute]
+        outputfile.tmxfile = self.tmxfile  # ty:ignore[missing-attribute]
         return outputfile
 
 

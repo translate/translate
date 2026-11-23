@@ -190,9 +190,9 @@ class pounit(pocommon.pounit):
             return len("".join(string for string in self.target.strings))
         return len(self.target)
 
-    def merge(
+    def merge(  # ty:ignore[lost-keyword-for-regular-parameter]
         self, otherpo, overwrite=False, comments=True, authoritative=False
-    ) -> None:  # ty:ignore[invalid-method-override]
+    ) -> None:
         """
         Merges the otherpo (with the same msgid) into this one.
 
@@ -294,7 +294,7 @@ class pounit(pocommon.pounit):
         """Alters whether a given typecomment is present."""
         if self.hastypecomment(typecomment) != present:
             if present:
-                self.typecomments.append(f"#, {typecomment}\n")  # ty:ignore[unresolved-attribute]
+                self.typecomments.append(f"#, {typecomment}\n")  # ty:ignore[missing-union-attribute]
             else:
                 # this should handle word boundaries properly ...
                 typecomments = [
@@ -470,7 +470,7 @@ class pofile(pocommon.pofile):
         self._build_self_from_cpo()
         del self._cpo_store
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """
         Parse PO data from a path or bytes content.
 

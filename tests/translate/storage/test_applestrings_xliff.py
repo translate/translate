@@ -6,7 +6,7 @@ import pytest
 from lxml import etree
 
 from translate.misc.multistring import multistring
-from translate.storage import applestrings_xliff
+from translate.storage import applestrings_xliff, base, jsonl10n
 
 from . import test_xliff
 
@@ -121,6 +121,501 @@ def test_rename_parsed_plural_removes_old_siblings(
     if renames[-1] != "items:count" or remove_after_rename:
         assert b'id="items:count' not in output
     assert b'id="temporary:count' not in output
+
+
+@pytest.mark.parametrize("with_marker", [False, True])
+def test_named_target_forms(with_marker) -> None:
+    tree = etree.fromstring(_BASIC_PLURAL_XLIFF)
+    body = tree.find(".//{*}body")
+    assert body is not None
+    if not with_marker:
+        for metadata in list(body)[:2]:
+            body.remove(metadata)
+    source = body.find(".//{*}source")
+    assert source is not None
+    before = etree.tostring(source)
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(etree.tostring(tree))
+    unit = store.units[0]
+    assert unit.plural_forms == {"one": "One item", "other": "%d items"}
+    sources = unit.source.strings
+    original = bytes(store)
+    unit.plural_forms = dict(unit.plural_forms)
+    assert bytes(store) == original
+    unit.update_plural_forms({"many": "fraction", "one": None, "other": ""})
+    with pytest.raises(ValueError):
+        unit.update_plural_forms({"many": "changed", "invalid": "bad"})
+    reparsed = applestrings_xliff.AppleStringsXliffFile.parsestring(bytes(store))
+    assert reparsed.units[0].plural_forms == {"many": "fraction", "other": ""}
+    saved = etree.fromstring(bytes(store)).find(".//{*}source")
+    assert saved is not None
+    assert etree.tostring(saved).strip() == before.strip()
+    assert reparsed.units[0].source.strings == sources
+
+
+@pytest.mark.parametrize("rich", [False, True])
+def test_shortened_projection_writeback(rich) -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    unit.target = multistring(["single"])
+    unit.update_plural_forms({"other": "multiple"})
+    assert unit.target.strings == ["single", "multiple"]
+    if rich:
+        rich_target = unit.rich_target
+        rich_target[1] = type(rich_target[1])(["edited"])
+        unit.rich_target = rich_target
+    else:
+        unit.target = unit.target
+    assert type(store).parsestring(bytes(store)).units[0].plural_forms == {
+        "one": "single",
+        "other": "edited" if rich else "multiple",
+    }
+
+
+@pytest.mark.parametrize("merge", [False, True])
+def test_rich_target_after_retargeting(merge) -> None:
+    content = _BASIC_PLURAL_XLIFF.replace(
+        b'target-language="en"', b'target-language="ru"'
+    ).replace(b"/other:dict", b"/many:dict")
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(content)
+    unit = store.units[0]
+    store.settargetlanguage("cs")
+    target = multistring(["zero", "single", "few", "rest"])
+    if merge:
+        donor = base.TranslationUnit(unit.source)
+        donor.target = target
+        unit.merge(donor, overwrite=True)
+    else:
+        unit.rich_target = base.TranslationUnit.multistring_to_rich(unit, target)
+    assert type(store).parsestring(bytes(store)).units[0].plural_forms == {
+        "zero": "zero",
+        "one": "single",
+        "few": "few",
+        "many": "%d items",
+        "other": "rest",
+    }
+
+
+@pytest.mark.parametrize("source_first", [True, False])
+@pytest.mark.parametrize("rich", [True, False])
+def test_paired_replacements_after_retargeting(source_first, rich) -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    store.settargetlanguage("cs")
+    unit = store.units[0]
+    tags = ("zero", "one", "few", "other")
+    sources = multistring([f"source {tag}" for tag in tags])
+    targets = multistring([f"target {tag}" for tag in tags])
+    fields = ("source", "target") if source_first else ("target", "source")
+    for field in fields:
+        value = sources if field == "source" else targets
+        if rich:
+            setattr(
+                unit,
+                f"rich_{field}",
+                base.TranslationUnit.multistring_to_rich(unit, value),
+            )
+        else:
+            setattr(unit, field, value)
+    saved = type(store).parsestring(bytes(store)).units[0]
+    assert saved.source.strings == sources.strings
+    assert saved.plural_forms == dict(zip(tags, targets.strings, strict=True))
+
+
+@pytest.mark.parametrize("retained", [False, True])
+def test_blank_index_uses_pending_sources(retained) -> None:
+    content = _BASIC_PLURAL_XLIFF.replace(
+        b"<target>One item</target>", b"<target/>"
+    ).replace(b"<target>%d items</target>", b"<target/>")
+    if retained:
+        content = content.replace(
+            b"</body>",
+            b'<trans-unit id="items:count:dict/many:dict/:string"><source>fractional source</source></trans-unit></body>',
+        )
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(content)
+    unit = store.units[0]
+    assert store.findid(unit.getid()) is unit
+    unit.source = multistring(["", "", ""])
+    assert unit.isblank() is not retained
+    assert (unit.getid() in store.getids()) is retained
+    saved = type(store).parsestring(bytes(store))
+    assert saved.units[0].isblank() is not retained
+    assert (unit.getid() in saved.getids()) is retained
+
+
+@pytest.mark.parametrize("copy", [False, True])
+def test_detached_merge_preserves_inherited_space(copy) -> None:
+    content = (
+        _BASIC_PLURAL_XLIFF.replace(b' xml:space="preserve"', b"")
+        .replace(b"<body>", b'<body xml:space="preserve">')
+        .replace(b"<target>One item</target>", b"<target>  One  item  </target>")
+    )
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    source = type(store).parsestring(content)
+    donor = source.units[0]
+    if copy:
+        donor = donor.copy()
+    else:
+        source.removeunit(donor)
+    store.units[0].merge(donor, overwrite=True)
+    assert (
+        type(store).parsestring(bytes(store)).units[0].plural_forms["one"]
+        == "  One  item  "
+    )
+
+
+def test_plural_singular_plural_conversion() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    unit.source = "item"
+    unit.target = "item"
+    unit.setid("single")
+    unit.source = multistring(["", "item", "items"])
+    unit.target = multistring(["", "new", "rest"])
+    unit.setid("new:count")
+    saved = type(store).parsestring(bytes(store))
+    assert len(saved.units) == 1
+    assert saved.units[0].plural_forms == {"one": "new", "other": "rest"}
+
+
+def test_mutable_shortened_target_keeps_labels_across_saves() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    unit.target = multistring(["single"])
+    target = unit.target
+    target.extra_strings.append("multiple")
+    for text in ("multiple", "edited"):
+        target.extra_strings[-1] = text
+        assert type(store).parsestring(bytes(store)).units[0].plural_forms == {
+            "one": "single",
+            "other": text,
+        }
+        assert unit.target is target
+
+
+def test_mutable_target_keeps_named_siblings() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    unit.update_plural_forms({"many": "fraction"})
+    target = unit.target
+    # Apple XLIFF exposes an optional zero before the English one/other forms.
+    target.extra_strings[-1] = "edited"
+    assert unit.plural_forms["other"] == "edited"
+    parsed = applestrings_xliff.AppleStringsXliffFile.parsestring(bytes(store))
+    assert parsed.units[0].plural_forms == {
+        "one": "One item",
+        "other": "edited",
+        "many": "fraction",
+    }
+
+
+@pytest.mark.parametrize("detached", [False, True])
+def test_merge_foreign_plural_categories(detached) -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    donor = jsonl10n.I18NextV4File()
+    donor.settargetlanguage("cs")
+    donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+    if detached:
+        store.removeunit(unit)
+    unit.merge(donor.units[0], overwrite=True)
+    if detached:
+        store.addunit(unit)
+    assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+    assert (
+        type(store).parsestring(bytes(store)).units[0].plural_forms == unit.plural_forms
+    )
+
+
+def test_foreign_scalar_merge() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    store.settargetlanguage("cs")
+    donor = base.TranslationUnit("source")
+    donor.target = "replacement"
+    unit.merge(donor, overwrite=True)
+    assert unit.plural_forms["other"] == "replacement"
+    unit.rich_target = unit.rich_target
+    assert unit.plural_forms["other"] == "replacement"
+
+
+@pytest.mark.parametrize("copy", [False, True])
+def test_merge_into_detached_plural_by_category(copy) -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    donor_store = type(store).parsestring(
+        _BASIC_PLURAL_XLIFF.replace(b'target-language="en"', b'target-language="cs"')
+    )
+    forms = {"zero": "zero", "one": "single", "few": "several", "other": "rest"}
+    donor_store.units[0].plural_forms = forms
+    donor = type(store).parsestring(bytes(donor_store)).units[0]
+    unit = store.units[0]
+    if copy:
+        unit = unit.copy()
+        store = type(store)()
+        store.settargetlanguage("en")
+    else:
+        store.removeunit(unit)
+
+    unit.merge(donor, overwrite=True)
+    store.addunit(unit)
+    assert type(store).parsestring(bytes(store)).units[0].plural_forms == forms
+
+
+def test_unsaved_donor_uses_named_forms() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    donor_store = type(store)()
+    donor_store.settargetlanguage("cs")
+    donor = _add_plural(donor_store, "items:count", ["zero", "single", "few", "rest"])
+    store.units[0].merge(donor, overwrite=True)
+    assert type(store).parsestring(bytes(store)).units[0].plural_forms == {
+        "zero": "zero",
+        "one": "single",
+        "few": "few",
+        "other": "rest",
+    }
+
+
+def test_fractional_source_change_requires_review() -> None:
+    content = _BASIC_PLURAL_XLIFF.replace(
+        b'target-language="en"', b'target-language="cs"'
+    ).replace(
+        b"</body>",
+        b'<trans-unit id="items:count:dict/many:dict/:string"><source>fraction</source><target>translated</target></trans-unit></body>',
+    )
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(content)
+    donor = (
+        type(store).parsestring(content.replace(b">fraction<", b">previous<")).units[0]
+    )
+    donor.markapproved()
+    store.units[0].merge(donor, overwrite=True)
+    saved = type(store).parsestring(bytes(store)).units[0]
+    assert saved.plural_forms["many"] == "translated"
+    assert saved.isfuzzy()
+
+
+def test_assigned_target_mutation_before_first_read() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    target = multistring(["", "single", "plural"])
+    store.units[0].target = target
+    target.extra_strings[-1] = "edited"
+    assert (
+        type(store).parsestring(bytes(store)).units[0].plural_forms["other"] == "edited"
+    )
+
+
+@pytest.mark.parametrize("copy", [True, False])
+def test_detached_fresh_single_target(copy) -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    if copy:
+        unit = unit.copy()
+        store = type(store)()
+        store.settargetlanguage("en")
+    else:
+        store.removeunit(unit)
+    unit.target = multistring(["single"])
+    store.addunit(unit)
+    assert type(store).parsestring(bytes(store)).units[0].plural_forms == {
+        "one": "single"
+    }
+
+
+def test_source_only_plural_merge() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    donor = store.UnitClass(multistring(["item", "items"]))
+    store.units[0].merge(donor, overwrite=True)
+    assert not any(type(store).parsestring(bytes(store)).units[0].plural_forms.values())
+
+
+def test_pending_truncated_source_requires_review() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    donor = type(store).parsestring(_BASIC_PLURAL_XLIFF).units[0]
+    unit = store.units[0]
+    unit.source = multistring(["", "One item"])
+    unit.merge(donor, overwrite=True)
+    assert type(store).parsestring(bytes(store)).units[0].isfuzzy()
+
+
+def test_nonprojected_state_on_dirty_donor() -> None:
+    content = _BASIC_PLURAL_XLIFF.replace(
+        b'target-language="en"', b'target-language="cs"'
+    ).replace(
+        b"</body>",
+        b'<trans-unit id="items:count:dict/many:dict/:string"><source>fraction</source><target state="needs-review-translation">translated</target></trans-unit></body>',
+    )
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(content)
+    donor = type(store).parsestring(content).units[0]
+    donor.source = donor.source
+    assert donor.isfuzzy()
+    store.units[0].merge(donor, overwrite=True)
+    assert type(store).parsestring(bytes(store)).units[0].isfuzzy()
+
+
+def test_fuzzy_plural_merge() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    unit.markapproved()
+    donor = type(store).parsestring(_BASIC_PLURAL_XLIFF).units[0]
+    donor.markfuzzy()
+    unit.merge(donor, overwrite=True)
+    assert unit.isfuzzy()
+    saved = type(store).parsestring(bytes(store)).units[0]
+    assert saved.isfuzzy()
+    assert not saved.istranslated()
+
+
+def test_merge_shortened_detached_donor() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    donor_store = type(store).parsestring(_BASIC_PLURAL_XLIFF)
+    donor = donor_store.units[0]
+    donor_store.removeunit(donor)
+    donor.target = multistring(["", "single"])
+    assert donor.plural_forms == {"one": "single"}
+    unit = store.units[0]
+    unit.merge(donor, overwrite=True)
+    assert (
+        type(store).parsestring(bytes(store)).units[0].plural_forms
+        == donor.plural_forms
+    )
+
+
+def test_copy_and_merge_folded_targets() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    unit = store.units[0]
+    unit.update_plural_forms({"many": "fraction", "other": ""})
+    clone = unit.buildfromunit(unit)
+    assert clone.plural_forms == unit.plural_forms
+    destination = applestrings_xliff.AppleStringsXliffFile()
+    destination.addunit(clone)
+    reparsed = applestrings_xliff.AppleStringsXliffFile.parsestring(bytes(destination))
+    assert reparsed.units[0].plural_forms == unit.plural_forms
+    clone.update_plural_forms({"many": "edited"})
+    assert clone != unit
+    assert unit.plural_forms["many"] == "fraction"
+    unit.merge(clone, overwrite=True)
+    assert unit.plural_forms == clone.plural_forms
+
+
+def test_fractional_only_target_status() -> None:
+    tree = etree.fromstring(_BASIC_PLURAL_XLIFF)
+    body = tree.find(".//{*}body")
+    assert body is not None
+    body.remove(body[-1])
+    body[-1].set("id", "items:count:dict/many:dict/:string")
+    store = applestrings_xliff.AppleStringsXliffFile()
+    store.settargetlanguage("cs")
+    store.parse(etree.tostring(tree))
+    unit = store.units[0]
+    assert store.findid(unit.getid()) is unit
+    assert unit.istranslated()
+    unit.markapproved(False)
+    assert unit.isfuzzy()
+    assert not unit.istranslated()
+
+    unit.markapproved()
+    donor = jsonl10n.GoTextJsonFile.parsestring(
+        b'{"language":"cs","messages":[{"id":"k","translation":{"select":'
+        b'{"feature":"plural","cases":{"many":"replacement"}}}}]}'
+    )
+    unit.merge(donor.units[0], overwrite=True)
+    assert unit.isfuzzy()
+    saved = type(store).parsestring(bytes(store)).units[0]
+    assert saved.plural_forms == {"many": "replacement"}
+    assert saved.isfuzzy()
+    assert not saved.istranslated()
+
+
+def test_unbound_positional_donor_to_i18next() -> None:
+    donor = applestrings_xliff.AppleStringsXliffUnit(multistring(["item", "items"]))
+    donor.target = multistring(["single", "rest"])
+    store = jsonl10n.I18NextV4File.parsestring(b'{"k_one":"old","k_other":"old"}')
+    store.units[0].merge(donor, overwrite=True)
+    assert jsonl10n.I18NextV4File.parsestring(bytes(store)).units[0].plural_forms == {
+        "one": "single",
+        "other": "rest",
+    }
+
+
+def test_retained_source_preserves_spaces() -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(
+        _BASIC_PLURAL_XLIFF.replace(b'xml:space="preserve"', b'xml:space="default"')
+    )
+    store.units[0].source = multistring(["", "  one  item  ", "%d items"])
+    assert (
+        type(store).parsestring(bytes(store)).units[0].source.strings[1]
+        == "  one  item  "
+    )
+
+
+def test_implicit_whitespace_and_unbound_receiver() -> None:
+    content = _BASIC_PLURAL_XLIFF.replace(b' xml:space="preserve"', b"").replace(
+        b"<target>One item</target>", b"<target>   </target>"
+    )
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(content)
+    parsed = store.units[0]
+    assert parsed.plural_forms["one"] == ""
+    receiver = store.UnitClass(multistring(["zero", "one", "other"]))
+    receiver.merge(parsed, overwrite=True)
+    assert receiver.target.strings == parsed.target.strings
+
+
+def test_approval_persists_for_nonprojected_source() -> None:
+    content = _BASIC_PLURAL_XLIFF.replace(
+        b"</body>",
+        b'<trans-unit id="items:count:dict/many:dict/:string"><source>fraction</source><note>keep</note></trans-unit></body>',
+    )
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(content)
+    store.units[0].markapproved()
+    saved = type(store).parsestring(bytes(store))
+    assert saved.units[0].isapproved()
+    assert saved.units[0].plural_forms["many"] == ""
+    form = saved.units[0]._plural_forms["many"]
+    assert [etree.QName(node).localname for node in form] == [
+        "source",
+        "target",
+        "note",
+    ]
+
+
+def test_normalized_target_edit() -> None:
+    content = _BASIC_PLURAL_XLIFF.replace(
+        b'xml:space="preserve"', b'xml:space="default"'
+    ).replace(
+        b"<target>%d items</target>", b'<target><ph id="1">%d</ph>  items</target>'
+    )
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(content)
+    store.units[0].update_plural_forms({"one": "  an  item  ", "other": "%d days"})
+    saved = type(store).parsestring(bytes(store))
+    assert saved.units[0].plural_forms == {"one": "  an  item  ", "other": "%d days"}
+    assert b'<ph id="1">%d</ph>' in bytes(store)
+
+
+@pytest.mark.parametrize("comments", [True, False])
+def test_merge_unbound_plural(comments) -> None:
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(_BASIC_PLURAL_XLIFF)
+    donor = store.UnitClass(multistring(["zero", "single", "rest"]))
+    donor.target = multistring(["zero", "single", "rest"])
+    donor.addnote("Donor note")
+    unit = store.units[0]
+    unit.merge(donor, overwrite=True, comments=comments)
+    saved = type(store).parsestring(bytes(store)).units[0]
+    assert saved.plural_forms == {"zero": "zero", "one": "single", "other": "rest"}
+    assert ("Donor note" in saved.getnotes()) == comments
+
+
+def test_named_inline_target() -> None:
+    original = _BASIC_PLURAL_XLIFF.replace(
+        b"<target>%d items</target>",
+        b'<target state="translated"><ph id="1">%d</ph> items</target>',
+    )
+    store = applestrings_xliff.AppleStringsXliffFile.parsestring(original)
+    unit = store.units[0]
+    unit.update_plural_forms({"other": "%d days"})
+    assert b'<target state="translated"><ph id="1">%d</ph> days</target>' in bytes(
+        store
+    )
+    before = bytes(store)
+    with pytest.raises(ValueError, match="spans inline"):
+        unit.update_plural_forms({"one": "changed", "other": "different"})
+    assert bytes(store) == before
 
 
 def test_plural_rich_source_edit_refreshes_indexes() -> None:
@@ -519,6 +1014,15 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         reparsed = self.StoreClass.parsestring(serialized).units[0]
         assert reparsed.get_state_n() == reparsed.S_NEEDS_REVIEW
 
+    def test_fresh_target_after_serializing_empty_group(self):
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = _add_plural(store, "items:count", ["", "", ""])
+        bytes(store)
+        unit.target = multistring(["single"])
+        saved = self.StoreClass.parsestring(bytes(store))
+        assert saved.units[0].plural_forms == {"one": "single"}
+
     def test_new_plural_state_derives_target_tags(self):
         """New plural state evaluates each required in-memory target form."""
         store = self.StoreClass()
@@ -553,6 +1057,7 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         )
 
         unit.markapproved()
+        unit.target = unit.target
 
         assert unit._plural_dirty
         serialized = bytes(store)
@@ -561,6 +1066,22 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         reparsed = self.StoreClass.parsestring(serialized).units[0]
         assert reparsed.get_state_n() == reparsed.S_TRANSLATED
         assert reparsed.isapproved()
+
+    def test_detached_clear_removes_state(self):
+        content = _BASIC_PLURAL_XLIFF.replace(
+            b"<target>One item</target>",
+            b'<target state="translated" state-qualifier="exact-match">One item</target>',
+        )
+        store = self.StoreClass.parsestring(content)
+        unit = store.units[0]
+        store.removeunit(unit)
+        unit.target = multistring(["", "", "%d items"])
+        store.addunit(unit)
+        saved = self.StoreClass.parsestring(bytes(store)).units[0]
+        node = saved._plural_forms["one"].find(saved.namespaced("target"))
+        assert node.get("state") is None
+        assert node.get("state-qualifier") is None
+        assert not saved.isapproved()
 
     def test_dirty_plural_preserves_per_form_state(self):
         """Rebuilding edited forms retains each form's exact explicit state."""
@@ -1058,6 +1579,20 @@ class TestAppleStringsXliffFile(test_xliff.TestXLIFFfile):
         plural = next(u for u in store.units if u.hasplural())
         assert plural.target.strings[1] == "One item"
         assert plural.target.strings[2] == "%d items"
+
+    def test_move_parsed_plural_preserves_forms(self) -> None:
+        source = self.StoreClass.parsestring(_BASIC_PLURAL_XLIFF)
+        unit = source.units[0]
+        source_forms = list(unit.source.strings)
+        target_forms = list(unit.target.strings)
+        destination = self.StoreClass()
+        destination.settargetlanguage("en")
+        destination.addunit(unit)
+        assert unit.xmlelement.get("id") == "items:count:dict"
+        reparsed = self.StoreClass.parsestring(bytes(destination))
+        assert len(reparsed.units) == 1
+        assert reparsed.units[0].source.strings == source_forms
+        assert reparsed.units[0].target.strings == target_forms
 
     # ------------------------------------------------------------------
     # Target update round-trip

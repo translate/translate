@@ -126,8 +126,8 @@ class matcher:
             # some modules (like the native Levenshtein) can't use it.
             if isinstance(candidate.source, multistring):
                 if len(candidate.source.strings) > 1:
-                    simpleunit.orig_source = candidate.source  # ty:ignore[unresolved-attribute]
-                    simpleunit.orig_target = candidate.target  # ty:ignore[unresolved-attribute]
+                    simpleunit.orig_source = candidate.source  # ty:ignore[missing-attribute]
+                    simpleunit.orig_target = candidate.target  # ty:ignore[missing-attribute]
                 simpleunit.source = str(candidate.source)
                 simpleunit.target = str(candidate.target)
             else:
@@ -138,7 +138,7 @@ class matcher:
             # notes, pot2po adds all previous comments as translator comments
             # in the new po file
             simpleunit.addnote(candidate.getnotes(origin="translator"))
-            simpleunit.fuzzy = candidate.isfuzzy()  # ty:ignore[unresolved-attribute]
+            simpleunit.fuzzy = candidate.isfuzzy()  # ty:ignore[missing-attribute]
             self.candidates.units.append(simpleunit)
         if sort:
             self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
@@ -269,6 +269,7 @@ context_re = re.compile(r"\s+\(.*\)\s*$")
 class terminologymatcher(matcher):
     """A matcher with settings specifically for terminology matching."""
 
+    comparer: terminology.TerminologyComparer
     sort_reverse = True
 
     def __init__(
@@ -286,7 +287,7 @@ class terminologymatcher(matcher):
         self.addpercentage = False
         self.match_info = {}
 
-    def inittm(self, store) -> None:  # ty:ignore[invalid-method-override]
+    def inittm(self, store) -> None:  # ty:ignore[incompatible-method-override]
         """Normal initialisation, but convert all source strings to lower case."""
         super().inittm(store)
         extras = []
@@ -336,7 +337,7 @@ class terminologymatcher(matcher):
             return []
         text = text.lower()
         comparer = self.comparer
-        comparer.match_info = {}  # ty:ignore[invalid-assignment]
+        comparer.match_info = {}
         match_info = {}
         matches = []
         known = set()
@@ -361,7 +362,7 @@ class terminologymatcher(matcher):
             if (source, cand.target) in known:
                 continue
             if comparer.similarity(text, source, self.MIN_SIMILARITY):
-                match_info[source] = {"pos": comparer.match_info[source]["pos"]}  # ty:ignore[unresolved-attribute]
+                match_info[source] = {"pos": comparer.match_info[source]["pos"]}
                 matches.append(cand)
                 known.add((source, cand.target))
 

@@ -41,17 +41,17 @@ class TestStringElem:
         assert str(self.elem.sub[2]) == "&brandLong;"
         assert str(self.elem.sub[3]) == "</a>"
 
-        assert len(self.elem.sub[0].sub) == 1  # ty:ignore[unresolved-attribute]
-        assert self.elem.sub[0].sub[0] == "Ģët "  # ty:ignore[unresolved-attribute]
-        assert len(self.elem.sub[1].sub) == 1  # ty:ignore[unresolved-attribute]
+        assert len(self.elem.sub[0].sub) == 1  # ty:ignore[missing-union-attribute]
+        assert self.elem.sub[0].sub[0] == "Ģët "  # ty:ignore[missing-union-attribute]
+        assert len(self.elem.sub[1].sub) == 1  # ty:ignore[missing-union-attribute]
         assert (
-            self.elem.sub[1].sub[0]  # ty:ignore[unresolved-attribute]
+            self.elem.sub[1].sub[0]  # ty:ignore[missing-union-attribute]
             == '<a href="https://www.example.com" alt="Ģët &brand;!">'
         )
-        assert len(self.elem.sub[2].sub) == 1  # ty:ignore[unresolved-attribute]
-        assert self.elem.sub[2].sub[0] == "&brandLong;"  # ty:ignore[unresolved-attribute]
-        assert len(self.elem.sub[3].sub) == 1  # ty:ignore[unresolved-attribute]
-        assert self.elem.sub[3].sub[0] == "</a>"  # ty:ignore[unresolved-attribute]
+        assert len(self.elem.sub[2].sub) == 1  # ty:ignore[missing-union-attribute]
+        assert self.elem.sub[2].sub[0] == "&brandLong;"  # ty:ignore[missing-union-attribute]
+        assert len(self.elem.sub[3].sub) == 1  # ty:ignore[missing-union-attribute]
+        assert self.elem.sub[3].sub[0] == "</a>"  # ty:ignore[missing-union-attribute]
 
     def test_add(self) -> None:
         assert f"{self.elem} " == f"{self.ORIGSTR} "
@@ -180,7 +180,7 @@ class TestStringElem:
 
     def test_isleaf(self) -> None:
         for child in self.elem.sub:
-            assert child.isleaf()  # ty:ignore[unresolved-attribute]
+            assert child.isleaf()  # ty:ignore[missing-union-attribute]
 
     def test_prune(self) -> None:
         elem = StringElem("foo")

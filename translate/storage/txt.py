@@ -112,7 +112,7 @@ class TxtFile(base.TranslationStore[TxtUnit]):
             txtsrc = inputfile.readlines()
             self.parse(txtsrc)
 
-    def parse(self, lines) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, lines) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read in text lines and create txtunits from the blocks of text."""
         if self.no_segmentation:
             unit = self.addsourceunit(

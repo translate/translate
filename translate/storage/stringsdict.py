@@ -19,7 +19,7 @@ class StringsDictId(base.UnitId):
         return s
 
 
-class StringsDictUnit(base.DictUnit):
+class StringsDictUnit(base.NamedPluralUnit, base.DictUnit):
     """
     A single entry in a .stringsdict file.
 
@@ -49,31 +49,93 @@ class StringsDictUnit(base.DictUnit):
         else:
             self.set_unitid(self.IdClass([("key", loc)]))
 
+    _allows_empty_plural_group = True
+    _variable_fields: dict | None = None
+    _has_named_edits = False
+    _parsed_format_only = False
+
+    _tags_for_locale = staticmethod(data.get_apple_plural_tags)
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        if any(tag not in data.cldr_plural_categories for tag in forms):
+            raise ValueError("Unknown stringsdict plural category")
+        self.set_plural_projection(forms, self._projection)
+        self._has_named_edits = True
+
+    def _plural_forms_for_merge(self):
+        forms = self.plural_forms
+        if (
+            forms is not None
+            and self._variable_fields is None
+            and not self._has_named_edits
+        ):
+            return self.serialized_forms()
+        return forms
+
+    def variable_fields(self) -> dict:
+        """Return the variable metadata as it will appear in the plist."""
+        plurals = dict(self._variable_fields or {})
+        plurals["NSStringFormatSpecTypeKey"] = "NSStringPluralRuleType"
+        if self.format_value_type or "NSStringFormatValueTypeKey" in plurals:
+            plurals["NSStringFormatValueTypeKey"] = self.format_value_type
+        return plurals
+
+    def serialized_forms(self) -> dict:
+        """Return explicit categories or apply the legacy positional fallback."""
+        if self.innerkey is None:
+            return {}
+        if self._variable_fields is not None or self._has_named_edits:
+            forms = self.plural_forms
+            if forms is not None:
+                return dict(forms)
+        plural_tags = (
+            self._store._get_target_plural_tags(self.target)
+            if self._store is not None
+            else list(self._projection)
+        )
+        if not plural_tags:
+            return {}
+        plural_strings = self.sync_plural_count(self.target, plural_tags)
+        plurals = {
+            plural_tag: plural_string
+            for plural_tag, plural_string in zip(
+                plural_tags, plural_strings, strict=True
+            )
+            if plural_string
+        }
+        # Apple requires "other" even for languages whose represented integer
+        # categories end in "many". Keep the existing plural indexes and use
+        # the final category as a compatibility fallback.
+        if "other" not in plural_tags and plural_strings[-1]:
+            plurals["other"] = plural_strings[-1]
+        return plurals
+
     def __eq__(self, other):
         return (
             isinstance(other, StringsDictUnit)
             and super().__eq__(other)
-            and self.format_value_type == other.format_value_type
             and self.localized_format == other.localized_format
+            and self.serialized_forms() == other.serialized_forms()
+            and self.variable_fields() == other.variable_fields()
         )
 
     @property
     def outerkey(self):
-        self.get_unitid()
+        unitid = self.get_unitid()
 
-        if len(self._unitid.parts) < 1:  # ty:ignore[unresolved-attribute]
+        if len(unitid.parts) < 1:
             return None
 
-        return self._unitid.parts[0][1]  # ty:ignore[unresolved-attribute]
+        return unitid.parts[0][1]
 
     @property
     def innerkey(self):
-        self.get_unitid()
+        unitid = self.get_unitid()
 
-        if len(self._unitid.parts) < 2:  # ty:ignore[unresolved-attribute]
+        if len(unitid.parts) < 2:
             return None
 
-        return self._unitid.parts[1][1]  # ty:ignore[unresolved-attribute]
+        return unitid.parts[1][1]
 
     def getid(self):
         return self.source
@@ -130,36 +192,33 @@ class StringsDictFile(base.DictStore):
 
         return target_lang
 
+    def addunit(self, unit) -> None:
+        if isinstance(unit, StringsDictUnit) and unit.innerkey is not None:
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
+
     def _get_target_plural_tags(self, target=None):
         """
         Get all supported plural tags for the target language.
         Note that 'zero' is supported when there is room for optional forms.
         """
-        target_lang = self.gettargetlanguage()
-        if target_lang is None:
-            return data.cldr_plural_categories
-
-        tags = self.get_plural_tags(target).copy()
+        locale = (
+            self.get_base_locale_code()
+            if self.gettargetlanguage() is not None
+            else None
+        )
         count = (
             len(self.UnitClass.get_plural_strings(target))
             if target is not None
             else None
         )
-        if (
-            count == 2
-            and data.plural_tags.get(self.get_base_locale_code()) is None
-            and "zero" not in tags
-        ):
-            return ["zero", "other"]
-        if "zero" not in tags and count != 1:
-            tags.insert(0, "zero")
-        return tags
+        return data.get_apple_plural_tags(locale, count)
 
     @property
     def target_plural_tags(self):
         return self._get_target_plural_tags()
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read a .stringsdict file into a dictionary, and convert it to translation units."""
         if isinstance(input, (bytes, str)):
             plist = plistlib.loads(input)
@@ -213,7 +272,7 @@ class StringsDictFile(base.DictStore):
                 self._add_plural_unit(
                     key,
                     referenced_variable,
-                    {},
+                    None,
                     localized_format=localized_format,
                 )
                 continue
@@ -231,35 +290,33 @@ class StringsDictFile(base.DictStore):
         self,
         outerkey: str,
         innerkey: str,
-        value: dict,
+        value: dict | None,
         *,
         localized_format: str | None = None,
     ) -> None:
         plural_tags = self.target_plural_tags
-        plural_strings = [value.get(tag, "") for tag in plural_tags]
-
         unit = self.UnitClass()
         unit.set_unitid(unit.IdClass([("key", outerkey), ("key", innerkey)]))
-        unit.target = multistring(plural_strings)
-        unit.format_value_type = value.get("NSStringFormatValueTypeKey", "")
+        fields = value or {}
+        forms = {
+            tag: text
+            for tag, text in fields.items()
+            if tag in data.cldr_plural_categories
+        }
+        if not all(isinstance(text, str) for text in forms.values()):
+            raise TypeError("Plural variable values must be strings")
+        unit.set_plural_projection(forms, plural_tags)
+        if value is not None:
+            unit._variable_fields = {
+                tag: text for tag, text in fields.items() if tag not in forms
+            }
+        unit._parsed_format_only = value is None
+        unit.format_value_type = fields.get("NSStringFormatValueTypeKey", "")
         unit.localized_format = localized_format
         self.addunit(unit)
 
     def _serialize_plural(self, unit: StringsDictUnit) -> dict:
-        plurals = {"NSStringFormatSpecTypeKey": "NSStringPluralRuleType"}
-        if unit.format_value_type:
-            plurals["NSStringFormatValueTypeKey"] = unit.format_value_type
-
-        plural_tags = self._get_target_plural_tags(unit.target)
-        plural_strings = self.UnitClass.sync_plural_count(unit.target, plural_tags)
-        plurals.update(
-            (plural_tag, plural_string)
-            for plural_tag, plural_string in zip(
-                plural_tags, plural_strings, strict=True
-            )
-            if plural_string
-        )
-        return plurals
+        return {**unit.variable_fields(), **unit.serialized_forms()}
 
     def serialize(self, out) -> None:
         plist = {}
@@ -281,29 +338,38 @@ class StringsDictFile(base.DictStore):
                 and plural_units[0].localized_format is not None
             ):
                 unit = plural_units[0]
-                plural_tags = self._get_target_plural_tags(unit.target)
-                plural_strings = self.UnitClass.sync_plural_count(
-                    unit.target, plural_tags
-                )
+                plurals = self._serialize_plural(unit)
 
                 # Omit an untranslated or incomplete entry instead of writing
                 # a dictionary which Apple cannot resolve at runtime.
-                if (
-                    "other" not in plural_tags
-                    or not plural_strings[plural_tags.index("other")]
-                ):
+                if unit._variable_fields is None and "other" not in plurals:
+                    if (
+                        unit._parsed_format_only
+                        and unit._forms == {}
+                        and unit.localized_format
+                    ):
+                        plist[outerkey] = {
+                            "NSStringLocalizedFormatKey": unit.localized_format
+                        }
                     continue
 
                 plist[outerkey] = {
                     "NSStringLocalizedFormatKey": unit.localized_format
                     or f"%#@{unit.innerkey}@",
-                    unit.innerkey: self._serialize_plural(unit),
+                    unit.innerkey: plurals,
                 }
                 continue
 
             # A plural-only parsed group may depend on a missing complex format
             # sibling. Its original format cannot be reconstructed safely.
-            if plural_units and not format_units:
+            if (
+                plural_units
+                and not format_units
+                and all(
+                    unit._variable_fields is None and not unit._has_named_edits
+                    for unit in plural_units
+                )
+            ):
                 continue
 
             output = {}

@@ -1,7 +1,7 @@
 import pytest
 
 from translate.misc.multistring import multistring
-from translate.storage import base, toml
+from translate.storage import base, jsonl10n, toml
 
 from . import test_monolingual
 
@@ -426,6 +426,76 @@ trimmed in raw strings.
 
 class TestGoI18nTOMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = toml.GoI18nTOMLFile
+
+    def test_scalar_merge_refreshes_sparse_projection(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse('[days]\none = "single"\nother = "rest"\n')
+        unit = store.units[0]
+        store.settargetlanguage("cs-CZ")
+        unit.merge(jsonl10n.FlatJsonUnit("merged"), overwrite=True)
+        assert unit.target.strings == ["single", "", "merged"]
+        unit.rich_target = unit.rich_target
+        assert self.StoreClass.parsestring(bytes(store)).units[0].plural_forms == {
+            "one": "single",
+            "other": "merged",
+        }
+
+    def test_merge_sparse_named_group(self) -> None:
+        store = self.StoreClass.parsestring(b'[k]\none = "one"\nother = "old"\n')
+        donor = jsonl10n.I18NextV4File.parsestring(b'{"k_other":"new"}')
+        store.units[0].merge(donor.units[0], overwrite=True)
+        assert self.StoreClass.parsestring(bytes(store)).units[0].plural_forms == {
+            "one": "",
+            "other": "new",
+        }
+
+    def test_named_forms(self) -> None:
+        store = self.StoreClass()
+        data = '[days]\nmany = "fraction" # keep\nother = ""\n'
+        store.parse(data)
+        unit = store.units[0]
+        assert unit.plural_forms == {"many": "fraction", "other": ""}
+        assert bytes(store).decode() == data
+        unit.update_plural_forms({"one": "new"})
+        unit.update_plural_forms({"other": None})
+        with pytest.raises(ValueError):
+            unit.plural_forms = {"many": "fraction"}
+        result = bytes(store)
+        assert b"# keep" in result
+        reparsed = self.StoreClass()
+        reparsed.parse(result)
+        assert reparsed.units[0].plural_forms == {"many": "fraction", "one": "new"}
+
+    def test_add_plural_table(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass(multistring(["day", "days"]))
+        unit.setid("days")
+        store.addunit(unit)
+        assert bytes(store) == b'[days]\none = "day"\nother = "days"\n'
+
+    def test_positional_update_requires_two_categories(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        data = b'[days]\none = "day"\nother = "days"\n'
+        store.parse(data)
+        with pytest.raises(ValueError, match="at least two categories"):
+            store.units[0].target = multistring(["day"])
+        assert bytes(store) == data
+
+    def test_non_string_plural(self) -> None:
+        with pytest.raises(base.ParseError, match="Plural forms must contain strings"):
+            self.StoreClass().parse('[days]\none = "day"\nother = 2\n')
+
+    def test_empty_plural_table(self) -> None:
+        store = self.StoreClass()
+        data = b'[days]\nother = "" # keep\none = ""\n'
+        store.parse(data)
+        unit = store.units[0]
+        assert unit.plural_forms == {"other": "", "one": ""}
+        unit.update_plural_forms({"one": "day"})
+        assert bytes(store) == data.replace(b'one = ""', b'one = "day"')
 
     def test_simple_plural(self) -> None:
         """Test parsing simple pluralized strings."""

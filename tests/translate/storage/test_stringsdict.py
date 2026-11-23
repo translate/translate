@@ -5,7 +5,7 @@ import pytest
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.storage import base, stringsdict
+from translate.storage import base, jsonl10n, stringsdict
 
 from . import test_monolingual
 
@@ -51,6 +51,12 @@ class TestStringsDictUnit(test_monolingual.TestMonolingualUnit):
 
 class TestStringsDictFile(test_monolingual.TestMonolingualStore):
     StoreClass = stringsdict.StringsDictFile
+
+    def reparse(self, store):
+        parsed = self.StoreClass()
+        parsed.settargetlanguage(store.gettargetlanguage())
+        parsed.parse(bytes(store))
+        return parsed
 
     @staticmethod
     def get_simple_plural(
@@ -129,6 +135,116 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         newstore = self.reparse(store)
         self.check_equality(store, newstore)
 
+    @pytest.mark.parametrize(
+        ("language", "target", "expected"),
+        [
+            (
+                "en",
+                ["", "new one", "new other"],
+                {"one": "new one", "other": "new other"},
+            ),
+            ("ja", "new other", {"other": "new other"}),
+        ],
+    )
+    def test_imported_variable_positional_target(
+        self, language, target, expected
+    ) -> None:
+        content = self.get_simple_plural()
+        fields = content["items"]["count"]
+        fields.pop("NSStringFormatSpecTypeKey")
+        fields["custom"] = "keep"
+        store = self.StoreClass()
+        store.settargetlanguage(language)
+        store.parse(plistlib.dumps(content))
+        assert (
+            plistlib.loads(bytes(store))["items"]["count"]["NSStringFormatSpecTypeKey"]
+            == "NSStringPluralRuleType"
+        )
+        store.units[0].target = target
+        assert plistlib.loads(bytes(store))["items"]["count"] == {
+            "NSStringFormatSpecTypeKey": "NSStringPluralRuleType",
+            "NSStringFormatValueTypeKey": "d",
+            "custom": "keep",
+            **expected,
+        }
+
+    def test_equality_after_metadata_edit(self) -> None:
+        content = self.get_simple_plural()
+        del content["items"]["count"]["NSStringFormatSpecTypeKey"]
+        store = self.StoreClass()
+        store.parse(plistlib.dumps(content))
+        unit = store.units[0]
+        unit.format_value_type = "f"
+        assert self.reparse(store).units[0] == unit
+
+    def test_merge_metadata_only_group(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        unit.plural_forms = {}
+        before = bytes(store)
+        unit.merge(unit, overwrite=True)
+        assert unit.plural_forms == {}
+        assert bytes(store) == before
+
+    @pytest.mark.parametrize("field", ["many", "custom"])
+    def test_equality_includes_unprojected_fields(self, field) -> None:
+        content = self.get_simple_plural()
+        stores = [self.StoreClass(), self.StoreClass()]
+        for index, store in enumerate(stores):
+            store.settargetlanguage("cs")
+            content["items"]["count"][field] = str(index)
+            store.parse(plistlib.dumps(content))
+        assert stores[0].units[0] != stores[1].units[0]
+
+    def test_merge_foreign_plural_categories(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        donor = jsonl10n.I18NextV4File()
+        donor.settargetlanguage("cs")
+        donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+        unit.merge(donor.units[0], overwrite=True)
+        assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+        assert (
+            type(store).parsestring(bytes(store)).units[0].plural_forms
+            == unit.plural_forms
+        )
+
+    def test_foreign_scalar_merge(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        donor = base.TranslationUnit()
+        donor.target = "replacement"
+        store.settargetlanguage("cs")
+        unit.merge(donor, overwrite=True)
+        assert unit.plural_forms["other"] == "replacement"
+        unit.rich_target = unit.rich_target
+        assert unit.plural_forms["other"] == "replacement"
+
+    def test_named_forms(self) -> None:
+        content = self.get_simple_plural()
+        content["items"]["count"].update(many="fraction", other="")
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse(plistlib.dumps(content))
+        unit = store.units[0]
+        assert plistlib.loads(bytes(store)) == content
+        assert unit.plural_forms["many"] == "fraction"
+        unit.update_plural_forms({"one": None, "other": "rest"})
+        assert self.reparse(store).units[0].plural_forms == {
+            "many": "fraction",
+            "other": "rest",
+        }
+        unit.plural_forms = {"many": ""}
+        with pytest.raises(ValueError):
+            unit.update_plural_forms({"invalid": "bad"})
+        assert self.reparse(store).units[0].plural_forms == {"many": ""}
+
     def test_single_plural_is_folded(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("en")
@@ -159,6 +275,70 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         output = plistlib.loads(bytes(store))
         assert output["items"]["NSStringLocalizedFormatKey"] == "%1$#@count@"
 
+    @pytest.mark.parametrize(
+        "language", ["ru", "pl", "uk", "be", "rus", "pol", "ukr", "bel", "ru_RU"]
+    )
+    @pytest.mark.parametrize("localized_format", ["%1$#@count@", "Count: %#@count@"])
+    @pytest.mark.parametrize("value_type", ["d", "f"])
+    def test_plural_without_other_uses_many(
+        self, language, localized_format, value_type
+    ) -> None:
+        content = self.get_simple_plural(localized_format)
+        plural = content["items"]["count"]
+        plural.update(
+            {
+                "NSStringFormatValueTypeKey": value_type,
+                "zero": "No items",
+                "few": "%d few items",
+                "many": "%d many items",
+                "other": "Distinct imported fallback",
+            }
+        )
+        store = self.StoreClass()
+        store.settargetlanguage(language)
+        store.parse(plistlib.dumps(content))
+        target = ["No items", "One item", "%d few items", "%d many items"]
+        assert store.units[-1].target.strings == target
+
+        serialized = bytes(store)
+        output = plistlib.loads(serialized)
+        expected = self.get_simple_plural(localized_format)
+        expected["items"]["count"] = plural
+        assert output == expected
+        assert store.units[-1].target.strings == target
+
+        newstore = self.reparse(store)
+        self.check_equality(store, newstore)
+        assert bytes(newstore) == serialized
+
+    @pytest.mark.parametrize("language", ["ru", "pl", "uk", "be"])
+    @pytest.mark.parametrize("many", [None, ""])
+    @pytest.mark.parametrize("localized_format", ["%#@count@", "Count: %#@count@"])
+    def test_plural_without_other_and_empty_many(
+        self, language, many, localized_format
+    ) -> None:
+        content = self.get_simple_plural(localized_format)
+        plural = content["items"]["count"]
+        plural["few"] = "%d few items"
+        if many is not None:
+            plural["many"] = many
+        store = self.StoreClass()
+        store.settargetlanguage(language)
+        store.parse(plistlib.dumps(content))
+
+        output = plistlib.loads(bytes(store))
+        assert output == content
+
+    @pytest.mark.parametrize("language", ["en", "de"])
+    def test_represented_other_cannot_use_one_as_fallback(self, language) -> None:
+        content = self.get_simple_plural()
+        content["items"]["count"]["other"] = ""
+        store = self.StoreClass()
+        store.settargetlanguage(language)
+        store.parse(plistlib.dumps(content))
+
+        assert plistlib.loads(bytes(store)) == content
+
     def test_single_plural_with_literal_format_is_not_folded(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("en")
@@ -182,8 +362,10 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         assert unit.target.strings == ["", "", ""]
         assert unit.localized_format == "%#@count@"
 
-        # Do not serialize the incomplete entry.
-        assert plistlib.loads(bytes(store)) == {}
+        assert unit.plural_forms == {}
+        assert plistlib.loads(bytes(store)) == self.get_simple_plural(
+            include_plural=False
+        )
 
         unit.target = multistring(["", "One item", "%d items"])
         output = plistlib.loads(bytes(store))["items"]
@@ -191,7 +373,7 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
         assert output["count"]["other"] == "%d items"
         assert "NSStringFormatValueTypeKey" not in output["count"]
 
-    def test_plural_only_is_omitted_without_format(self) -> None:
+    def test_preserve_plural_without_format(self) -> None:
         store = self.StoreClass()
         store.settargetlanguage("en")
         store.parse(plistlib.dumps(self.get_simple_plural(include_format=False)))
@@ -203,7 +385,85 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
 
         # The missing format might have contained literal text, so it cannot be
         # reconstructed safely from the plural variable name.
+        assert plistlib.loads(bytes(store)) == self.get_simple_plural(
+            include_format=False
+        )
+
+    def test_equality_of_positional_placeholder(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "one", "other"])
+        store.addunit(unit)
+        parsed = self.reparse(store).units[0]
+        assert unit == parsed
+        parsed.update_plural_forms({"zero": ""})
+        assert unit != parsed
+
+    def test_new_variable_preserves_explicit_empty_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "", ""])
+        store.addunit(unit)
+        unit.plural_forms = {"one": "single", "other": ""}
+        saved = self.StoreClass.parsestring(bytes(store))
+        assert saved.units[0].plural_forms == {"one": "single", "other": ""}
+
+    def test_new_named_variable_requires_other(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "", ""])
+        store.addunit(unit)
+        donor = store.UnitClass("source:amount")
+        donor.target = multistring(["", "single", ""])
+        store.addunit(donor)
+        donor.plural_forms = {"one": "single"}
+        unit.merge(donor, overwrite=True)
+        assert "items" not in plistlib.loads(bytes(store))
+        unit.update_plural_forms({"other": "rest"})
+        variable = plistlib.loads(bytes(store))["items"]["amount"]
+        assert variable["one"] == "single"
+        assert variable["other"] == "rest"
+
+    def test_merge_preserves_positional_apple_fallback(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("ru")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "single", "few", "many"])
+        store.addunit(unit)
+        before = bytes(store)
+        assert plistlib.loads(before)["items"]["amount"]["other"] == "many"
+        unit.merge(unit, overwrite=True)
+        assert bytes(store) == before
+
+    def test_empty_merge_omits_new_variable(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        unit = store.UnitClass("items:amount")
+        unit.target = multistring(["", "one", "other"])
+        store.addunit(unit)
+        donor = self.StoreClass.parsestring(
+            plistlib.dumps(self.get_simple_plural())
+        ).units[0]
+        donor.plural_forms = {}
+        unit.merge(donor, overwrite=True)
         assert plistlib.loads(bytes(store)) == {}
+
+    def test_serialize_named_plural_only_group(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        for name in ("amount", "duration"):
+            unit = store.UnitClass(f"items:{name}")
+            unit.target = multistring(["", "", ""])
+            store.addunit(unit)
+            unit.plural_forms = {"other": name}
+        group = plistlib.loads(bytes(store))["items"]
+        assert {name: variable["other"] for name, variable in group.items()} == {
+            "amount": "amount",
+            "duration": "duration",
+        }
 
     def test_new_plural_synthesizes_format(self) -> None:
         store = self.StoreClass()
@@ -287,6 +547,23 @@ class TestStringsDictFile(test_monolingual.TestMonolingualStore):
 
         store.filename = "invalid_filename"
         assert store.gettargetlanguage() == "nl"
+
+    @pytest.mark.parametrize("copy", [True, False])
+    def test_detached_apple_projection(self, copy) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("en")
+        store.parse(plistlib.dumps(self.get_simple_plural()))
+        unit = store.units[0]
+        if copy:
+            unit = unit.copy()
+        else:
+            store.removeunit(unit)
+        unit.target = multistring(["none", "single", "several"])
+        assert unit.plural_forms == {
+            "zero": "none",
+            "one": "single",
+            "other": "several",
+        }
 
     def test_plural_zero_always_set(self) -> None:
         def lang_without_zero(tuple):

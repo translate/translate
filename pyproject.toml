@@ -12,32 +12,41 @@ dev = [
   { include-group = "types" }
 ]
 docs = [
+  # Always include docutils for type checking
+  "docutils==0.23",
   # Do not attempt to build doc on older Python
-  "furo==2025.12.19; python_version >= '3.12'",
-  "matplotlib==3.11.2; python_version >= '3.12'",
-  "sphinx-copybutton==0.5.2; python_version >= '3.12'",
-  "Sphinx==9.1.0; python_version >= '3.12'",
-  "sphinxext-opengraph==0.13.0; python_version >= '3.12'"
+  "furo==2025.12.19; python_version >= '3.14'",
+  "matplotlib==3.11.2; python_version >= '3.14'",
+  "sphinx-copybutton==0.5.2; python_version >= '3.14'",
+  "Sphinx==9.2.0; python_version >= '3.14'",
+  "sphinxext-opengraph==0.13.0; python_version >= '3.14'"
 ]
 lint = [
   { include-group = "pre-commit" },
   { include-group = "pylint" }
 ]
+package-lint = [
+  "check-manifest==0.51",
+  "check-wheel-contents==0.6.3",
+  "pydistcheck==0.11.3",
+  "pyroma==5.0.1",
+  "twine==7.0.0"
+]
 pre-commit = [
-  "prek==0.5.5"
+  "prek==0.5.11"
 ]
 pylint = [
-  "pylint==4.1.3"
+  "pylint==4.1.4"
 ]
 test = [
   "pytest-cov==7.1.0",
   "pytest-xdist==3.8.0",
-  "pytest==9.1.1",
-  "syrupy==6.1.1"
+  "pytest==9.2.0",
+  "syrupy==7.0.3"
 ]
 types = [
   "setuptools>=61.2",
-  "ty==0.0.90",
+  "ty==0.0.108",
   "types-lxml==2026.2.16"
 ]
 
@@ -67,7 +76,7 @@ classifiers = [
 ]
 dependencies = [
   "lxml>=6.1.0,<7.0",
-  "unicode-segmentation-rs>=0.2.0,<0.4"
+  "unicode-segmentation-rs>=0.2.0,<1.1"
 ]
 description = "Tools and API for translation and localization engineering."
 dynamic = [
@@ -98,10 +107,10 @@ fluent = [
   "fluent.syntax>=0.19.0,<0.20"
 ]
 ical = [
-  "vobject==0.9.9"
+  "vobject>=0.9.9,<0.10"
 ]
 ini = [
-  "iniparse==0.5"
+  "iniparse>=0.5,<0.6"
 ]
 levenshtein = [
   "RapidFuzz>=3.14.0"
@@ -116,7 +125,7 @@ rc = [
   "pyparsing>=3.2.0,<3.4"
 ]
 spellcheck = [
-  "pyenchant==3.3.0"
+  "pyenchant>=3.3.0,<3.4.0"
 ]
 subtitles = [
   "aeidon>=1.15,<2.1"
@@ -125,6 +134,7 @@ toml = [
   "tomlkit>=0.13.0,<0.16.0"
 ]
 yaml = [
+  "babel>=2.18",
   "ruamel.yaml>=0.19.1,<0.20.0"
 ]
 
@@ -213,6 +223,7 @@ resx2po = "translate.convert.resx2po:main"
 sub2po = "translate.convert.sub2po:main"
 symb2po = "translate.convert.symb2po:main"
 tbx2po = "translate.convert.tbx2po:main"
+tbx2tmx = "translate.convert.tbx2tmx:main"
 template2translation = "translate.convert.pot2po:main"
 tiki2po = "translate.convert.tiki2po:main"
 toml2po = "translate.convert.toml2po:main"
@@ -257,7 +268,8 @@ ignore = [
   "translate/convert/roundtrip-gaia",  # TODO: investigate purpose, it was never installed
   "translate/convert/roundtrip-mozilla",  # TODO: investigate purpose, it was never installed
   "translate/convert/roundtrip-OOo",  # TODO: investigate purpose, it was never installed
-  "translate/storage/debug.properties"  # TODO: this should be converted to tests
+  "translate/storage/debug.properties",  # TODO: this should be converted to tests
+  "uv.lock"
 ]
 
 [tool.coverage.run]

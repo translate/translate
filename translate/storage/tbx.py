@@ -368,7 +368,7 @@ class tbxunit(lisa.MultilingualLISAunit):
             and super().isblank()
         )
 
-    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[incompatible-method-override]
         """Returns a langset xml Element setup with given parameters."""
         langset = etree.Element(self.namespaced(self.languageNode))
         setXMLlang(langset, lang)

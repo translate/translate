@@ -386,7 +386,7 @@ class FluentSelectorBranch:
         self._parent_node = parent_node
 
         self._child_nodes: list[FluentSelectorNode] = []
-        self._elements: list[FluentSelectorNode | ast.PatternElement] = []
+        self._elements: list[FluentSelectorNode | ast.TextElement | ast.Placeable] = []
         for element in pattern.elements:
             # If we have a select expression, we convert it into a
             # FluentSelectorNode. Otherwise we keep a copy of the raw
@@ -404,7 +404,7 @@ class FluentSelectorBranch:
 
     @staticmethod
     def _get_select_expression(
-        fluent_node: ast.PatternElement,
+        fluent_node: ast.PatternElement | ast.Expression,
     ) -> ast.SelectExpression | None:
         """
         Get the SelectExpression found below the given PatternElement
@@ -413,7 +413,7 @@ class FluentSelectorBranch:
         # A SelectExpression will be wrapped by at least on Placeable, but in
         # principle could be be wrapped by a longer series of Placeables.
         while isinstance(fluent_node, ast.Placeable):
-            fluent_node = fluent_node.expression  # ty:ignore[invalid-assignment]
+            fluent_node = fluent_node.expression
             if isinstance(fluent_node, ast.SelectExpression):
                 return fluent_node
         return None
@@ -489,7 +489,7 @@ class FluentSelectorBranch:
     def to_flat_pattern_elements(
         self,
         branches: list[FluentSelectorBranch],
-    ) -> Iterator[ast.PatternElement]:
+    ) -> Iterator[ast.TextElement | ast.Placeable]:
         """
         Extract a stream of PatternElements using the given branches.
 
@@ -540,7 +540,7 @@ class FluentSelectorBranch:
         :raise ValueError: If we reach a node that has no branch in the given
         list.
         """
-        pattern = ast.Pattern(list(self.to_flat_pattern_elements(branches)))  # ty:ignore[invalid-argument-type]
+        pattern = ast.Pattern(list(self.to_flat_pattern_elements(branches)))
         return _fluent_pattern_to_source(pattern)
 
     def branch_paths(self) -> Iterator[list[FluentSelectorBranch]]:
@@ -784,7 +784,7 @@ class FluentUnit(base.TranslationUnit):
 
         return f"gen-{hashlib.sha256(source.encode()).hexdigest()}"
 
-    def getid(self) -> str | None:  # ty:ignore[invalid-method-override]
+    def getid(self) -> str | None:  # ty:ignore[incompatible-method-override]
         return self._id
 
     # From fluent EBNF.
@@ -793,6 +793,15 @@ class FluentUnit(base.TranslationUnit):
         "Message": _FLUENT_ID_PATTERN,
         "Term": rf"-{_FLUENT_ID_PATTERN}",
     }
+
+    def validate_id(self, value: str) -> None:
+        """Validate an exact message or term ID; comments have no editable ID."""
+        super().validate_id(value)
+        regex = self._FLUENT_ID_REGEXES.get(self._fluent_type)
+        if regex is None or re.fullmatch(regex, value) is None:
+            raise ValueError(
+                f"Invalid id for a {self._fluent_type} FluentUnit: {value}"
+            )
 
     def setid(self, value: str | None) -> None:
         """
@@ -804,13 +813,17 @@ class FluentUnit(base.TranslationUnit):
         a "-".
         For a fluent Comment, GroupComment or ResourceComment, the id is unused.
         """
-        self._invalidate_store_indexes()
-        regex = self._FLUENT_ID_REGEXES.get(self._fluent_type, "")
-        if not re.fullmatch(regex, value or ""):
+        if self._is_comment and value in {None, ""}:
+            self._invalidate_store_indexes()
+            self._id = None
+            return
+        if value is None:
             raise ValueError(
                 f"Invalid id for a {self._fluent_type} FluentUnit: {value}"
             )
-        self._id = value or None
+        self.validate_id(value)
+        self._invalidate_store_indexes()
+        self._id = value
 
     def isheader(self) -> bool:
         return self._is_comment
@@ -984,7 +997,7 @@ class FluentUnit(base.TranslationUnit):
                 for annotation in entry.annotations:
                     # Convert the fluent error position into a line number and
                     # offset of the unit's source.
-                    offset = annotation.span.start  # ty:ignore[unresolved-attribute]
+                    offset = annotation.span.start  # ty:ignore[missing-union-attribute]
                     line = 0
                     for added, orig in source_lines:
                         if not orig:
@@ -1098,7 +1111,7 @@ class FluentFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile.read())
 
-    def parse(self, fluentsrc: bytes) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, fluentsrc: bytes) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         found_ids: set[str] = set()
         resource = parse(fluentsrc.decode("utf-8"))
         for entry in resource.body:
@@ -1124,14 +1137,14 @@ class FluentFile(base.TranslationStore):
             elif isinstance(entry, (ast.Term, ast.Message)):
                 unit = FluentUnit.new_from_entry(
                     entry,
-                    self._combine_comments(comment_prefix, entry.comment),  # ty:ignore[invalid-argument-type]
+                    self._combine_comments(comment_prefix, entry.comment),
                 )
                 unit_id = unit.getid()
                 assert unit_id is not None
                 if unit_id in found_ids:
                     raise ValueError(
                         f'Entry "{unit_id}" has the same id as a previous entry'
-                        f" [offset {entry.span.start}]"  # ty:ignore[unresolved-attribute]
+                        f" [offset {entry.span.start}]"  # ty:ignore[missing-union-attribute]
                     )
                 found_ids.add(unit_id)
 
@@ -1140,7 +1153,7 @@ class FluentFile(base.TranslationStore):
                     raise ValueError(
                         f'Entry "{unit_id}" assigns to the same '
                         f'"{dup_attr.id.name}" attribute more than once '
-                        f"[offset {dup_attr.span.start}]"  # ty:ignore[unresolved-attribute]
+                        f"[offset {dup_attr.span.start}]"  # ty:ignore[missing-union-attribute]
                     )
                 self.addunit(unit)
             else:
@@ -1153,17 +1166,17 @@ class FluentFile(base.TranslationStore):
         """Convert the given fluent Junk object into a ValueError."""
         error_message = [
             "Parsing error for fluent source: "
-            + junk.content.strip()[0:64].replace("\n", "\\n")  # ty:ignore[unresolved-attribute]
+            + junk.content.strip()[0:64].replace("\n", "\\n")  # ty:ignore[missing-union-attribute]
             + "[...]"
         ]
         error_message.extend(
-            f"{annotation.code}: {annotation.message} [offset {annotation.span.start}]"  # ty:ignore[unresolved-attribute]
+            f"{annotation.code}: {annotation.message} [offset {annotation.span.start}]"  # ty:ignore[missing-union-attribute]
             for annotation in junk.annotations
         )
         return ValueError("\n".join(error_message))
 
     @staticmethod
-    def _combine_comments(*comments: ast.BaseComment | str) -> str:
+    def _combine_comments(*comments: ast.BaseComment | str | None) -> str:
         """
         Combine the given string or fluent BaseComment objects into a single
         string.

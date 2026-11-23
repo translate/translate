@@ -138,7 +138,7 @@ class OmegaTFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Parsese the given file or file source string."""
         if hasattr(input, "name"):
             self.filename = input.name
@@ -183,5 +183,5 @@ class OmegaTFileTab(OmegaTFile):
     Extensions = ["tab"]
 
     @property
-    def encoding(self):  # ty:ignore[invalid-property-type-override]
+    def encoding(self):  # ty:ignore[incompatible-property-override]
         return locale.getlocale()[1]

@@ -113,7 +113,7 @@ class TestConvertCommand:
         print(help_lines)
 
         # summary documentation
-        convertsummary = self.convertmodule.__doc__.split("\n", maxsplit=1)[0]  # ty:ignore[unresolved-attribute]
+        convertsummary = self.convertmodule.__doc__.split("\n", maxsplit=1)[0]  # ty:ignore[missing-union-attribute]
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in " ".join(help_lines)
 
@@ -169,7 +169,7 @@ class TestArchiveConvertOptionParser:
 
             def openinputfile(self, subfile):
                 inputfile = BytesIO(b"content")
-                inputfile.filename = subfile  # ty:ignore[unresolved-attribute]
+                inputfile.filename = subfile  # ty:ignore[missing-attribute]
                 return inputfile
 
             def close(self) -> None:

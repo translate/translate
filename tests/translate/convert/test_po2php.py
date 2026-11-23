@@ -2,8 +2,8 @@ from io import BytesIO
 
 from pytest import raises
 
-from translate.convert import po2php
-from translate.storage import po
+from translate.convert import php2po, po2php
+from translate.storage import base, php, po
 
 from . import test_convert
 
@@ -14,7 +14,7 @@ class TestPO2Php:
         """Helper that converts po source to .php source without requiring files."""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        convertor = po2php.po2php()  # ty:ignore[unresolved-attribute]
+        convertor = po2php.po2php()  # ty:ignore[missing-attribute]
         return convertor.convertstore(inputpo)
 
     @staticmethod
@@ -28,6 +28,81 @@ class TestPO2Php:
         outputphp = convertor.convertstore().decode()
         print(outputphp)
         return outputphp
+
+    def test_variable_boundaries_survive_po_roundtrip(self) -> None:
+        cases = [
+            (
+                b'<?php\n$message = "Hello ${name}!";\n',
+                "Hello {$name}!",
+                b'$name . "!"',
+                b"$name",
+            ),
+            (
+                b"<?php\n$message = $name . 's';\n",
+                "{$name}s",
+                b"$name . 's'",
+                b"$name",
+            ),
+            (
+                b'<?php\n$message = "Price: $" . $amount;\n',
+                "Price: ${$amount}",
+                b'"Price: \\$" . $amount',
+                b"$amount",
+            ),
+            (
+                rb"<?php $message = 'Price: \$$' . $amount;",
+                r"Price: \$${$amount}",
+                rb"'Price: \\$$' . $amount",
+                b"$amount",
+            ),
+            (
+                b'<?php\n$message = "Hello " . $name . "?->";\n',
+                "Hello {$name}?->",
+                b'$name . "?->"',
+                b"$name",
+            ),
+            (
+                b"<?php\n$message = 'Config::' . $name;\n",
+                "Config::{$name}",
+                b"'Config::' . $name",
+                b"$name",
+            ),
+            (
+                b"<?php\n$message = $name . '::$property';\n",
+                "{$name}::$property",
+                b"$name . '::$property'",
+                b"$name",
+            ),
+            (
+                b"<?php\n$message = '$object->format($value) ' . $name;\n",
+                "$object->format($value) {$name}",
+                b"'$object->format($value) ' . $name",
+                b"$name",
+            ),
+        ]
+        for template, markup, expected, variable in cases:
+            po_output = BytesIO()
+            assert php2po.run_converter(BytesIO(template), po_output) == 1
+            store = po.pofile(BytesIO(po_output.getvalue()))
+            unit = next(unit for unit in store.units if unit.source == markup)
+
+            unit.target = unit.source
+            output = po2php.rephp(BytesIO(template), store).convertstore()
+            assert expected in output
+
+            unit.target = "Localized " + markup
+            output = po2php.rephp(BytesIO(template), store).convertstore()
+            assert b" . " + variable + b" . " in output
+            assert php.phpfile(BytesIO(output)).units[0].source == unit.target
+
+    def test_unsupported_template_value_prevents_conversion(self) -> None:
+        template = BytesIO(b"<?php return ['ok' => 'text', 'computed' => render()];")
+        output = BytesIO()
+        with raises(
+            base.ParseError, match=r"Unsupported PHP translation value.*computed"
+        ):
+            po2php.convertphp(BytesIO(), output, template)
+        assert output.getvalue() == b""
 
     def test_convertphp(self) -> None:
         """Test convertphp helper."""

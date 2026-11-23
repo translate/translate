@@ -73,3 +73,18 @@ def test_open_odf_requires_content_or_styles(tmp_path) -> None:
 
     with pytest.raises(KeyError, match=r"neither content\.xml nor styles\.xml"):
         odf_io.open_odf(archive)
+
+
+def test_open_odf_skips_reference_scan_without_embedded_documents(
+    tmp_path, monkeypatch
+) -> None:
+    archive = tmp_path / "plain.odt"
+    content = b"<document><paragraph>Text</paragraph></document>"
+    with ZipFile(archive, "w") as zip_file:
+        zip_file.writestr("content.xml", content)
+
+    def unexpected_parse(*_args, **_kwargs):
+        pytest.fail("plain ODF should not be parsed to order embedded documents")
+
+    monkeypatch.setattr(odf_io, "parse_xml", unexpected_parse)
+    assert odf_io.open_odf(archive) == {"content.xml": content}

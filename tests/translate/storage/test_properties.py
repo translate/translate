@@ -1,12 +1,37 @@
 import warnings
 from io import BytesIO
+from time import perf_counter
 
 from pytest import mark, raises
 
 from translate.misc.multistring import multistring
-from translate.storage import properties
+from translate.storage import base, jsonl10n, properties
 
 from . import test_monolingual
+
+XWIKI_LEGACY_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: https://www.fsf.org.
+-->
+
+"""
 
 # Note that DialectJava delimiters are ["=", ":", " "]
 
@@ -52,6 +77,14 @@ def test_find_delimiter_pos_escapes() -> None:
         "=",
         16,
     )
+
+
+@mark.parametrize("space", [" ", "\t", "\v", "\f", "\x1c", "\x85", "\u2003", "\u3000"])
+@mark.parametrize("ending", ["", "=value", ":value", " value"])
+def test_find_delimiter_many_escaped_spaces(space: str, ending: str) -> None:
+    key = ("key\\" + space) * 1000 + "last"
+    expected = (ending[0], len(key)) if ending else (None, -1)
+    assert properties.DialectJava.find_delimiter(key + ending) == expected
 
 
 def test_find_delimiter_pos_empty_and_whitespace() -> None:
@@ -124,6 +157,246 @@ def test_get_comment_end() -> None:
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
+    @mark.parametrize("personality", ["java", "java-utf8"])
+    def test_copy_preserves_personality_and_effective_encoding(
+        self, personality: str
+    ) -> None:
+        source = properties.propfile(
+            BytesIO("鍵=value\n".encode()), personality, "utf-8"
+        )
+        unit = source.units[0]
+        copied = properties.propunit.buildfromunit(unit)
+        assert copied.personality is unit.personality
+        assert copied.encoding == "utf-8"
+        copied.validate_id("鍵")
+        destination = properties.propfile(personality=personality, encoding="utf-8")
+        destination.addunit(copied)
+        reparsed = properties.propfile(
+            BytesIO(bytes(destination)), personality, "utf-8"
+        )
+        assert reparsed.units[0].getid() == "鍵"
+        assert reparsed.units[0].source == "value"
+
+    @mark.parametrize("encoding", [None, "utf-8"])
+    def test_id_uses_effective_store_encoding(self, encoding: str | None) -> None:
+        store = properties.propfile(encoding=encoding)
+        unit = properties.propunit("value", "java")
+        unit.setid("old")
+        store.addunit(unit)
+        before = bytes(store)
+        if encoding is None:
+            with raises(ValueError, match="encoding"):
+                unit.validate_id("鍵")
+            with raises(ValueError, match="encoding"):
+                unit.setid("鍵")
+            assert unit.getid() == "old"
+            assert bytes(store) == before
+        else:
+            unit.validate_id("鍵")
+            assert bytes(store) == before
+            unit.setid("鍵")
+            assert (
+                properties.propfile(BytesIO(bytes(store)), encoding=encoding)
+                .units[0]
+                .getid()
+                == "鍵"
+            )
+
+    def test_latin1_key_is_encodable(self) -> None:
+        unit = properties.propunit("value", "java")
+        unit.validate_id("étiquette")
+        unit.setid("étiquette")
+        assert (
+            properties.propfile(BytesIO(unit.getoutput().encode("latin-1")))
+            .units[0]
+            .getid()
+            == "étiquette"
+        )
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    def test_unquoted_strings_key_cannot_inject_entry(self, personality: str) -> None:
+        unit = properties.propunit("value", personality)
+        unit.setid("NSMenuDescription")
+        key = "NSFirst = attacker; NSSecondDescription"
+        with raises(ValueError, match="Property key"):
+            unit.validate_id(key)
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "NSMenuDescription"
+        assert unit.getoutput().startswith("NSMenuDescription = ")
+
+    def test_validate_id_is_read_only(self) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        unit.validate_id(r"new\=key")
+        with raises(ValueError, match="Property key"):
+            unit.validate_id("new\ninjected=1")
+        assert unit.getid() == "old"
+
+    def test_validate_id_handles_long_backslash_run(self) -> None:
+        unit = self.UnitClass("value")
+        start = perf_counter()
+        unit.validate_id("a" + "\\" * 100_000 + "end")
+        assert perf_counter() - start < 10
+
+    @mark.parametrize("key", [r"key\\", r"key\\\\"])
+    def test_unquoted_key_cannot_escape_output_delimiter(self, key: str) -> None:
+        store = properties.propfile()
+        unit = properties.propunit("value", "java")
+        unit.setid("old")
+        store.addunit(unit)
+        before = bytes(store)
+        with raises(ValueError, match="Property key"):
+            unit.validate_id(key)
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+        assert bytes(store) == before
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    def test_quoted_key_rejects_escaped_quote_injection(self, personality: str) -> None:
+        unit = properties.propunit("value", personality)
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid('x\\" = attacker; victim = hacked; // ')
+        assert unit.getid() == "old"
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    def test_quoted_key_accepts_literal_tab(self, personality: str) -> None:
+        key = "tab\tkey"
+        unit = properties.propunit("value", personality)
+        unit.validate_id(key)
+        unit.setid(key)
+        assert unit.getid() == key
+        output = unit.getoutput()
+        assert output.startswith(f'"{key}"')
+        store = properties.propfile(BytesIO(output.encode()), personality, "utf-8")
+        assert store.units[0].getid() == key
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    @mark.parametrize("slashes", [2, 4])
+    def test_quoted_key_ending_in_backslashes_round_trips(
+        self, personality: str, slashes: int
+    ) -> None:
+        key = "key" + "\\" * slashes
+        unit = properties.propunit("value", personality)
+        unit.setid("old")
+        unit.validate_id(key)
+        assert unit.getid() == "old"
+        unit.setid(key)
+        output = unit.getoutput().encode()
+        parsed = properties.propfile(BytesIO(output), personality, "utf-8")
+        assert parsed.units[0].getid() == key
+        assert parsed.units[0].source == "value"
+
+    @mark.parametrize("personality", ["strings", "strings-utf8"])
+    @mark.parametrize("key", ["NSFirst Description", "NSFirst\tDescription"])
+    def test_unquoted_strings_key_rejects_non_token_characters(
+        self, personality: str, key: str
+    ) -> None:
+        unit = properties.propunit("value", personality)
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    @mark.parametrize("key", [r"key\\=attacker", r"key\\:attacker", r"key\\ attacker"])
+    def test_unquoted_key_rejects_even_backslashes_before_delimiter(
+        self, key: str
+    ) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    @mark.parametrize("key", [r"key\uZZZZ", r"key\u123", r"key\uu1234"])
+    def test_setid_rejects_malformed_java_unicode_escape(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    @mark.parametrize("key", [r"key\u0041", r"key\\uZZZZ"])
+    def test_setid_accepts_valid_or_inert_java_unicode_escape(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid(key)
+        assert unit.getid() == key
+
+    @mark.parametrize("key", [r"key\u0041", r"key\=part", r"key\\uZZZZ"])
+    def test_java_serialized_key_spelling_round_trips(self, key: str) -> None:
+        unit = properties.propunit("value", "java")
+        unit.setid("old")
+        unit.validate_id(key)
+        assert unit.getid() == "old"
+        unit.setid(key)
+        parsed = properties.propfile(BytesIO(unit.getoutput().encode()), "java")
+        assert parsed.units[0].getid() == key
+
+    @mark.parametrize(
+        "key", ["123_NAME", "étiquette", "_PRIVATE", "COM:LABEL", "USER@DOMAIN"]
+    )
+    def test_joomla_valid_key_round_trips(self, key: str) -> None:
+        unit = properties.propunit("value", "joomla")
+        unit.validate_id(key)
+        unit.setid(key)
+        parsed = properties.propfile(BytesIO(unit.getoutput().encode()), "joomla")
+        assert parsed.units[0].getid() == key
+
+    @mark.parametrize(
+        "key",
+        [
+            "[section]victim",
+            "[section]",
+            "COM EXAMPLE",
+            "KEY?",
+            "KEY|OTHER",
+            "TRUE",
+            "COM_$LABEL",
+        ],
+    )
+    def test_joomla_key_rejects_ini_structure(self, key: str) -> None:
+        unit = properties.propunit("value", "joomla")
+        unit.setid("COM_EXAMPLE")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "COM_EXAMPLE"
+
+    @mark.parametrize("personality", ["java", "gwt", "strings"])
+    @mark.parametrize("key", ["old\ninjected=1", "old\rinjected=1", "old\\"])
+    def test_setid_rejects_line_injection(self, personality: str, key: str) -> None:
+        unit = properties.propunit("value", personality)
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    @mark.parametrize("key", ["#old", "old=x", "old x", " old"])
+    def test_setid_rejects_changed_key(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        with raises(ValueError, match="Property key"):
+            unit.setid(key)
+        assert unit.getid() == "old"
+
+    def test_setid_accepts_escaped_delimiter(self) -> None:
+        unit = self.UnitClass("value")
+        unit.setid(r"old\=new")
+        assert unit.getid() == r"old\=new"
+
+    def test_plural_setid_rejects_without_changing_variants(self) -> None:
+        plural = properties.proppluralunit(None, "gwt")
+        plural.name = "old"
+        other = properties.propunit("other", "gwt")
+        other.name = "old"
+        one = properties.propunit("one", "gwt")
+        one.name = "old[one]"
+        plural.units = {"other": other, "one": one}
+        with raises(ValueError, match="Property key"):
+            plural.setid("old\ninjected=1")
+        assert (plural.name, other.name, one.name) == ("old", "old", "old[one]")
+
     def test_rich_get(self) -> None:
         pass
 
@@ -133,6 +406,35 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 
 class TestGwtProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.gwtfile
+
+    def test_moved_plural_uses_destination_encoding(self) -> None:
+        source = self.propparse("old=other\nold[one]=one\n", encoding="iso-8859-1")
+        unit = source.units[0]
+        destination = properties.gwtfile()
+        destination.addunit(unit)
+        before = bytes(destination)
+        unit.validate_id("鍵")
+        assert bytes(destination) == before
+        unit.setid("鍵")
+        reparsed = self.propparse(bytes(destination).decode())
+        assert reparsed.units[0].getid() == "鍵"
+        assert reparsed.units[0].units["other"].source == "other"
+        assert reparsed.units[0].units["one"].source == "one"
+
+    @mark.parametrize("invalid", ["", "new[one]", "new[foo]"])
+    def test_plural_id_rejects_variant_reinterpretation(self, invalid: str) -> None:
+        store = self.propparse("old=other\nold[one]=one\n")
+        unit = store.units[0]
+        before = bytes(store)
+        with raises(ValueError, match="plural"):
+            unit.validate_id(invalid)
+        with raises(ValueError, match="plural"):
+            unit.setid(invalid)
+        assert unit.getid() == "old"
+        assert bytes(store) == before
+        unit.validate_id("new")
+        unit.setid("new")
+        assert self.propparse(bytes(store).decode()).units[0].getid() == "new"
 
     @staticmethod
     def propparse(
@@ -200,6 +502,126 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         propregen = self.propregen(propsource).decode()
         assert f"{propsource}\n" == propregen
 
+    def test_positional_edit_preserves_sparse_variants(self) -> None:
+        store = self.propparse(
+            "k=base\nk[many]=fraction\nk[one]=one\n", targetlanguage="cs"
+        )
+        unit = store.units[0]
+        unit.update_plural_forms({"one": ""})
+        before = bytes(store)
+        unit.rich_target = unit.rich_target
+        assert bytes(store) == before
+        unit.target = multistring(["", "", "edited"])
+        expected = {"one": "", "many": "fraction", "other": "edited"}
+        assert unit.plural_forms == expected
+        assert self.propparse(bytes(store).decode()).units[0].plural_forms == expected
+
+    def test_merge_foreign_plural_categories(self) -> None:
+        store = self.propparse(
+            "k=base\nk[many]=fraction\nk[one]=one\n", targetlanguage="cs"
+        )
+        unit = store.units[0]
+        donor = jsonl10n.I18NextV4File()
+        donor.settargetlanguage("cs")
+        donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+        unit.merge(donor.units[0], overwrite=True)
+        assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+        assert (
+            self.propparse(bytes(store).decode()).units[0].plural_forms
+            == unit.plural_forms
+        )
+
+    def test_foreign_scalar_merge(self) -> None:
+        store = self.propparse("k=rest\nk[one]=one\n", targetlanguage="en")
+        unit = store.units[0]
+        donor = base.TranslationUnit()
+        donor.target = "replacement"
+        store.settargetlanguage("cs")
+        unit.merge(donor, overwrite=True)
+        assert unit.plural_forms["other"] == "replacement"
+        unit.rich_target = unit.rich_target
+        assert unit.plural_forms["other"] == "replacement"
+
+    def test_named_edit_refreshes_rich_source(self) -> None:
+        store = self.propparse("k=base\nk[many]=fraction\n")
+        unit = store.units[0]
+        assert len(unit.rich_source) == 2
+        unit.update_plural_forms({"one": "single"})
+        before = bytes(store)
+        assert len(unit.rich_source) == 3
+        unit.rich_source = unit.rich_source
+        assert bytes(store) == before
+
+    def test_scalar_writeback_after_clearing_default(self) -> None:
+        store = self.propparse("k=base\nk[one]=one\n", targetlanguage="ja")
+        unit = store.units[0]
+        unit.update_plural_forms({"other": ""})
+        unit.target = unit.target
+        assert b"k=\n" in bytes(store)
+
+    def test_detached_variant_inherits_encoding(self) -> None:
+        store = self.propparse("k=base\nk[one]=one\n", encoding="iso-8859-1")
+        unit = store.units[0].copy()
+        unit.update_plural_forms({"few": "漢"})
+        dest = self.propparse("", encoding="iso-8859-1")
+        dest.addunit(unit)
+        assert b"k[few]=\\u6f22" in bytes(dest).lower()
+
+    def test_edit_detached_default(self) -> None:
+        store = self.propparse("k=base\nk[one]=one\n", targetlanguage="en")
+        unit = store.units[0].copy()
+        unit.target = ["default"]
+        assert unit.plural_forms == {"one": "one", "other": "default"}
+
+    def test_merge_targets_matching_source(self) -> None:
+        store = self.propparse("k=base\nk[one]=one\n", targetlanguage="en")
+        unit = store.units[0]
+        donor = unit.copy()
+        donor.target = ["one", "base"]
+        assert not unit.istranslated()
+        assert not any(map(str, unit.rich_target))
+        unit.merge(donor)
+        assert unit.istranslated()
+        unit.rich_target = unit.rich_target
+        assert unit.target.strings == ["one", "base"]
+        unit.target = {"one": ""}
+        assert b"k[one]=\n" in bytes(store)
+
+    def test_copy_and_merge_named_variants(self) -> None:
+        store = self.propparse(
+            "k=base\nk[many]=fraction\nk[one]=one\n", targetlanguage="en"
+        )
+        unit = store.units[0]
+        unit.update_plural_forms({"one": ""})
+        clone = unit.buildfromunit(unit)
+        destination = self.propparse("", targetlanguage="en")
+        destination.addunit(clone)
+        assert bytes(destination) == bytes(store)
+        clone.update_plural_forms({"many": "new fraction"})
+        assert clone != unit
+        assert unit.plural_forms["many"] == "fraction"
+        unit.merge(clone, overwrite=True)
+        assert unit.plural_forms == clone.plural_forms
+
+    def test_named_forms(self) -> None:
+        original = "k=base\nk[many]=fraction\nk[one]=one\n"
+        store = self.propparse(original, targetlanguage="en")
+        unit = store.units[0]
+        assert unit.plural_forms == {"other": "base", "many": "fraction", "one": "one"}
+        assert bytes(store).decode() == original
+        unit.update_plural_forms({"one": "", "few": "few", "many": None})
+        reparsed = self.propparse(bytes(store).decode())
+        assert reparsed.units[0].plural_forms == {
+            "other": "base",
+            "one": "",
+            "few": "few",
+        }
+        with raises(ValueError):
+            unit.plural_forms = {"other": "base"}
+        assert (
+            self.propparse(original, personality="xwiki").units[0].plural_forms is None
+        )
+
     def test_reduce(self) -> None:
         """Checks that if the target language has less plural form the generated properties file is correct."""
         propsource = "test_me=I can code!\ntest_me[one]=I can code single!"
@@ -208,7 +630,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         )  # Only "other" plural form
         print(propfile)
         print(str(propfile))
-        assert (bytes(propfile)) == b"test_me=I can code!\n"
+        assert bytes(propfile).decode() == propsource + "\n"
 
     def test_increase(self) -> None:
         """Checks that if the target language has more plural form the generated properties file is correct."""
@@ -221,11 +643,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
 
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ["", "", "", "", "", ""]
-        assert (
-            (bytes(propfile))
-            == b"test_me=I can code!\ntest_me[none]=\ntest_me[one]=I can code single!\n"
-            b"test_me[two]=\ntest_me[few]=\ntest_me[many]=\n"
-        )
+        assert bytes(propfile).decode() == propsource + "\n"
 
         propunit.target = {
             "other": "other",
@@ -368,11 +786,11 @@ userItems.test[one]=One item can be added.
 
         assert (
             bytes(propfile).decode()
-            == """userItems.limit=Only many {0} items can be added.
+            == """userItems.limit=Only X items can be added.
 userItems.limit[one]=Only one item can be added.
 userItems.limit[few]=Only {0} items can be added.
 userItems.limit[many]=Only many {0} items can be added.
-userItems.test=Only many {0} items can be added.
+userItems.test={0} items can be added.
 userItems.test[one]=Only one item can be added.
 userItems.test[few]=Only {0} items can be added.
 userItems.test[many]=Only many {0} items can be added.
@@ -807,6 +1225,16 @@ key=value
         assert propunit.source == "value"
         assert propunit.comments == ["/* unterminated comment"]
         assert propunit.getnotes() == "unterminated comment"
+
+    def test_mac_strings_inline_comment_with_escaped_quote(self) -> None:
+        """Test that an escaped quote does not hide a later inline comment."""
+        line = r'"key" = "say \"hi\" /* kept */"; /* note */'
+        stripped, comments = properties.DialectStrings.strip_inline_comments_from_line(
+            line
+        )
+
+        assert stripped == r'"key" = "say \"hi\" /* kept */";'
+        assert comments == ["/* note */"]
 
     def test_mac_strings_comment_before_entry(self) -> None:
         """Test .strings comment before entry - parsing and round-trip."""
@@ -1462,7 +1890,7 @@ job.log.label=Job log
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
-    FILE_SCHEME = f'{properties.XWikiPageProperties.XML_HEADER}<xwikidoc locale="%(language)s">\n    <translation>1</translation>\n    <language>%(language)s</language>\n    <title/>\n    <content>%(content)s</content>\n</xwikidoc>'
+    FILE_SCHEME = f'{XWIKI_LEGACY_HEADER}<xwikidoc locale="%(language)s">\n    <translation>1</translation>\n    <language>%(language)s</language>\n    <title/>\n    <content>%(content)s</content>\n</xwikidoc>'
 
     def getcontent(self, content, language="en"):
         return self.FILE_SCHEME % {"content": f"{content}\n", "language": language}
@@ -1582,7 +2010,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1657,7 +2085,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1694,7 +2122,7 @@ test_me=Je peux coder !
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1769,7 +2197,7 @@ test_me=Je peux coder !
         propunit.target = "I can change the translation source"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
+        expected_xml = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1845,7 +2273,7 @@ test_me=I can change the translation source
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
-    FILE_SCHEME = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc locale="%(language)s">
+    FILE_SCHEME = f"""{XWIKI_LEGACY_HEADER}<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title>%(title)s</title>
@@ -2002,7 +2430,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -2100,7 +2528,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
 
-        expected_xml = f"""{properties.XWikiPageProperties.XML_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = f"""{XWIKI_LEGACY_HEADER}<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -2130,3 +2558,92 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     @mark.xfail(reason="removal not working in full page")
     def test_remove(self) -> None:
         super().test_remove()
+
+
+@mark.parametrize(
+    "store_class", [properties.XWikiPageProperties, properties.XWikiFullPage]
+)
+@mark.parametrize(
+    "prolog",
+    [
+        b"",
+        b"\xef\xbb\xbf",
+        b"<?xml version='1.0' encoding='UTF-8'?>\n",
+        b'<?xml version="1.1" encoding="UTF-8"?>\r\n\r\n<!-- Custom license -->\r\n',
+        b'<?xml version="1.0"?>\n<?project test?>\n<!-- <xwikidoc/> -->\n\n',
+        XWIKI_LEGACY_HEADER.encode(),
+    ],
+)
+@mark.parametrize("target_language", ["en", "fr"])
+def test_xwiki_preserves_prolog(store_class, prolog, target_language) -> None:
+    document = (
+        b'<xwikidoc reference="Example.Translations"><translation>0</translation>'
+        b"<language/><defaultLanguage>en</defaultLanguage><title>Example</title>"
+        b"<content>hello=Hello</content><object/><attachment/></xwikidoc>"
+    )
+    store = store_class(BytesIO(prolog + document))
+    store.settargetlanguage(target_language)
+    key = "hello" if store_class is properties.XWikiPageProperties else "content"
+    store.findid(key).target = "Bonjour"
+    for _ in range(2):
+        result = bytes(store)
+        assert result.startswith(prolog + b"<xwikidoc reference=")
+        assert b"Bonjour" in result
+        assert b'reference="Example.Translations"' in result
+        if target_language == "fr":
+            assert b'locale="fr"' in result
+            assert b"<translation>1</translation>" in result
+            assert b"<object" not in result
+            assert b"<attachment" not in result
+        else:
+            assert b"<translation>0</translation>" in result
+            assert b"<object" in result
+            assert b"<attachment" in result
+        store = store_class(BytesIO(result))
+        store.settargetlanguage(target_language)
+
+
+@mark.parametrize(
+    "store_class", [properties.XWikiPageProperties, properties.XWikiFullPage]
+)
+def test_xwiki_resets_prolog(store_class) -> None:
+    document = b"<xwikidoc><translation>0</translation><language/><title/><content/></xwikidoc>"
+    store = store_class(BytesIO(b"<!-- Old license -->\n" + document))
+    store.parse(document)
+    assert bytes(store).startswith(b"<xwikidoc")
+    store.parse(b"\n")
+    assert bytes(store).startswith(store.XML_HEADER.encode() + b"<xwikidoc")
+    assert b"Old license" not in bytes(store)
+
+
+@mark.parametrize(
+    "store_class", [properties.XWikiPageProperties, properties.XWikiFullPage]
+)
+def test_xwiki_new_store_has_no_license(store_class) -> None:
+    result = bytes(store_class())
+    assert result.startswith(b'<?xml version="1.1" encoding="UTF-8"?>\n<xwikidoc>')
+    assert b"<!--" not in result
+    assert b"GNU Lesser General Public License" not in result
+
+
+@mark.parametrize(
+    "store_class", [properties.XWikiPageProperties, properties.XWikiFullPage]
+)
+@mark.parametrize("encoding", ["ISO-8859-1", "UTF-16", "UTF-16BE", "UTF-16LE"])
+def test_xwiki_preserves_xml_encoding(store_class, encoding) -> None:
+    prolog = f'<?xml version="1.0" encoding="{encoding}"?>\n<!-- Café -->\n'.encode(
+        encoding
+    )
+    document = (
+        f'<?xml version="1.0" encoding="{encoding}"?>\n<!-- Café -->\n'
+        "<xwikidoc><translation>0</translation><language/>"
+        "<title>Café</title><content>hello=Café</content></xwikidoc>"
+    ).encode(encoding)
+    store = store_class(BytesIO(document))
+    key = "hello" if store_class is properties.XWikiPageProperties else "content"
+    store.findid(key).target = "Crème ☕"
+    result = bytes(store)
+    assert result.startswith(prolog)
+    # Reparse the actual output to verify the declaration matches the body.
+    reloaded = store_class(BytesIO(result))
+    assert "Crème ☕" in reloaded.findid(key).source

@@ -683,6 +683,50 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert newxfile.getfilenode("file1") is not None
         assert not newxfile.getfilenode("foo")
 
+    def test_file_prefixed_id_validation_and_round_trip(self) -> None:
+        source = b"""<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1"><file original="file0" source-language="en" datatype="plaintext"><body><trans-unit id="old"><source>Value</source></trans-unit></body></file></xliff>"""
+        store = self.StoreClass.parsestring(source)
+        unit = store.units[0]
+        unit.validate_id("file0\x04new")
+        assert unit.getid() == "file0\x04old"
+        for invalid in (
+            "new",
+            "file1\x04new",
+            "file0\x04bad\x00id",
+            "file0\x04__%04__",
+        ):
+            with pytest.raises(ValueError):
+                unit.validate_id(invalid)
+            assert unit.getid() == "file0\x04old"
+        unit.setid("file0\x04new")
+        assert (
+            self.StoreClass.parsestring(bytes(store)).units[0].getid() == "file0\x04new"
+        )
+
+    def test_local_composite_id_reopens(self) -> None:
+        source = b"""<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1"><file original="file0" source-language="en" datatype="plaintext"><body><trans-unit id="context__%04__message"><source>Value</source></trans-unit></body></file></xliff>"""
+        store = self.StoreClass.parsestring(source)
+        unit = store.units[0]
+        assert unit.getid() == "file0\x04context\x04message"
+        unit.validate_id(unit.getid())
+        assert (
+            self.StoreClass.parsestring(bytes(store)).units[0].getid() == unit.getid()
+        )
+
+    def test_local_id_matching_file_prefix_is_not_stripped_twice(self) -> None:
+        source = b"""<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1"><file original="file0" source-language="en" datatype="plaintext"><body><trans-unit id="file0__%04__message"><source>Value</source></trans-unit></body></file></xliff>"""
+        store = self.StoreClass.parsestring(source)
+        unit = store.units[0]
+        key = "file0\x04file0\x04message"
+        assert unit.getid() == key
+        assert unit.xmlelement.get("id") == "file0__%04__message"
+        before = bytes(store)
+        unit.validate_id(key)
+        assert bytes(store) == before
+        unit.setid(key)
+        assert bytes(store) == before
+        assert self.StoreClass.parsestring(bytes(store)).units[0].getid() == key
+
     def test_preserve_groups_when_adding_units(self) -> None:
         """Test that groups are preserved when adding units from one store to another."""
         source_xliff = b"""<?xml version="1.0" encoding="utf-8"?>

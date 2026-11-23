@@ -82,6 +82,7 @@ from typing import (
     Generic,
     Never,
     NotRequired,
+    Self,
     TextIO,
     TypedDict,
     TypeVar,
@@ -133,8 +134,8 @@ class BaseJsonUnit(base.DictUnit):
     def setid(self, value, unitid=None) -> None:
         self._invalidate_store_indexes()
         super().setid(value, unitid)
-        self.get_unitid()
-        self._item = self._unitid.parts[-1][1]  # ty:ignore[unresolved-attribute]
+        unitid = self.get_unitid()
+        self._item = unitid.parts[-1][1]
 
     def getid(self):
         return self._id
@@ -423,7 +424,7 @@ class I18NextUnit(JsonNestedUnit):
         if not isinstance(self.target, multistring):
             super().storevalues(output)
         else:
-            plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+            plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
             if len(self.target.strings) > len(plural_tags):
                 self.target.extra_strings = self.target.extra_strings[
                     : len(plural_tags) - 1
@@ -501,12 +502,37 @@ class I18NextFile(JsonNestedFile):
             )
 
 
-class I18NextV4Unit(I18NextUnit):
+class I18NextV4Unit(base.NamedPluralUnit, I18NextUnit):
     """
     A i18next v4 format, JSON with plurals.
 
     See https://www.i18next.com/
     """
+
+    @classmethod
+    def from_plural_forms(
+        cls, forms: dict[str, str], tags: list[str], name: str
+    ) -> Self:
+        unit = cls(multistring([forms.get(tag, "") for tag in tags]), name)
+        unit.set_plural_projection(forms, tags)
+        return unit
+
+    def istranslatable(self) -> bool:
+        return self._has_target_text()
+
+    def isblank(self) -> bool:
+        return not self._has_target_text()
+
+    def storevalues(self, output) -> None:
+        forms = self._get_plural_forms()
+        if forms is None:
+            super().storevalues(output)
+            return
+        base_name = (
+            self._get_base_name() if isinstance(self._item, list) else self._item
+        )
+        for tag, value in forms.items():
+            self.storevalue(output, value, override_key=f"{base_name}_{tag}")
 
     @staticmethod
     def _is_valid_suffix(suffix: str) -> bool:
@@ -514,7 +540,7 @@ class I18NextV4Unit(I18NextUnit):
 
     def _get_plural_labels(self, count):
         base_name = self._get_base_name()
-        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
         return [f"{base_name}_{plural_tags[i]}" for i in range(count)]
 
 
@@ -526,6 +552,31 @@ class I18NextV4File(JsonNestedFile):
     """
 
     UnitClass = I18NextV4Unit
+
+    def addunit(self, unit) -> None:
+        if isinstance(unit, I18NextV4Unit):
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
+
+    def serialize_units(self, output) -> None:
+        super().serialize_units(output)
+        self._restore_key_order(output, self._file)
+
+    @classmethod
+    def _restore_key_order(cls, output, original) -> None:
+        """Keep interleaved plural groups and ordinary keys in document order."""
+        if isinstance(output, dict) and isinstance(original, dict):
+            existing = [key for key in original if key in output]
+            if existing != [key for key in output if key in original]:
+                ordered = {key: output[key] for key in existing}
+                ordered.update(output)
+                output.clear()
+                output.update(ordered)
+            for key in existing:
+                cls._restore_key_order(output[key], original[key])
+        elif isinstance(output, list) and isinstance(original, list):
+            for value, previous in zip(output, original, strict=False):
+                cls._restore_key_order(value, previous)
 
     def _extract_units(
         self,
@@ -542,7 +593,7 @@ class I18NextV4File(JsonNestedFile):
         if plural_tags is None:
             plural_tags = self.get_plural_tags()
         if isinstance(data, dict):
-            valid_plural_bases = set()
+            groups = defaultdict(dict)
             invalid_plural_bases = set()
             for key, value in data.items():
                 if "_" not in key:
@@ -551,10 +602,10 @@ class I18NextV4File(JsonNestedFile):
                 if suffix not in cldr_plural_categories:
                     continue
                 if isinstance(value, str):
-                    valid_plural_bases.add(plural_base)
+                    groups[plural_base][suffix] = value
                 else:
                     invalid_plural_bases.add(plural_base)
-            valid_plural_bases.difference_update(invalid_plural_bases)
+            valid_plural_bases = groups.keys() - invalid_plural_bases
 
             processed_plural_bases = set()
 
@@ -572,12 +623,10 @@ class I18NextV4File(JsonNestedFile):
                     if plural_base in processed_plural_bases:
                         continue
                     processed_plural_bases.add(plural_base)
-                    items = [f"{plural_base}_{suffix}" for suffix in plural_tags]
-                    sources = [data.get(key, "") for key in items]
-
-                    unit = self.UnitClass(multistring(sources), items)
-                    newid = prev.extend("key", plural_base)
-                    unit.set_unitid(newid)
+                    unit = self.UnitClass.from_plural_forms(
+                        groups[plural_base], plural_tags, plural_base
+                    )
+                    unit.set_unitid(prev.extend("key", plural_base))
                     yield unit
                     continue
 
@@ -624,9 +673,10 @@ class GoTextUnitId(base.UnitId):
         return cls(text)
 
 
-class GoTextJsonUnit(BaseJsonUnit):
+class GoTextJsonUnit(base.NamedPluralUnit, BaseJsonUnit):
     ID_FORMAT = "{}"
     IdClass = GoTextUnitId
+    _translation_template: dict | None = None
 
     def __init__(
         self,
@@ -650,22 +700,104 @@ class GoTextJsonUnit(BaseJsonUnit):
         self.fuzzy = fuzzy
         self.position = position
 
-    def getvalue(self):
+    rich_source = base.TranslationUnit.rich_target
+
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
+        if not isinstance(otherunit, GoTextJsonUnit):
+            super().merge(otherunit, overwrite, comments, authoritative)
+            return
+        if not overwrite and self._has_target_text():
+            return
+        # The selector argument, exact cases and case metadata are part of the
+        # translation. Keep the receiving message's ID and outer metadata.
+        donor = otherunit.copy()
+        if self._store is not None:
+            donor.bind_plural_projection(self._store)
+        self._target = donor.target
+        self._forms = donor._forms
+        self._projection = donor._projection
+        self._projection_language = self._receiver_projection_language(
+            donor._projection_language
+        )
+        self._translation_template = donor._translation_template
+        self._rich_source = self._rich_target = None
+        self._invalidate_store_indexes()
+
+    def bind_plural_projection(self, store) -> None:
+        if (
+            self._translation_template is None
+            or self._translation_template.get("select", {}).get("feature") == "plural"
+            or self._projection
+        ):
+            super().bind_plural_projection(store)
+
+    @base.NamedPluralUnit.target.setter
+    def target(self, target) -> None:
+        # Exact-only selectors have no positional categories. Writing their
+        # empty positional view back must preserve the retained cases.
+        if (
+            self._translation_template is not None
+            and not self._projection
+            and isinstance(target, multistring)
+            and target == self._target
+        ):
+            return
+        base.NamedPluralUnit.target.fset(self, target)
+
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        if (
+            self._translation_template is not None
+            and self._translation_template.get("select", {}).get("feature") != "plural"
+        ):
+            return None
+        return super()._get_plural_forms()
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        if not forms and self._get_plural_forms() == {}:
+            return
+        super()._replace_plural_forms(forms)
+
+    def __eq__(self, other):
+        return super().__eq__(other) and (
+            not isinstance(other, GoTextJsonUnit)
+            or self._translation() == other._translation()
+        )
+
+    __hash__ = base.TranslationUnit.__hash__
+
+    def _has_target_text(self) -> bool:
+        if super()._has_target_text():
+            return True
+        translation = self._translation()
+        if not isinstance(translation, dict):
+            return False
+        return any(
+            case.get("msg") if isinstance(case, dict) else case
+            for case in translation.get("select", {}).get("cases", {}).values()
+        )
+
+    def _translation(self):
         target = self.target
-        if isinstance(target, multistring):
-            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[unresolved-attribute]
-            strings = self.sync_plural_count(target, plural_tags)
-            target = {
-                "select": {
-                    "feature": "plural",
-                }
-            }
-            if self.placeholders:
-                target["select"]["arg"] = self.placeholders[0]["id"]
-            target["select"]["cases"] = {
-                plural: {"msg": strings[offset]}
-                for offset, plural in enumerate(plural_tags)
-            }  # ty:ignore[invalid-assignment]
+        forms = self._get_plural_forms()
+        if forms is not None:
+            template = self._translation_template or {}
+            selector = dict(template.get("select", {"feature": "plural"}))
+            if not template and self.placeholders:
+                selector["arg"] = self.placeholders[0]["id"]
+            cases = dict(selector.get("cases", {}))
+            for key in (cases.keys() & set(cldr_plural_categories)) - forms.keys():
+                del cases[key]
+            for key, text in forms.items():
+                case = cases.get(key, {})
+                cases[key] = {**case, "msg": text} if isinstance(case, dict) else text
+            target = {**template, "select": {**selector, "cases": cases}}
+        elif isinstance(target, multistring) and self._translation_template is not None:
+            target = self._translation_template
+        return target
+
+    def getvalue(self):
         value = {"id": self._unitid.parts if self._unitid else self.getid()}
         if self.message:
             value["message"] = self.message
@@ -679,7 +811,7 @@ class GoTextJsonUnit(BaseJsonUnit):
             value["fuzzy"] = self.fuzzy
         if self.position:
             value["position"] = self.position
-        value["translation"] = target
+        value["translation"] = self._translation()
         if self.placeholders:
             value["placeholders"] = self.placeholders
         return value
@@ -703,6 +835,11 @@ class GoTextJsonFile(JsonFile):
     """
 
     UnitClass = GoTextJsonUnit
+
+    def addunit(self, unit) -> None:
+        if isinstance(unit, GoTextJsonUnit):
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
 
     def _extract_units(
         self,
@@ -745,14 +882,13 @@ class GoTextJsonFile(JsonFile):
                     raise base.ParseError(
                         f"gotext translation cases do not contain object: {cases!r}"
                     )
-                # Ordered list of plurals
-                translation = multistring(
-                    [
-                        _get_msg(cases, key)
-                        for key in cldr_plural_categories
-                        if key in cases
-                    ]
-                )
+                forms = {
+                    key: _get_msg(cases, key)
+                    for key in cases
+                    if key in cldr_plural_categories
+                }
+                tags = [key for key in cldr_plural_categories if key in forms]
+                translation = multistring([forms[key] for key in tags] or [""])
             elif translation is not None and not isinstance(translation, (str, int)):
                 raise base.ParseError(
                     f"gotext translation does not contain string: {translation!r}"
@@ -769,6 +905,12 @@ class GoTextJsonFile(JsonFile):
                 fuzzy=value.get("fuzzy", None),
                 position=value.get("position", None),
             )
+            if isinstance(translation, multistring):
+                unit._translation_template = value["translation"]
+                if tags or select.get("feature") == "plural":
+                    # Keep a default positional slot for exact-only selectors.
+                    # An empty explicit mapping emits no category cases.
+                    unit.set_plural_projection(forms, tags or ("other",))
             unit.setid(value.get("id", ""))
             yield unit
 
@@ -782,17 +924,37 @@ class GoTextJsonFile(JsonFile):
         out.write(b"\n")
 
 
-class GoI18NJsonUnit(FlatJsonUnit):
-    ID_FORMAT = "{}"
+class _GoI18NJsonUnit(base.NamedPluralUnit, FlatJsonUnit):
+    """Shared support for promoting scalar Go-i18n messages to named forms."""
 
+    ID_FORMAT = "{}"
+    _plural_fields: dict | None = None
+
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
+        forms = otherunit._plural_forms_for_merge()
+        if (
+            forms
+            and self.plural_forms is None
+            and (overwrite or not self._has_target_text())
+        ):
+            tags = tuple(tag for tag in cldr_plural_categories if tag in forms)
+            if tags:
+                self.set_plural_projection({tag: forms[tag] for tag in tags}, tags)
+                self._projection_language = self._receiver_projection_language(
+                    self._projection_language
+                )
+                return
+        super().merge(otherunit, overwrite, comments, authoritative)
+
+
+class GoI18NJsonUnit(_GoI18NJsonUnit):
     def getvalue(self):
-        target = self.target
-        if isinstance(target, multistring):
-            plural_tags = self._store.get_plural_tags(target)  # ty:ignore[unresolved-attribute]
-            strings = self.sync_plural_count(target, plural_tags)
-            target = {
-                plural: strings[offset] for offset, plural in enumerate(plural_tags)
-            }
+        forms = self._get_plural_forms()
+        target = (
+            self.target if forms is None else {**(self._plural_fields or {}), **forms}
+        )
         value = {"id": self.getid()}
         if self.notes:
             value["description"] = self.notes
@@ -812,6 +974,11 @@ class GoI18NJsonFile(JsonFile):
 
     UnitClass = GoI18NJsonUnit
 
+    def addunit(self, unit) -> None:
+        if isinstance(unit, GoI18NJsonUnit):
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
+
     def _extract_units(
         self,
         data,
@@ -830,20 +997,15 @@ class GoI18NJsonFile(JsonFile):
             translation = value.get("translation", "")
             if isinstance(translation, dict):
                 # Ordered list of plurals
-                try:
-                    translation = multistring(
-                        [
-                            require_json_string(
-                                translation.get(key), f"Key {item!r} plural {key!r}"
-                            )
-                            for key in cldr_plural_categories
-                            if key in translation
-                        ]
-                    )
-                except (TypeError, ValueError) as error:
-                    raise base.ParseError(
-                        f'"{item}" is an object but does not contain plurals. Maybe this is not a go-i18n JSON file?'
-                    ) from error
+                forms = {
+                    key: require_json_string(text, f"Plural form {key!r}")
+                    for key, text in translation.items()
+                    if key in cldr_plural_categories
+                }
+                if not forms:
+                    raise base.ParseError("Translation object does not contain plurals")
+                tags = [key for key in cldr_plural_categories if key in forms]
+                translation = multistring([forms[key] for key in tags])
             elif translation is not None and not isinstance(translation, (str, int)):
                 raise base.ParseError(
                     f"go-i18n translation does not contain string: {translation!r}"
@@ -855,6 +1017,13 @@ class GoI18NJsonFile(JsonFile):
                 item,
                 description,
             )
+            if isinstance(translation, multistring):
+                unit._plural_fields = {
+                    key: text
+                    for key, text in value["translation"].items()
+                    if key not in cldr_plural_categories
+                }
+                unit.set_plural_projection(forms, tags)
             unit.setid(item, unitid=self.UnitClass.IdClass.from_key(item))
             yield unit
 
@@ -864,26 +1033,51 @@ class GoI18NJsonFile(JsonFile):
         out.write(b"\n")
 
 
-class GoI18NV2JsonUnit(FlatJsonUnit):
-    ID_FORMAT = "{}"
+class GoI18NV2JsonUnit(_GoI18NJsonUnit):
+    # Source and target refer to the same translation in this monolingual format.
+    rich_source = base.TranslationUnit.rich_target
+
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
+        if isinstance(otherunit, GoI18NV2JsonUnit):
+            if not overwrite and self._has_target_text():
+                return
+            forms = otherunit._get_plural_forms()
+            if forms is not None:
+                self.set_plural_projection(forms, otherunit._projection)
+                self._projection_language = self._receiver_projection_language(
+                    self._projection_language
+                )
+                return
+        if (
+            isinstance(self.target, multistring)
+            and self.plural_forms is None
+            and isinstance(otherunit.target, str)
+            and not isinstance(otherunit.target, multistring)
+            and (overwrite or not self._has_target_text())
+        ):
+            self._merge_scalar_target("other", otherunit.target)
+            return
+        super().merge(otherunit, overwrite, comments, authoritative)
+
+    def _merge_scalar_target(self, tag: str, text: str) -> None:
+        # A scalar replaces the v2 message's translation, retaining its metadata.
+        self.set_plural_projection({tag: text}, (tag,))
+        self._projection_language = self._receiver_projection_language(
+            self._projection_language
+        )
 
     def converttarget(self):
-        # Special handling of single translations
-        if not isinstance(self.target, multistring) or len(self.target.strings) == 1:
+        forms = self._get_plural_forms()
+        if forms is None:
             if self.notes:
                 return {"description": self.notes, "other": self.target}
             return self.target
-
-        target = {}
+        fields = dict(self._plural_fields or {})
         if self.notes:
-            target["description"] = self.notes
-
-        plural_tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
-        strings = self.sync_plural_count(self.target, plural_tags)
-        for offset, plural in enumerate(plural_tags):
-            target[plural] = strings[offset]
-
-        return target
+            fields["description"] = self.notes
+        return {**fields, **forms}
 
 
 class GoI18NV2JsonFile(JsonFile):
@@ -897,6 +1091,11 @@ class GoI18NV2JsonFile(JsonFile):
     """
 
     UnitClass = GoI18NV2JsonUnit
+
+    def addunit(self, unit) -> None:
+        if isinstance(unit, GoI18NV2JsonUnit):
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
 
     def _extract_units(
         self,
@@ -915,20 +1114,15 @@ class GoI18NV2JsonFile(JsonFile):
                     raise base.ParseError(
                         f"Key {id!r} does not contain string or object: {value!r}"
                     )
-                try:
-                    translation = multistring(
-                        [
-                            require_json_string(
-                                value.get(key), f"Key {id!r} plural {key!r}"
-                            )
-                            for key in cldr_plural_categories
-                            if key in value
-                        ]
-                    )
-                except (TypeError, ValueError) as error:
-                    raise base.ParseError(
-                        f'"{id}" is an object but does not contain plurals. Maybe this is not a go-i18n v2 JSON file?'
-                    ) from error
+                forms = {
+                    key: require_json_string(text, f"Plural form {key!r}")
+                    for key, text in value.items()
+                    if key in cldr_plural_categories
+                }
+                if not forms:
+                    raise base.ParseError("Translation object does not contain plurals")
+                tags = [key for key in cldr_plural_categories if key in forms]
+                translation = multistring([forms[key] for key in tags])
                 description = value.get("description", "")
                 description = require_json_string(
                     description, f"Key {id!r} description"
@@ -938,6 +1132,12 @@ class GoI18NV2JsonFile(JsonFile):
                     id,
                     description,
                 )
+                unit._plural_fields = {
+                    key: text
+                    for key, text in value.items()
+                    if key not in cldr_plural_categories and key != "description"
+                }
+                unit.set_plural_projection(forms, tags)
             unit.setid(id, unitid=self.UnitClass.IdClass.from_key(id))
             yield unit
 
@@ -1193,6 +1393,8 @@ class NextcloudJsonFile(JsonFile[NextcloudJsonUnit]):
         # Build translations dictionary
         translations = {}
         for unit in self.units:
+            if not unit.istranslated():
+                continue
             key = unit.getid()
             value = unit.converttarget()
             translations[key] = value

@@ -32,6 +32,7 @@ if TYPE_CHECKING:
 __all__ = (
     "Bpt",
     "Bx",
+    "Entity",
     "Ept",
     "Ex",
     "G",
@@ -75,6 +76,13 @@ class Ex(base.Ex):
 
 class X(base.X):
     pass
+
+
+class Entity(StringElem):
+    """An unexpanded XML entity reference."""
+
+    iseditable = False
+    istranslatable = False
 
 
 class Sub(base.Sub):

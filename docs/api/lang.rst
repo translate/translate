@@ -37,6 +37,14 @@ bn
    :inherited-members:
 
 
+ca
+--
+
+.. automodule:: translate.lang.ca
+   :members:
+   :inherited-members:
+
+
 code_or
 -------
 

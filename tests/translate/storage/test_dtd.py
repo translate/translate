@@ -19,11 +19,77 @@
 from io import BytesIO
 
 from lxml import etree
-from pytest import mark
+from pytest import mark, raises, warns
 
 from translate.storage import dtd
 
 from . import test_monolingual
+
+
+@mark.parametrize(
+    "name",
+    [
+        'evil "x"><!ENTITY old',
+        "old new",
+        "old\nnew",
+        "1old",
+        "prefix:name",
+        "foo\u1680bar",
+        "foo\u2000bar",
+    ],
+)
+def test_setid_rejects_invalid_entity_name(name: str) -> None:
+    unit = dtd.dtdunit("value")
+    unit.setid("old")
+    with raises(ValueError):
+        unit.validate_id(name)
+    with raises(ValueError, match="DTD entity name"):
+        unit.setid(name)
+    assert unit.getid() == "old"
+
+
+@mark.parametrize("name", ["new-name", "étiquette", ""])
+def test_setid_accepts_xml_entity_name(name: str) -> None:
+    unit = dtd.dtdunit("value")
+    unit.setid(name)
+    assert unit.getid() == name
+
+
+@mark.parametrize("name", ["new-name", "étiquette"])
+def test_setid_accepted_entity_name_serializes(name: str) -> None:
+    store = dtd.dtdfile(BytesIO(b'<!ENTITY old "value">\n'))
+    store.units[0].setid(name)
+    assert f'<!ENTITY {name} "value">'.encode() in bytes(store)
+
+
+def test_validate_id_is_read_only() -> None:
+    unit = dtd.dtdunit("value")
+    unit.setid("old")
+    unit.validate_id("new-name")
+    with raises(ValueError, match="DTD entity name"):
+        unit.validate_id("")
+    with raises(ValueError, match="DTD entity name"):
+        unit.validate_id('evil "x"><!ENTITY old')
+    assert unit.getid() == "old"
+
+
+@mark.parametrize("encoding", ["iso-8859-1", "utf-8"])
+def test_entity_name_uses_destination_encoding(encoding: str) -> None:
+    store = dtd.dtdfile(BytesIO(b'<!ENTITY old "value">\n'))
+    store.encoding = encoding
+    unit = store.units[0]
+    before = bytes(store)
+    if encoding == "iso-8859-1":
+        with raises(ValueError, match="encoding"):
+            unit.validate_id("鍵")
+        with raises(ValueError, match="encoding"):
+            unit.setid("鍵")
+        assert bytes(store) == before
+    else:
+        unit.validate_id("鍵")
+        assert bytes(store) == before
+        unit.setid("鍵")
+        assert dtd.dtdfile(BytesIO(bytes(store))).units[0].getid() == "鍵"
 
 
 def test_roundtrip_quoting() -> None:
@@ -436,6 +502,33 @@ certificate.">
         assert not dtdfile._valid_store(b'<!ENTITY broken "unterminated>\n')
         warning = recwarn.pop(UserWarning)
         assert "DTD parse error" in str(warning.message)
+
+    @mark.parametrize("value", ["&#;", "&#xZZ;", "&#0;", "&1;", "\x01"])
+    def test_invalid_entity_does_not_write_output(self, value: str) -> None:
+        store = self.dtdparse('<!ENTITY first "valid">\n<!ENTITY second "valid">\n')
+        store.units[1].target = value
+        output = BytesIO(b"existing content")
+
+        with (
+            warns(UserWarning, match="DTD parse error"),
+            raises(ValueError, match="does not validate"),
+        ):
+            store.serialize(output)
+
+        assert output.getvalue() == b"existing content"
+
+    def test_existing_invalid_entity_does_not_write_output(self) -> None:
+        store = self.dtdparse('<!ENTITY first "&#;">\n<!ENTITY second "valid">\n')
+        store.units[1].target = "updated"
+        output = BytesIO(b"existing content")
+
+        with (
+            warns(UserWarning, match="DTD parse error"),
+            raises(ValueError, match="does not validate"),
+        ):
+            store.serialize(output)
+
+        assert output.getvalue() == b"existing content"
 
     # test for bug #610
     def test_entitityreference_order_in_source(self) -> None:

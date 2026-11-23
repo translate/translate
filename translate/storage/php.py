@@ -54,7 +54,8 @@ implemented as outlined in the PHP documentation for the
 `String type <https://www.php.net/language.types.string>`_.
 """
 
-import re
+import string
+from bisect import bisect_left, bisect_right
 
 from phply.phpast import (
     Array,
@@ -62,10 +63,12 @@ from phply.phpast import (
     ArrayOffset,
     Assignment,
     BinaryOp,
+    Constant,
     FunctionCall,
     InlineHTML,
     Node,
     Return,
+    UnaryOp,
     Variable,
 )
 from phply.phplex import FilteredLexer, full_lexer
@@ -73,6 +76,373 @@ from phply.phpparse import make_parser
 
 from translate.misc.multistring import multistring
 from translate.storage import base
+
+
+def _skip_php_spaces(name: str, pos: int) -> int:
+    """Skip whitespace and inert comments between PHP tokens."""
+    while pos < len(name):
+        if name[pos] in " \t\r\n":
+            pos += 1
+        elif name.startswith("/*", pos):
+            end = name.find("*/", pos + 2)
+            if end < 0:
+                return -1
+            pos = end + 2
+        elif name.startswith("#[", pos):
+            return -1
+        elif name.startswith("//", pos) or name[pos] == "#":
+            while pos < len(name) and name[pos] not in "\r\n":
+                if name.startswith("?>", pos):
+                    return -1
+                pos += 1
+            if pos == len(name):
+                return -1
+        else:
+            break
+    return pos
+
+
+def _scan_php_unicode_escape(name: str, pos: int) -> int:
+    """Return the end of a valid double-quoted Unicode escape, or -1."""
+    pos += 3  # Skip \u{.
+    start = pos
+    codepoint = 0
+    while pos < len(name) and name[pos] in string.hexdigits:
+        codepoint = codepoint * 16 + int(name[pos], 16)
+        if codepoint > 0x10FFFF:
+            return -1
+        pos += 1
+    if (
+        pos == start
+        or pos >= len(name)
+        or name[pos] != "}"
+        or 0xD800 <= codepoint <= 0xDFFF
+    ):
+        return -1
+    return pos + 1
+
+
+def _is_php_variable_start(char: str) -> bool:
+    return char == "_" or "A" <= char <= "Z" or "a" <= char <= "z" or ord(char) >= 128
+
+
+def _is_php_variable_continue(char: str) -> bool:
+    return _is_php_variable_start(char) or "0" <= char <= "9"
+
+
+def _starts_php_interpolation(name: str, pos: int) -> bool:
+    if pos + 1 >= len(name):
+        return False
+    next_char = name[pos + 1]
+    return next_char == "{" or _is_php_variable_start(next_char)
+
+
+def _starts_php_string(name: str, pos: int) -> bool:
+    return pos < len(name) and (
+        name[pos] in {"'", '"'}
+        or (name[pos] in "bB" and pos + 1 < len(name) and name[pos + 1] in {"'", '"'})
+    )
+
+
+def _scan_php_string(name: str, pos: int) -> int:
+    """Return the end of a safe PHP source literal, or -1."""
+    if name[pos] in "bB":
+        pos += 1
+    quotechar = name[pos]
+    pos += 1
+    while pos < len(name):
+        char = name[pos]
+        if (ord(char) < 32 and char not in "\t\n\r") or ord(char) == 127:
+            return -1
+        if quotechar == '"' and (
+            name.startswith("{$", pos)
+            or (char == "\\" and name.startswith("{$", pos + 1))
+        ):
+            return -1
+        if char == "\\":
+            if pos + 1 >= len(name):
+                return -1
+            if quotechar == '"' and name.startswith(r"\u{", pos):
+                pos = _scan_php_unicode_escape(name, pos)
+                if pos < 0:
+                    return -1
+                continue
+            escaped = name[pos + 1]
+            if ord(escaped) < 32 or ord(escaped) == 127:
+                return -1
+            pos += 2
+        elif char == quotechar:
+            return pos + 1
+        elif quotechar == '"' and char == "$" and _starts_php_interpolation(name, pos):
+            return -1
+        else:
+            pos += 1
+    return -1
+
+
+def _scan_php_integer(name: str, pos: int) -> int:
+    if pos < len(name) and name[pos] == "-":
+        pos += 1
+    if pos >= len(name) or not "0" <= name[pos] <= "9":
+        return -1
+    if name[pos] == "0":
+        return pos + 1
+    while pos < len(name) and "0" <= name[pos] <= "9":
+        pos += 1
+    return pos
+
+
+def _scan_php_number(name: str, pos: int) -> int:
+    """Scan an inert PHP numeric literal used as an array index."""
+    if pos < len(name) and name[pos] in "+-":
+        pos += 1
+    if pos >= len(name):
+        return -1
+    if name[pos] == "0" and pos + 1 < len(name):
+        prefix = name[pos + 1]
+        digits = {
+            "x": string.hexdigits,
+            "X": string.hexdigits,
+            "b": "01",
+            "B": "01",
+            "o": string.octdigits,
+            "O": string.octdigits,
+        }.get(prefix)
+        if digits is not None:
+            pos += 2
+            start = pos
+            while pos < len(name) and name[pos] in digits:
+                pos += 1
+            return pos if pos > start else -1
+
+    start = pos
+    while pos < len(name) and "0" <= name[pos] <= "9":
+        pos += 1
+    integer_end = pos
+    fractional = pos < len(name) and name[pos] == "."
+    if fractional:
+        pos += 1
+        while pos < len(name) and "0" <= name[pos] <= "9":
+            pos += 1
+    if pos == start or (pos == start + 1 and fractional):
+        return -1
+    exponent = pos < len(name) and name[pos] in "eE"
+    if exponent:
+        pos += 1
+        if pos < len(name) and name[pos] in "+-":
+            pos += 1
+        exponent_start = pos
+        while pos < len(name) and "0" <= name[pos] <= "9":
+            pos += 1
+        if pos == exponent_start:
+            return -1
+    if (
+        not fractional
+        and not exponent
+        and integer_end - start > 1
+        and name[start] == "0"
+        and any(char not in string.octdigits for char in name[start + 1 : integer_end])
+    ):
+        return -1
+    return pos
+
+
+def _scan_php_index_atom(name: str, pos: int) -> int:
+    for literal in ("true", "false", "null"):
+        if name[pos : pos + len(literal)].lower() == literal:
+            return pos + len(literal)
+    return _scan_php_number(name, pos)
+
+
+def _valid_php_leaf(name: str, start: int, end: int) -> bool:
+    """Check a decoded final key; the serializer escapes its apostrophes."""
+    if end - start < 2 or name[start] not in {"'", '"'} or name[end - 1] != name[start]:
+        return False
+    quotechar = name[start]
+    pos = start + 1
+    while pos < end - 1:
+        char = name[pos]
+        if (
+            (ord(char) < 32 and char not in "\t\n\r")
+            or ord(char) == 127
+            or (quotechar == '"' and name.startswith("{$", pos))
+        ):
+            return False
+        if char == "\\":
+            if quotechar == '"' or pos + 1 >= end - 1:
+                return False
+            escaped = name[pos + 1]
+            if escaped in {"'", "\\"} or ord(escaped) < 32 or ord(escaped) == 127:
+                return False
+            pos += 2
+        elif quotechar == '"' and char == "$" and _starts_php_interpolation(name, pos):
+            return False
+        else:
+            pos += 1
+    return True
+
+
+def _valid_php_index(name: str, start: int, end: int, *, leaf: bool) -> bool:
+    if leaf and name.startswith("[]", start) and start + 2 == end:
+        return True
+    if start >= end:
+        return False
+    if name[start] in {"'", '"'}:
+        return (
+            _valid_php_leaf(name, start, end)
+            if leaf
+            else _scan_php_string(name, start) == end
+        )
+    return _scan_php_index_atom(name, start) == end
+
+
+def _scan_php_scalar(name: str, pos: int) -> int:
+    """Scan an approved scalar with optional balanced parentheses, iteratively."""
+    depth = 0
+    pos = _skip_php_spaces(name, pos)
+    while 0 <= pos < len(name) and name[pos] == "(":
+        depth += 1
+        pos = _skip_php_spaces(name, pos + 1)
+    if pos < 0 or pos >= len(name):
+        return -1
+    end = (
+        _scan_php_string(name, pos)
+        if _starts_php_string(name, pos)
+        else _scan_php_index_atom(name, pos)
+    )
+    while depth and end >= 0:
+        end = _skip_php_spaces(name, end)
+        if end < 0 or end >= len(name) or name[end] != ")":
+            return -1
+        end += 1
+        depth -= 1
+    return end
+
+
+def _scan_php_offset(name: str, pos: int) -> int:
+    pos = _skip_php_spaces(name, pos + 1)
+    if pos < 0:
+        return -1
+    if pos < len(name) and name[pos] == "]":
+        return pos + 1
+    if pos >= len(name):
+        return -1
+    end = _scan_php_scalar(name, pos)
+    if end < 0:
+        return -1
+    end = _skip_php_spaces(name, end)
+    return end + 1 if 0 <= end < len(name) and name[end] == "]" else -1
+
+
+def _split_php_name(name: str) -> list[str] | None:
+    """Split member boundaries without treating quoted arrows as separators."""
+    pos = 0
+    quotechar = ""
+    bracket_depth = 0
+    while pos < len(name):
+        char = name[pos]
+        if quotechar:
+            if char == "\\":
+                pos += 2
+                continue
+            if char == quotechar:
+                quotechar = ""
+        elif name.startswith(("/*", "//", "#"), pos):
+            end = _skip_php_spaces(name, pos)
+            if end < 0:
+                return None
+            if end != pos:
+                pos = end
+                continue
+        elif char in {"'", '"'}:
+            quotechar = char
+        elif char == "[":
+            bracket_depth += 1
+        elif char == "]":
+            bracket_depth -= 1
+        elif bracket_depth == 0 and name.startswith("->", pos):
+            break
+        pos += 1
+    if pos >= len(name):
+        return [name]
+
+    parts = [name[:pos]]
+    pos += 2
+    while pos < len(name):
+        start = pos
+        end = (
+            _scan_php_string(name, pos)
+            if name[pos] in {"'", '"'}
+            else _scan_php_index_atom(name, pos)
+        )
+        if end >= 0:
+            member_end = end + 2 if name.startswith("[]", end) else end
+            if name.startswith("->", member_end):
+                parts.append(name[start:member_end])
+                pos = member_end + 2
+                continue
+        if _valid_php_index(name, start, len(name), leaf=True):
+            parts.append(name[start:])
+            return parts
+        return None
+    return None
+
+
+def _valid_php_members(name: str, pos: int, *, required: bool) -> bool:
+    parts = _split_php_name(name[pos:])
+    if parts is None or parts[0] not in {"", "[]"}:
+        return False
+    if len(parts) == 1:
+        return not required and not parts[0]
+    for member in parts[1:-1]:
+        if not _valid_php_index(member, 0, len(member.removesuffix("[]")), leaf=False):
+            return False
+    leaf = parts[-1]
+    return _valid_php_index(leaf, 0, len(leaf), leaf=True)
+
+
+def _validate_php_name(name: str, *, laravel: bool = False) -> None:
+    """Accept only inert PHP key expressions using a bounded-time scan."""
+    if name != name.rstrip():
+        raise ValueError("PHP key cannot be represented exactly")
+    if name.startswith("return"):
+        valid = _valid_php_members(name, 6, required=True)
+    elif laravel:
+        valid = False
+    elif name.startswith("define("):
+        pos = _skip_php_spaces(name, 7)
+        end = (
+            _scan_php_string(name, pos)
+            if pos >= 0 and _starts_php_string(name, pos)
+            else -1
+        )
+        valid = end >= 0 and _skip_php_spaces(name, end) == len(name)
+    elif name.startswith("$") and len(name) > 1:
+        pos = 1
+        char = name[pos]
+        valid = _is_php_variable_start(char)
+        if valid:
+            pos += 1
+            while pos < len(name) and _is_php_variable_continue(name[pos]):
+                pos += 1
+            while True:
+                offset = _skip_php_spaces(name, pos)
+                if offset < 0:
+                    valid = False
+                    break
+                if offset >= len(name) or name[offset] != "[":
+                    pos = offset
+                    break
+                pos = _scan_php_offset(name, offset)
+                if pos < 0:
+                    valid = False
+                    break
+            if valid:
+                valid = _valid_php_members(name, pos, required=False)
+    else:
+        valid = False
+    if not valid:
+        raise ValueError("PHP key cannot be represented safely")
 
 
 def wrap_production(func):
@@ -149,19 +519,6 @@ class PHPLexer(FilteredLexer):
         self.codepos = pos
         return result.rstrip()
 
-    def extract_quote(self) -> str:
-        """Extract quote style."""
-        pos = max(self.pos, self.codepos)
-        while self.tokens[pos].type not in {
-            "QUOTE",
-            "CONSTANT_ENCAPSED_STRING",
-            "START_NOWDOC",
-        }:
-            pos += 1
-        if self.tokens[pos].type == "QUOTE":
-            return '"'
-        return "'"
-
     def extract_array(self) -> str:
         pos = max(self.pos, self.codepos)
         while self.tokens[pos].type not in {"ARRAY", "LBRACKET"}:
@@ -187,61 +544,206 @@ def phpencode(text, quotechar="'"):
     if not text:
         return text
     if quotechar == '"':
-        # \n may be converted to \\n but we don't.  This allows us to preserve
-        # pretty layout that might have appeared in muliline entries we might
-        # lose some "blah\nblah" layouts but that's probably not the most
-        # frequent use case. See bug 588
-        escapes = [
-            ("\\", "\\\\"),
-            ("\r", "\\r"),
-            ("\t", "\\t"),
-            ("\v", "\\v"),
-            ("\f", "\\f"),
-            ("\\\\$", "\\$"),
-            ('"', '\\"'),
-            ("\\\\", "\\"),
-        ]
-        for a, b in escapes:
-            text = text.replace(a, b)
-        return text
-    return text.replace(f"{quotechar}", f"\\{quotechar}")
+        # Keep literal newlines to preserve the layout of multiline entries.
+        # Escape each input character once so a later replacement cannot undo
+        # the escaping of a backslash or introduce PHP interpolation.
+        escapes = {
+            "\\": "\\\\",
+            '"': '\\"',
+            "$": "\\$",
+            "\r": "\\r",
+            "\t": "\\t",
+            "\v": "\\v",
+            "\f": "\\f",
+        }
+    else:
+        escapes = {"\\": "\\\\", quotechar: f"\\{quotechar}"}
+    return text.translate(str.maketrans(escapes))
 
 
-def phpdecode(text, quotechar="'"):
-    """Convert PHP escaped string to a Python string."""
-    escape_encoding = "unicode_escape"
+def _simple_php_variable_end(
+    text: str, pos: int, *, stop_at_whitespace: bool = False
+) -> int:
+    """Find the end of a simple PHP variable, or return its starting position."""
+    if (
+        pos + 1 >= len(text)
+        or text[pos] != "$"
+        or not _is_php_variable_start(text[pos + 1])
+        or (stop_at_whitespace and text[pos + 1].isspace())
+    ):
+        return pos
+    end = pos + 2
+    while (
+        end < len(text)
+        and _is_php_variable_continue(text[end])
+        and not (stop_at_whitespace and text[end].isspace())
+    ):
+        end += 1
+    return end
 
-    def decode_octal_hex(match):
-        r"""Decode Octal \NNN and Hex values."""
-        if "octal" in match.groupdict():
-            return match.groupdict()["octal"].encode("latin-1").decode(escape_encoding)
-        if "hex" in match.groupdict():
-            return match.groupdict()["hex"].encode("latin-1").decode(escape_encoding)
-        return match.group
 
-    if not text:
-        return text
-    if quotechar == '"':
-        # We do not escape \$ as it is used by variables and we can't
-        # roundtrip that item.
-        escapes = [
-            ('\\"', '"'),
-            ("\\\\", "\\"),
-            ("\\n", "\n"),
-            ("\\r", "\r"),
-            ("\\t", "\t"),
-            ("\\v", "\v"),
-            ("\\f", "\f"),
-        ]
-        for a, b in escapes:
-            text = text.replace(a, b)
-        text = re.sub(r"(?P<octal>\\[0-7]{1,3})", decode_octal_hex, text)
-        return re.sub(r"(?P<hex>\\x[0-9A-Fa-f]{1,2})", decode_octal_hex, text)
-    return text.replace("\\'", "'").replace("\\\\", "\\")
+def _braced_php_variable_end(text: str, pos: int) -> int:
+    """Recognize only the simple translation marker {$name}."""
+    if not text.startswith("{$", pos):
+        return pos
+    end = _simple_php_variable_end(text, pos + 1)
+    if pos + 1 < end < len(text) and text[end] == "}":
+        return end + 1
+    return pos
+
+
+def _php_marker_end(
+    text: str,
+    start: int,
+    pos: int,
+    *,
+    after_marker: bool = False,
+    before_marker: bool = False,
+    plural_separator: str | None = None,
+) -> int:
+    """Find a braced marker or a bare marker delimited by prose or HTML."""
+    end = _braced_php_variable_end(text, pos)
+    if end > pos:
+        return end
+    if start == 0:
+        if after_marker:
+            return pos
+    elif not (
+        text[start - 1].isspace()
+        or text[start - 1] in "\"'>;"
+        or text[start - 1] == plural_separator
+    ):
+        return pos
+    end = _simple_php_variable_end(text, pos, stop_at_whitespace=True)
+    if end == pos:
+        return pos
+    boundary = end
+    if boundary < len(text) and text[boundary] in ".,!?;:":
+        boundary += 1
+    if boundary == len(text):
+        return pos if before_marker else end
+    if (
+        text[boundary].isspace()
+        or text[boundary] in "\"'<&"
+        or text[boundary] == plural_separator
+    ):
+        return end
+    return pos
+
+
+def _php_value_fragments(
+    text: str, *, plural_separator: str | None = None
+) -> list[tuple[bool, str]]:
+    """Read simple placeholders in otherwise literal translation text."""
+    result: list[tuple[bool, str]] = []
+    literal: list[str] = []
+    pos = 0
+    while pos < len(text):
+        start = pos
+        while pos < len(text) and text[pos] == "\\":
+            pos += 1
+        end = _php_marker_end(text, start, pos, plural_separator=plural_separator)
+        backslashes = pos - start
+        if end == pos:
+            literal.append(text[start : pos + 1])
+            pos += 1
+            continue
+        literal.append("\\" * (backslashes // 2))
+        if backslashes % 2:
+            literal.append(text[pos:end])
+        else:
+            marker = text[pos:end]
+            if marker.startswith("{"):
+                marker = marker[1:-1]
+            result.extend(((False, "".join(literal)), (True, marker)))
+            literal.clear()
+        pos = end
+    result.append((False, "".join(literal)))
+    return result
+
+
+def _escape_php_markup(
+    text: str,
+    *,
+    after_marker: bool = False,
+    before_marker: bool = False,
+    plural_separator: str | None = None,
+) -> str:
+    """Escape literal markers and preserve backslashes at marker boundaries."""
+    result: list[str] = []
+    pos = 0
+    while pos < len(text):
+        start = pos
+        while pos < len(text) and text[pos] == "\\":
+            pos += 1
+        end = _php_marker_end(
+            text,
+            start,
+            pos,
+            after_marker=after_marker,
+            before_marker=before_marker,
+            plural_separator=plural_separator,
+        )
+        if end > pos:
+            result.extend(("\\" * (2 * (pos - start) + 1), text[pos:end]))
+            pos = end
+        elif pos == len(text) and before_marker:
+            result.append(text[start:pos] * 2)
+        else:
+            result.append(text[start : pos + 1])
+            pos += 1
+    return "".join(result)
+
+
+def _php_source_markup(
+    fragments: list[tuple[bool, str]], *, plural_separator: str | None = None
+) -> str:
+    """Export parsed variables as explicit markers and escape literal markers."""
+    result: list[str] = []
+    literal: list[str] = []
+    for variable, value in fragments:
+        if variable:
+            result.extend(
+                (
+                    _escape_php_markup(
+                        "".join(literal),
+                        after_marker=bool(result),
+                        before_marker=True,
+                        plural_separator=plural_separator,
+                    ),
+                    "{" + value + "}",
+                )
+            )
+            literal.clear()
+        else:
+            literal.append(value)
+    result.append(
+        _escape_php_markup(
+            "".join(literal),
+            after_marker=bool(result),
+            plural_separator=plural_separator,
+        )
+    )
+    return "".join(result)
+
+
+def _php_value_expression(fragments: list[tuple[bool, str]], quotechar: str) -> str:
+    """Serialize literal fragments and variables without PHP interpolation."""
+    parts = [
+        value if variable else quotechar + phpencode(value, quotechar) + quotechar
+        for variable, value in fragments
+    ]
+    if fragments and fragments[0][0]:
+        parts.insert(0, quotechar * 2)
+    if fragments and fragments[-1][0]:
+        parts.append(quotechar * 2)
+    return " . ".join(parts)
 
 
 class phpunit(base.TranslationUnit):
     """A unit of a PHP file: a name, a value, and any comments associated."""
+
+    plural_separator: str | None = None
 
     def __init__(self, source="") -> None:
         """Construct a blank phpunit."""
@@ -251,6 +753,7 @@ class phpunit(base.TranslationUnit):
         self.value = ""
         self.translation = ""
         self._comments = []
+        self._source_fragments: list[tuple[bool, str]] | None = None
         self.source = source
 
     @property
@@ -263,6 +766,7 @@ class phpunit(base.TranslationUnit):
         self._invalidate_store_indexes()
         self._rich_source = None
         self.value = source
+        self._source_fragments = None
 
     @property
     def target(self):
@@ -277,25 +781,48 @@ class phpunit(base.TranslationUnit):
         """Convert to a string."""
         return self.getoutput()
 
+    @classmethod
+    def buildfromunit(cls, unit):
+        """Keep parsed variable boundaries when copying a PHP unit."""
+        newunit = super().buildfromunit(unit)
+        if isinstance(unit, phpunit) and newunit.source == unit.source:
+            newunit.escape_type = unit.escape_type
+            newunit._source_fragments = unit._source_fragments
+        return newunit
+
     def get_raw_value(self):
         return self.translation or self.value
 
-    def getoutput(self, indent="", name=None):
+    def getoutput(self, indent="", name=None, *, _has_members: bool | None = None):
         """Convert the unit back into formatted lines for a php file."""
-        if "->" in self.name and name == "[]":
-            fmt = "{1}{2}{1},\n"
-        elif "->" in self.name:
-            fmt = "{0} => {1}{2}{1},\n"
+        has_members = (
+            len(_split_php_name(self.name) or []) > 1
+            if _has_members is None
+            else _has_members
+        )
+        if has_members and name == "[]":
+            fmt = "{1},\n"
+        elif has_members:
+            fmt = "{0} => {1},\n"
             if name is not None and name[0] == name[-1] and name[0] in {"'", '"'}:
                 name = name[0] + phpencode(name[1:-1], name[0]) + name[0]
         elif self.name.startswith("define"):
-            fmt = "{0}, {1}{2}{1});\n"
+            fmt = "{0}, {1});\n"
         else:
-            fmt = "{0} = {1}{2}{1};\n"
+            fmt = "{0} = {1};\n"
+        value = self.get_raw_value()
+        source = self.source
+        if isinstance(source, multistring):
+            source = "|".join(source.strings)
+        fragments = (
+            self._source_fragments
+            if self._source_fragments is not None
+            and (not self.translation or value == source)
+            else _php_value_fragments(value, plural_separator=self.plural_separator)
+        )
         out = fmt.format(
             name or self.name,
-            self.escape_type,
-            phpencode(self.get_raw_value(), self.escape_type),
+            _php_value_expression(fragments, self.escape_type),
         )
         joiner = f"\n{indent}"
         return indent + joiner.join([*self._comments, out])
@@ -330,13 +857,38 @@ class phpunit(base.TranslationUnit):
     def getid(self):
         return self.name
 
+    def validate_id(self, value: str) -> None:
+        """Validate PHP source syntax; offsets retain PHP's own key coercion."""
+        super().validate_id(value)
+        _validate_php_name(value)
+        self._validate_id_encoding(value)
+
+    def _validate_id_encoding(self, value: str) -> None:
+        """Check the encoding used to write this unit's name verbatim."""
+        encoding = (
+            self._store.encoding
+            if self._store is not None
+            else phpfile.default_encoding
+        )
+        try:
+            value.encode(encoding)
+        except UnicodeEncodeError as error:
+            raise ValueError(
+                "PHP key cannot be represented in file encoding"
+            ) from error
+
     def setid(self, value) -> None:
         # Sanitize name to produce valid syntax
+        if not isinstance(value, str):
+            raise TypeError("PHP key must be a string")
+        name = (
+            value
+            if value.startswith(("$", "define(", "return"))
+            else f"${value.replace(' ', '_')}"
+        )
+        self.validate_id(name)
         self._invalidate_store_indexes()
-        if not value.startswith(("$", "define(", "return")):
-            self.name = f"${value.replace(' ', '_')}"
-        else:
-            self.name = value
+        self.name = name
 
 
 class phpfile(base.TranslationStore):
@@ -356,11 +908,15 @@ class phpfile(base.TranslationStore):
     def serialize(self, out) -> None:
         """Convert the units back to lines."""
         array_units: dict[str, list[phpunit]] = {}
+        unit_parts: dict[int, list[str]] = {}
+        array_parts: dict[str, tuple[str, int]] = {}
         for unit in self.units:
-            name_parts = unit.name.split("->")
+            name_parts = _split_php_name(unit.name) or unit.name.split("->")
+            unit_parts[id(unit)] = name_parts
             array_name = name_parts[0]
-            for name_part in name_parts[1:]:
+            for depth, name_part in enumerate(name_parts[1:], start=1):
                 array_units.setdefault(array_name, []).append(unit)
+                array_parts.setdefault(array_name, (name_parts[depth - 1], depth))
                 array_name = f"{array_name}->{name_part}"
 
         def write(text) -> None:
@@ -373,16 +929,16 @@ class phpfile(base.TranslationStore):
             # Default to classic array
             init = "array("
             close = ")"
-            name = arrname
+            name, prefix_depth = array_parts[arrname]
+            nested = prefix_depth > 1
             # Handle [] style array
             if name.endswith("[]"):
                 init = "["
                 close = "]"
                 name = name[:-2]
             # Handle return, assignment or sub array
-            if "->" in arrname:
+            if nested:
                 separator = " =>"
-                name = name.rsplit("->", 1)[-1]
             elif name == "return":
                 separator = ""
             else:
@@ -391,15 +947,16 @@ class phpfile(base.TranslationStore):
             write(f"{' ' * indent}{name}{separator} {init}\n")
             indent += 4
             prefix = f"{arrname}->"
-            pref_len = len(prefix)
             for item in array_units[arrname]:
-                name = item.name[pref_len:]
-                if "->" in name:
-                    handle_array(prefix + name.split("->", 1)[0], children, indent)
+                child_parts = unit_parts[id(item)][prefix_depth:]
+                if len(child_parts) > 1:
+                    handle_array(prefix + child_parts[0], children, indent)
                 else:
-                    write(item.getoutput(" " * indent, name))
+                    write(
+                        item.getoutput(" " * indent, child_parts[0], _has_members=True)
+                    )
             # Write array end
-            write(f"{' ' * (indent - 4)}{close}{',' if '->' in arrname else ';'}\n")
+            write(f"{' ' * (indent - 4)}{close}{',' if nested else ';'}\n")
             handled.add(arrname)
 
         write("<?php\n")
@@ -407,26 +964,104 @@ class phpfile(base.TranslationStore):
         # List of handled arrays
         handled = set()
         for unit in self.units:
-            if "->" in unit.name:
-                handle_array(unit.name.split("->", 1)[0], handled)
+            name_parts = unit_parts[id(unit)]
+            if len(name_parts) > 1:
+                handle_array(name_parts[0], handled)
             else:
-                write(unit.getoutput())
+                write(unit.getoutput(_has_members=False))
 
-    def create_and_add_unit(self, name, value, escape_type, comments) -> None:
+    def create_and_add_unit(
+        self, name, value, escape_type, comments, fragments=None
+    ) -> None:
         newunit = self.UnitClass()
         newunit.escape_type = escape_type
         newunit.addlocation(name)
         newunit.source = value
+        newunit._source_fragments = fragments
         for comment in comments:
             newunit.addnote(comment, "developer")
         self.addunit(newunit)
 
-    def parse(self, phpsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, phpsrc) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read the source of a PHP file in and include them as units."""
 
-        def handle_array(prefix, nodes, lexer) -> None:
+        def value_fragments(item) -> list[tuple[bool, str]] | None:
+            if isinstance(item, str):
+                return [(False, item)]
+            if isinstance(item, Variable):
+                name = item.name
+                if isinstance(name, str) and _simple_php_variable_end(name, 0) == len(
+                    name
+                ):
+                    return [(True, name)]
+                return None
+            if isinstance(item, BinaryOp) and item.op == ".":
+                left = value_fragments(item.left)
+                right = value_fragments(item.right)
+                if left is not None and right is not None:
+                    return left + right
+            return None
+
+        def add_value(name, value, statement_end) -> None:
+            end = statement_end
+            if isinstance(value, Node):
+                start, end_of_value = value.lexpositions
+                start_index = bisect_left(token_positions, start)
+                end = min(end, end_of_value)
+            else:
+                start_index = max(lexer.pos, lexer.codepos)
+            tokens = lexer.tokens[start_index : bisect_right(token_positions, end)]
+            quote = None
+            for index, token in enumerate(tokens):
+                # phply can flatten dynamic interpolation to a simple AST node.
+                if token.type == "DOLLAR_OPEN_CURLY_BRACES" and [
+                    following.type for following in tokens[index + 1 : index + 3]
+                ] != ["STRING_VARNAME", "RBRACE"]:
+                    break
+                if quote is None and token.type in {"QUOTE", "START_HEREDOC"}:
+                    quote = '"'
+                elif quote is None and token.type in {
+                    "CONSTANT_ENCAPSED_STRING",
+                    "START_NOWDOC",
+                }:
+                    quote = "'"
+            else:
+                # Literal non-text metadata is outside the translation entries.
+                if quote is None and (
+                    isinstance(value, (int, float))
+                    or (
+                        isinstance(value, UnaryOp)
+                        and value.op in {"+", "-"}
+                        and isinstance(value.expr, (int, float))
+                    )
+                    or (
+                        isinstance(value, Constant)
+                        and value.name.lower() in {"true", "false", "null"}
+                    )
+                ):
+                    # Advance past the entry even though it has no translation unit.
+                    lexer.extract_comments(statement_end)
+                    return
+                fragments = value_fragments(value)
+                if fragments is not None and quote is not None:
+                    self.create_and_add_unit(
+                        name,
+                        _php_source_markup(
+                            fragments, plural_separator=self.UnitClass.plural_separator
+                        ),
+                        quote,
+                        lexer.extract_comments(statement_end),
+                        fragments,
+                    )
+                    return
+            raise base.ParseError(
+                f"Unsupported PHP translation value for {name}. "
+                "Expected quoted text with optional simple variables."
+            )
+
+        def handle_array(prefix, array, lexer) -> None:
             prefix += lexer.extract_array()
-            for item in nodes:
+            for item in array.nodes:
                 assert isinstance(item, ArrayElement)
                 if item.key is None:
                     name = []
@@ -442,14 +1077,13 @@ class phpfile(base.TranslationStore):
                 if prefix:
                     name = f"{prefix}->{name}"
                 if isinstance(item.value, Array):
-                    handle_array(name, item.value.nodes, lexer)
-                elif isinstance(item.value, str):
-                    self.create_and_add_unit(
-                        name,
-                        item.value,
-                        lexer.extract_quote(),
-                        lexer.extract_comments(item.lexpositions[1]),
-                    )
+                    handle_array(name, item.value, lexer)
+                else:
+                    add_value(name, item.value, item.lexpositions[1])
+            # Advance past the array, leaving comments at its end for the next unit.
+            lexer.pos = max(
+                lexer.pos, bisect_left(token_positions, array.lexpositions[1])
+            )
 
         def concatenate(item):
             if isinstance(item, str):
@@ -463,7 +1097,13 @@ class phpfile(base.TranslationStore):
         for item in parser.productions:
             item.callable = wrap_production(item.callable)
         lexer = PHPLexer()
-        tree = parser.parse(phpsrc.decode(self.encoding), lexer=lexer, tracking=True)
+        try:
+            tree = parser.parse(
+                phpsrc.decode(self.encoding), lexer=lexer, tracking=True
+            )
+        except SyntaxError as error:
+            raise base.ParseError(error) from error
+        token_positions = [token.lexpos for token in lexer.tokens]
         # Handle text without PHP start
         if len(tree) == 1 and isinstance(tree[0], InlineHTML):
             self.parse(b"<?php\n" + phpsrc)
@@ -471,47 +1111,32 @@ class phpfile(base.TranslationStore):
         for item in tree:
             if isinstance(item, FunctionCall):
                 if item.name == "define":
-                    self.create_and_add_unit(
-                        lexer.extract_name("COMMA", *item.lexpositions),
-                        item.params[1].node,
-                        lexer.extract_quote(),
-                        lexer.extract_comments(item.lexpositions[1]),
-                    )
+                    name = lexer.extract_name("COMMA", *item.lexpositions)
+                    add_value(name, item.params[1].node, item.lexpositions[1])
             elif isinstance(item, Assignment):
                 if isinstance(item.node, (ArrayOffset, Variable)):
                     name = lexer.extract_name("EQUALS", *item.lexpositions)
                     if isinstance(item.expr, Array):
-                        handle_array(name, item.expr.nodes, lexer)
-                    elif isinstance(item.expr, str):
-                        self.create_and_add_unit(
-                            name,
-                            item.expr,
-                            lexer.extract_quote(),
-                            lexer.extract_comments(item.lexpositions[1]),
-                        )
-                    elif isinstance(item.expr, BinaryOp) and item.expr.op == ".":
-                        self.create_and_add_unit(
-                            name,
-                            concatenate(item.expr),
-                            lexer.extract_quote(),
-                            lexer.extract_comments(item.lexpositions[1]),
-                        )
+                        handle_array(name, item.expr, lexer)
+                    else:
+                        add_value(name, item.expr, item.lexpositions[1])
             elif isinstance(item, Return) and isinstance(item.node, Array):
                 # Adjustextractor position
                 lexer.extract_name("RETURN", *item.lexpositions)
-                handle_array("return", item.node.nodes, lexer)
+                handle_array("return", item.node, lexer)
 
 
 class LaravelPHPUnit(phpunit):
+    plural_separator = "|"
+
     def get_raw_value(self):
         result = self.translation or self.value
         if isinstance(result, multistring):
             return "|".join(result.strings)
         return result
 
-    def getid(self):
-        """Return the key without the Laravel return prefix."""
-        name = self.name
+    @staticmethod
+    def _id_from_name(name: str) -> str:
         # Strip return[]-> or return-> prefix for Laravel files
         if name.startswith("return[]->"):
             name = name[10:]  # Remove "return[]->"
@@ -523,21 +1148,18 @@ class LaravelPHPUnit(phpunit):
             return name[1:-1]
         return name
 
+    def getid(self) -> str:
+        """Return the key without the Laravel return prefix."""
+        return self._id_from_name(self.name)
+
     def getlocations(self):
         """Return locations without the Laravel return prefix."""
         return [self.getid()]
 
-    def setid(self, value) -> None:
-        """Set the key, preserving the Laravel return array structure."""
-        self._invalidate_store_indexes()
-        # Ensure value is a string
-        if not isinstance(value, str):
-            value = str(value)
-
+    def _name_for_id(self, value: str) -> str:
         # If value already has a return prefix, use it as is
         if value.startswith(("return[]->", "return->")):
-            self.name = value
-            return
+            return value
 
         # Determine the array syntax to use based on existing structure
         if self.name.startswith("return[]->"):
@@ -561,7 +1183,27 @@ class LaravelPHPUnit(phpunit):
             # Empty string should be quoted
             value = "''"
 
-        self.name = f"{prefix}{value}"
+        return f"{prefix}{value}"
+
+    def _validated_name(self, value: str, *, exact: bool) -> str:
+        base.TranslationUnit.validate_id(self, value)
+        name = self._name_for_id(value)
+        _validate_php_name(name, laravel=True)
+        self._validate_id_encoding(name)
+        if exact and self._id_from_name(name) != value:
+            raise ValueError("PHP key cannot be represented exactly")
+        return name
+
+    def validate_id(self, value: str) -> None:
+        self._validated_name(value, exact=True)
+
+    def setid(self, value) -> None:
+        """Set the key, preserving the Laravel return array structure."""
+        if not isinstance(value, str):
+            value = str(value)
+        name = self._validated_name(value, exact=False)
+        self._invalidate_store_indexes()
+        self.name = name
 
     def _get_array_prefix_from_store(self):
         """Get the array prefix from store, or return default."""
@@ -575,13 +1217,18 @@ class LaravelPHPUnit(phpunit):
         # Default to array() syntax for new files
         return "return->"
 
-    def _is_numeric_key(self, value) -> bool:
-        """Check if value is a numeric key (integer)."""
-        try:
-            int(value)
-        except (ValueError, TypeError):
+    @staticmethod
+    def _is_numeric_key(value: str) -> bool:
+        """Check for a decimal PHP key without converting a large integer."""
+        if _scan_php_integer(value, 0) != len(value):
             return False
-        return True
+        digits = value.removeprefix("-")
+        limit = (
+            "9223372036854775808" if value.startswith("-") else "9223372036854775807"
+        )
+        return len(digits) < len(limit) or (
+            len(digits) == len(limit) and digits <= limit
+        )
 
 
 class LaravelPHPFile(phpfile):
@@ -593,7 +1240,9 @@ class LaravelPHPFile(phpfile):
         self._array_prefix = None
         super().__init__(inputfile, **kwargs)
 
-    def create_and_add_unit(self, name, value, escape_type, comments) -> None:
+    def create_and_add_unit(
+        self, name, value, escape_type, comments, fragments=None
+    ) -> None:
         # Detect and store array prefix from the first unit
         if self._array_prefix is None and name.startswith("return"):
             if name.startswith("return[]->"):
@@ -603,4 +1252,4 @@ class LaravelPHPFile(phpfile):
 
         if "|" in value:
             value = multistring(value.split("|"))
-        super().create_and_add_unit(name, value, escape_type, comments)
+        super().create_and_add_unit(name, value, escape_type, comments, fragments)

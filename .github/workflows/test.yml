@@ -43,10 +43,10 @@ jobs:
       with:
         allow-prereleases: true
         python-version: ${{ matrix.python-version }}
-    - uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+    - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
       with:
         cache-suffix: ${{ steps.setup_python.outputs.python-version }}
-        version: 0.13.1
+        version: 0.13.9
     - name: Install apt dependencies
       if: matrix.os == 'ubuntu-latest'
       run: |

@@ -46,7 +46,7 @@ class QphUnit(lisa.LISAunit):
     textNode = ""
     namespace = ""
 
-    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[incompatible-method-override]
         """Returns an xml Element setup with given parameters."""
         assert purpose
         langset = etree.Element(self.namespaced(purpose))
@@ -150,6 +150,7 @@ class QphFile(lisa.LISAfile):
         We have to override this to ensure mimic the Qt convention:
             - no XML declaration
         """
+        self._write_utf8_bom(out, "utf-8")
         self.document.write(
             out, pretty_print=True, xml_declaration=False, encoding="utf-8"
         )

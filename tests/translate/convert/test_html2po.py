@@ -1,6 +1,8 @@
 import os
 from io import BytesIO
 
+import pytest
+
 from translate.convert import html2po, po2html
 
 from . import test_convert
@@ -86,6 +88,76 @@ class TestHTML2PO:
     def test_do_not_extract_lang_attribute_from_tags_other_than_html(self) -> None:
         """Test that the lang attribute is extracted from the html tag."""
         self.check_single('<p><span lang="fr">Français</span></p>', "Français")
+
+    @pytest.mark.parametrize(
+        "template",
+        [
+            '<button aria-label="Source"></button>',
+            '<button aria-description="Source"></button>',
+            '<button aria-braillelabel="Source" aria-label=" "></button>',
+            '<div role="group" aria-brailleroledescription="Source"></div>',
+            '<th aria-colindextext="Source"></th>',
+            '<th aria-rowindextext="Source"></th>',
+            '<input aria-placeholder="Source">',
+            '<div role="group" aria-roledescription="Source"></div>',
+            '<input type="range" aria-valuetext="Source">',
+            '<input placeholder="Source">',
+            '<textarea placeholder="Source"></textarea>',
+            '<optgroup label="Source"></optgroup>',
+            '<option label="Source"></option>',
+            '<track label="Source">',
+            '<a href="guide.pdf" download="Source"></a>',
+            '<area href="guide.pdf" download="Source">',
+            '<meta content="Source" name="Application-Name">',
+            '<input value="Source">',
+        ],
+    )
+    def test_attribute_round_trip(self, template) -> None:
+        catalog = self.html2po(template)
+        self.countunits(catalog, 1)
+        self.compareunit(catalog, 1, "Source")
+        catalog.units[1].target = 'A "quote" & more'
+        assert self.po2html(catalog, template) == template.replace(
+            "Source", "A &quot;quote&quot; &amp; more"
+        )
+
+    def test_aria_references_round_trip(self) -> None:
+        template = (
+            '<button id="Save" aria-label="Save" aria-labelledby="heading Save" '
+            'aria-describedby="hint heading"></button>'
+            '<p id="heading">Action</p><p id="hint">Keep changes</p>'
+        )
+        catalog = self.html2po(template)
+        translations = {
+            "Save": "Sauver",
+            "Action": "Commande",
+            "Keep changes": "Garder",
+        }
+        assert [unit.source for unit in catalog.units[1:]] == list(translations)
+        for unit in catalog.units[1:]:
+            unit.target = translations[unit.source]
+        assert self.po2html(catalog, template) == (
+            '<button id="Save" aria-label="Sauver" aria-labelledby="heading Save" '
+            'aria-describedby="hint heading"></button>'
+            '<p id="heading">Commande</p><p id="hint">Garder</p>'
+        )
+
+    def test_attribute_eligibility_round_trip(self) -> None:
+        template = (
+            '<meta name="application-name" content="Atlas" title="Map">'
+            '<meta name="unknown" content="Atlas">'
+            '<meta property="application-name" content="Atlas">'
+            '<div label="Atlas" placeholder="Atlas" download="Atlas"></div>'
+            '<input data-translate-ignore aria-label="Atlas" />'
+            '<a download></a><area download=""><textarea placeholder="  "></textarea>'
+        )
+        catalog = self.html2po(template)
+        assert [unit.source for unit in catalog.units[1:]] == ["Atlas", "Map"]
+        catalog.units[1].target = "Atlas mondial"
+        catalog.units[2].target = "Carte"
+        assert self.po2html(catalog, template) == template.replace(
+            'content="Atlas" title="Map"', 'content="Atlas mondial" title="Carte"'
+        )
 
     def test_title(self) -> None:
         """Test that we can extract the <title> tag."""

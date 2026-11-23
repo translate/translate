@@ -19,6 +19,14 @@ unit identifier, for example ``items:count``. Entries containing literal text
 in the localized format or multiple plural variables are exposed as separate
 format and plural units.
 
+Each plural variable exposes its explicit categories through ``plural_forms``.
+A named edit to ``many`` preserves a distinct ``other`` translation. Imported
+incomplete entries and explicit empty strings survive serialization.
+
+Apple requires an ``other`` category at runtime. For newly constructed
+positional translations in languages such as Russian, the writer still uses
+the final ``many`` value as a fallback when the positional view lacks ``other``.
+
 .. seealso::
 
    :doc:`strings`

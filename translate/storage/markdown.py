@@ -53,6 +53,11 @@ from mistletoe.markdown_renderer import (
 )
 
 from translate.storage import base
+from translate.storage.yaml_limits import (
+    DEFAULT_MAX_YAML_NODES,
+    DEFAULT_MAX_YAML_UNITS,
+    YAMLTraversalBudget,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable
@@ -100,6 +105,8 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         frontmatter_translate_values=False,
         no_placeholders=False,
         lookup_callback=None,
+        max_yaml_nodes: int | None = DEFAULT_MAX_YAML_NODES,
+        max_yaml_units: int | None = DEFAULT_MAX_YAML_UNITS,
     ) -> None:
         """
         Construct a new object instance.
@@ -130,6 +137,10 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         :param lookup_callback: a function which returns a translation for a source
           string, or None when no translation exists. Defaults to adapting callback
           by treating an unchanged result as missing.
+        :param max_yaml_nodes: maximum visits while extracting YAML front matter
+            values, including repeated visits through aliases; None disables it.
+        :param max_yaml_units: maximum units extracted from YAML front matter;
+            None disables it.
         """
         base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, "name", None)
@@ -145,6 +156,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         self.extract_frontmatter = extract_frontmatter
         self.frontmatter_translate_values = frontmatter_translate_values
         self.no_placeholders = no_placeholders
+        self._yaml_budget = YAMLTraversalBudget(max_yaml_nodes, max_yaml_units)
         self.filesrc = ""
         if inputfile is not None:
             md_src = inputfile.read()
@@ -153,6 +165,7 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
 
     def parse(self, data) -> None:
         """Process the given source string (binary)."""
+        self._yaml_budget.reset()
         lines = data.decode().splitlines(keepends=False)
         front_matter_end = 0
         front_matter = ""
@@ -318,15 +331,28 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
         location and docpath (e.g. ``frontmatter.metaTitle`` or
         ``frontmatter.authors[0]``).
         """
-        if isinstance(node, dict):
-            for key in list(node.keys()):
-                self._translate_frontmatter_child(node, key, f"{path}.{key}")
-        elif isinstance(node, list):
-            for index in range(len(node)):
-                self._translate_frontmatter_child(node, index, f"{path}[{index}]")
+        with self._yaml_budget.visit(node):
+            if isinstance(node, dict):
+                for key in list(node.keys()):
+                    self._translate_frontmatter_child(node, key, f"{path}.{key}")
+            elif isinstance(node, list):
+                for index in range(len(node)):
+                    self._translate_frontmatter_child(node, index, f"{path}[{index}]")
 
     def _translate_frontmatter_child(self, container, key, path: str) -> None:
         """Translate or recurse into a single child of a map/list container."""
+        value = container[key]
+        if isinstance(value, (dict, list)):
+            self._walk_frontmatter(value, path)
+        else:
+            with self._yaml_budget.visit(value):
+                if isinstance(value, str):
+                    self._translate_frontmatter_scalar(container, key, path, value)
+
+    def _translate_frontmatter_scalar(
+        self, container, key, path: str, value: str
+    ) -> None:
+        """Extract and translate one YAML front matter scalar."""
         # pylint: disable-next=import-outside-toplevel
         from ruamel.yaml.scalarstring import (  # ruff:ignore[import-outside-top-level]
             FoldedScalarString,
@@ -334,56 +360,42 @@ class MarkdownFile(base.TranslationStore[MarkdownUnit]):
             ScalarString,
         )
 
-        value = container[key]
-        if isinstance(value, (dict, list)):
-            self._walk_frontmatter(value, path)
-        elif isinstance(value, str):
-            # bool/int/float are not str, so only genuine strings are translated.
-            is_block = isinstance(value, (LiteralScalarString, FoldedScalarString))
-            if is_block:
-                # Block scalars (| and >): the trailing-newline run encodes the
-                # chomping indicator (none -> "-" strip, one -> clip, more ->
-                # "+" keep). Split it off so the unit holds only the content and
-                # the indicator survives an arbitrary translation unchanged.
-                content, trailing_newlines = self._split_trailing_newlines(str(value))
-            else:
-                content = str(value)
-                trailing_newlines = ""
+        is_block = isinstance(value, (LiteralScalarString, FoldedScalarString))
+        if is_block:
+            # Block scalars carry trailing newlines that encode their style.
+            content, trailing_newlines = self._split_trailing_newlines(str(value))
+        else:
+            content = str(value)
+            trailing_newlines = ""
 
-            if not content.strip():
-                # Empty or blank scalars are preserved verbatim and never emit a
-                # unit: an empty source would serialize as a spurious ``msgid ""``
-                # and a wrapping callback would corrupt the value.
-                return
+        if not content.strip():
+            return
 
-            unit = self.addsourceunit(content)
-            if self.filename:
-                unit.addlocation(f"{self.filename}:{path}")
-            else:
-                unit.addlocation(path)
-            unit.setdocpath(path)
-            translated = self.callback(content)
+        self._yaml_budget.count_unit()
+        unit = self.addsourceunit(content)
+        if self.filename:
+            unit.addlocation(f"{self.filename}:{path}")
+        else:
+            unit.addlocation(path)
+        unit.setdocpath(path)
+        translated = self.callback(content)
 
-            if is_block:
-                # Re-wrap in the same block subtype, restore the chomping via the
-                # trailing newlines, and carry over the first-line comment.
-                # Fold positions are offsets into the scalar content, so they
-                # are safe to retain only for an identity translation.
-                new_value = type(value)(translated + trailing_newlines)
-                if hasattr(value, "comment"):
-                    new_value.comment = value.comment
-                if (
-                    translated == content
-                    and isinstance(value, FoldedScalarString)
-                    and hasattr(value, "fold_pos")
-                ):
-                    new_value.fold_pos = value.fold_pos
-                container[key] = new_value
-            elif isinstance(value, ScalarString):
-                # Preserve the original quoting style for flow scalars.
-                container[key] = type(value)(translated)
-            else:
-                container[key] = translated
+        if is_block:
+            new_value = type(value)(translated + trailing_newlines)
+            if hasattr(value, "comment"):
+                new_value.comment = value.comment
+            if (
+                translated == content
+                and isinstance(value, FoldedScalarString)
+                and isinstance(new_value, FoldedScalarString)
+                and hasattr(value, "fold_pos")
+            ):
+                new_value.fold_pos = value.fold_pos
+            container[key] = new_value
+        elif isinstance(value, ScalarString):
+            container[key] = type(value)(translated)
+        else:
+            container[key] = translated
 
     @staticmethod
     def _split_trailing_newlines(text: str) -> tuple[str, str]:
@@ -617,49 +629,49 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
 
         yield from self.embed_span(Fragment("["), token.children, Fragment("]"))  # ty:ignore[invalid-argument-type]
 
-        if token.dest_type in {"uri", "angle_uri"}:  # ty:ignore[unresolved-attribute]
+        if token.dest_type in {"uri", "angle_uri"}:  # ty:ignore[missing-attribute]
             # Markdown link format: "[" description "](" dest_part [" " title] ")"
-            dest_part = f"<{target}>" if token.dest_type == "angle_uri" else target  # ty:ignore[unresolved-attribute]
+            dest_part = f"<{target}>" if token.dest_type == "angle_uri" else target  # ty:ignore[missing-attribute]
             placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
-            placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
+            placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
                 Fragment("("),
                 Fragment(dest_part),
             ]
-            if token.title:  # ty:ignore[unresolved-attribute]
+            if token.title:  # ty:ignore[missing-attribute]
                 translated_title = self.translate_callback(
-                    token.title,  # ty:ignore[unresolved-attribute]
+                    token.title,  # ty:ignore[missing-attribute]
                     [*self.path, "link-title"],
                     self._current_docpath,
                 )
-                placeholder.placeholder_content.extend(  # ty:ignore[unresolved-attribute]
+                placeholder.placeholder_content.extend(  # ty:ignore[missing-attribute]
                     [
                         Fragment(" ", wordwrap=True),
-                        Fragment(token.title_delimiter),  # ty:ignore[unresolved-attribute]
+                        Fragment(token.title_delimiter),  # ty:ignore[missing-attribute]
                         Fragment(translated_title, wordwrap=True),
                         Fragment(
                             ")"
-                            if token.title_delimiter == "("  # ty:ignore[unresolved-attribute]
-                            else token.title_delimiter  # ty:ignore[unresolved-attribute]
+                            if token.title_delimiter == "("  # ty:ignore[missing-attribute]
+                            else token.title_delimiter  # ty:ignore[missing-attribute]
                         ),
                     ]
                 )
-            placeholder.placeholder_content.append(Fragment(")"))  # ty:ignore[unresolved-attribute]
+            placeholder.placeholder_content.append(Fragment(")"))  # ty:ignore[missing-attribute]
             yield placeholder
-        elif token.dest_type == "full":  # ty:ignore[unresolved-attribute]
+        elif token.dest_type == "full":  # ty:ignore[missing-attribute]
             # Markdown link format: "[" description "][" label "]"
             translated_label = self.translate_callback(
-                token.label,  # ty:ignore[unresolved-attribute]
+                token.label,  # ty:ignore[missing-attribute]
                 [*self.path, "link-label"],
                 self._current_docpath,
             )
             placeholder = Fragment(None, important=True)  # ty:ignore[invalid-argument-type]
-            placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
+            placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
                 Fragment("["),
                 Fragment(translated_label, wordwrap=True),
                 Fragment("]"),
             ]
             yield placeholder
-        elif token.dest_type == "collapsed":  # ty:ignore[unresolved-attribute]
+        elif token.dest_type == "collapsed":  # ty:ignore[missing-attribute]
             # Markdown link format: "[" description "][]"
             yield Fragment("[]")
         else:
@@ -692,7 +704,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             )
 
         placeholder = Fragment(None)  # ty:ignore[invalid-argument-type]
-        placeholder.placeholder_content = [  # ty:ignore[unresolved-attribute]
+        placeholder.placeholder_content = [  # ty:ignore[missing-attribute]
             Fragment("["),
             Fragment(label, wordwrap=True),
             Fragment("]: ", wordwrap=True),
@@ -701,7 +713,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
             ),
         ]
         if title:
-            placeholder.placeholder_content.extend(  # ty:ignore[unresolved-attribute]
+            placeholder.placeholder_content.extend(  # ty:ignore[missing-attribute]
                 [
                     Fragment(" ", wordwrap=True),
                     Fragment(token.title_delimiter),
@@ -719,7 +731,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_heading(
         self, token: block_token.Heading, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._enter_heading(token.level)
         title_tokens, suffix = self._split_explicit_heading_id_tokens(token.children)
         if suffix:
@@ -750,7 +762,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_setext_heading(
         self, token: block_token.SetextHeading, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._enter_heading(token.level)
         title_tokens, suffix = self._split_explicit_heading_id_tokens(token.children)
         if suffix:
@@ -776,7 +788,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_quote(
         self, token: block_token.Quote, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._enter_container("blockquote")
         content = list(super().render_quote(token, max_line_length=max_line_length))
         self._exit_container()
@@ -786,7 +798,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_paragraph(
         self, token: block_token.Paragraph, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._build_docpath("p")
         content = list(super().render_paragraph(token, max_line_length=max_line_length))
         self.path.pop()
@@ -811,7 +823,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
         if not self.extract_code_blocks or self.ignore_translation:
             return super().render_block_code(token, max_line_length=max_line_length)
 
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._build_docpath("code")
         code_content = token.content[:-1]  # strip trailing \n
         translated = self.translate_callback(
@@ -832,7 +844,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 max_line_length=max_line_length,
             )
 
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._build_docpath("code")
         code_content = token.content[:-1]  # strip trailing \n
         translated = self.translate_callback(
@@ -858,7 +870,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_table(
         self, token: block_token.Table, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._table_docpath = self._build_docpath("table")
         self._table_row_index = 0
         content = list(super().render_table(token, max_line_length=max_line_length))
@@ -881,7 +893,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     def render_link_reference_definition_block(
         self, token: LinkReferenceDefinitionBlock, max_line_length: int | None
     ) -> Iterable[str]:
-        self.path.append(f":{token.line_number}")  # ty:ignore[unresolved-attribute]
+        self.path.append(f":{token.line_number}")  # ty:ignore[missing-attribute]
         self._current_docpath = self._build_docpath("link-ref-def")
         content = list(
             super().render_link_reference_definition_block(
@@ -1041,7 +1053,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
                 if end:
                     chunk = fragments[start:end]
                     placeholder = Fragment(None, placeholder_content=chunk)  # ty:ignore[invalid-argument-type]
-                    placeholder.important = any(  # ty:ignore[unresolved-attribute]
+                    placeholder.important = any(  # ty:ignore[missing-attribute]
                         getattr(fragment, "important", False) for fragment in chunk
                     )
                     fragments[start:end] = (placeholder,)
@@ -1102,7 +1114,7 @@ class TranslatingMarkdownRenderer(MarkdownRenderer):
     ) -> str:
         """Replaces placeholder markers in the given markdown with placeholder content."""
         for index, placeholder in enumerate(placeholders):
-            content = self.expand_placeholders(placeholder.placeholder_content)  # ty:ignore[unresolved-attribute]
+            content = self.expand_placeholders(placeholder.placeholder_content)  # ty:ignore[missing-attribute]
             content_md = "\n".join(
                 self.fragments_to_lines(content, max_line_length=float("inf"))  # ty:ignore[invalid-argument-type]
             )

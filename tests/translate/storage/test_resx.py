@@ -19,6 +19,8 @@
 
 from io import BytesIO
 
+import pytest
+
 from translate.storage import resx
 
 from . import test_monolingual
@@ -26,6 +28,31 @@ from . import test_monolingual
 
 class TestRESXUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = resx.RESXUnit
+
+    @pytest.mark.parametrize(
+        "name", ["simple", "with space", "with\ttab", "with\nnewline"]
+    )
+    def test_id_round_trip(self, name: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        store = resx.RESXFile()
+        store.addunit(unit)
+        before = bytes(store)
+        unit.validate_id(name)
+        assert unit.getid() == "old"
+        assert bytes(store) == before
+        unit.setid(name)
+        assert resx.RESXFile(BytesIO(bytes(store))).units[0].getid() == name
+
+    @pytest.mark.parametrize("name", ["bad\x00name", "bad\ud800name", "bad\uffffname"])
+    def test_id_rejects_invalid_xml(self, name: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("old")
+        with pytest.raises(ValueError):
+            unit.validate_id(name)
+        with pytest.raises(ValueError):
+            unit.setid(name)
+        assert unit.getid() == "old"
 
 
 class TestRESXUnitFromParsedString(TestRESXUnit):

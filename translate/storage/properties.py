@@ -130,10 +130,10 @@ Name and Value pairs:
 from __future__ import annotations
 
 import re
-from codecs import iterencode
+from codecs import BOM_UTF16_LE, BOM_UTF32_LE, iterencode
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import Self, TypeVar
 
 from lxml import etree
 
@@ -148,7 +148,7 @@ from translate.misc.quote import (
     xwiki_properties_decode,
     xwiki_properties_encode,
 )
-from translate.misc.xml_helpers import get_safe_xml_parser
+from translate.misc.xml_helpers import extract_xml_prolog, get_safe_xml_parser
 from translate.storage import base
 
 labelsuffixes = (".label", ".title")
@@ -177,16 +177,7 @@ def is_line_continuation(line: str) -> bool:
     :param line: A properties line
     :return: Does *line* end with a line continuation
     """
-    pos = -1
-    count = 0
-    if len(line) == 0:
-        return False
-    # Count the slashes from the end of the line. Ensure we don't
-    # go into infinite loop.
-    while len(line) >= -pos and line[pos:][0] == "\\":
-        pos -= 1
-        count += 1
-    return (count % 2) == 1  # Odd is a line continuation, even is not
+    return (len(line) - len(line.rstrip("\\"))) % 2 == 1
 
 
 def get_comment_one_line(line: str) -> str | None:
@@ -287,10 +278,6 @@ class Dialect:
         :param delimiters: valid delimiters
         :return: delimiter character and offset within *line*
         """
-        delimiter_dict = {}
-        for delimiter in cls.delimiters:
-            delimiter_dict[delimiter] = -1
-        delimiters = delimiter_dict
         # Figure out starting position
         start_pos = len(line) - len(line.lstrip())  # Skip initial whitespace
         if (
@@ -300,47 +287,44 @@ class Dialect:
         ):
             # Skip the key if it is delimited by some char
             start_pos += 1
-            while line[start_pos] != cls.key_wrap_char or line[start_pos - 1] == "\\":
+            escaped = False
+            while start_pos < len(line):
+                char = line[start_pos]
+                if char == cls.key_wrap_char and not escaped:
+                    break
+                escaped = char == "\\" and not escaped
                 start_pos += 1
-        # Find the position of each delimiter type
-        for delimiter, value in delimiters.items():
-            if delimiter == " ":
-                # For whitespace delimiter, find any whitespace character (tab, space, etc.)
-                pos = start_pos
-                while pos < len(line):
-                    if line[pos].isspace() and (pos == 0 or line[pos - 1] != "\\"):
-                        delimiters[delimiter] = pos
-                        break
-                    pos += 1
-            else:
-                pos = line.find(delimiter, start_pos)
-                while pos != -1:
-                    if value == -1 and line[pos - 1] != "\\":
-                        delimiters[delimiter] = pos
-                        break
-                    pos = line.find(delimiter, pos + 1)
-        # Find the first delimiter
         mindelimiter = None
         minpos = -1
-        for delimiter, pos in delimiters.items():
-            if pos == -1 or delimiter == " ":
+        for delimiter in cls.delimiters:
+            if delimiter == " ":
                 continue
-            if minpos == -1 or pos < minpos:
-                minpos = pos
-                mindelimiter = delimiter
-        if mindelimiter is None and delimiters.get(" ", -1) != -1:
-            # Use space delimiter if we found nothing else
-            return (" ", delimiters[" "])
-        # If space delimiter occurs earlier than ":" or "=" then it is the
-        # delimiter only if there are non-whitespace characters between it and
-        # the other detected delimiter.
-        if (
-            mindelimiter is not None
-            and " " in delimiters
-            and delimiters[" "] < delimiters[mindelimiter]
-            and len(line[delimiters[" "] : delimiters[mindelimiter]].strip()) > 0
-        ):
-            return (" ", delimiters[" "])
+            # Later searches only need matches before the current delimiter.
+            end = len(line) if minpos == -1 else minpos + len(delimiter) - 1
+            pos = line.find(delimiter, start_pos, end)
+            while pos != -1:
+                if line[pos - 1] != "\\":
+                    mindelimiter = delimiter
+                    minpos = pos
+                    break
+                pos = line.find(delimiter, pos + 1, end)
+
+        if " " in cls.delimiters:
+            spacepos = -1
+            end = len(line) if minpos == -1 else minpos
+            pos = start_pos
+            whitespace = re.compile(r"\s")
+            while match := whitespace.search(line, pos, end):
+                pos = match.start()
+                if pos == 0 or line[pos - 1] != "\\":
+                    spacepos = pos
+                    break
+                pos += 1
+            if mindelimiter is None:
+                return (" ", spacepos) if spacepos != -1 else (None, -1)
+            # Retain the negative-index slice when whitespace is absent.
+            if spacepos < minpos and line[spacepos:minpos].strip():
+                return (" ", spacepos)
         return (mindelimiter, minpos)
 
     @staticmethod
@@ -434,7 +418,7 @@ class DialectXWiki(DialectJava):
 
     @staticmethod
     def encode(string, encoding=None):
-        return xwiki_properties_encode(string or "", encoding)  # ty:ignore[invalid-argument-type]
+        return xwiki_properties_encode(string or "", encoding)
 
     @staticmethod
     def decode(string):
@@ -487,8 +471,8 @@ class DialectGwt(DialectJavaUtf8):
     @classmethod
     def get_key_cldr_name(cls, key):
         match = cls.plural_regex.fullmatch(key)
-        basekey = match.group(1)  # ty:ignore[unresolved-attribute]
-        variant = match.group(2)  # ty:ignore[unresolved-attribute]
+        basekey = match.group(1)  # ty:ignore[missing-union-attribute]
+        variant = match.group(2)  # ty:ignore[missing-union-attribute]
         if variant is None:
             variant = ""
 
@@ -567,6 +551,9 @@ class DialectStrings(Dialect):
     @staticmethod
     def key_strip(key):
         """Strip unneeded characters from the key."""
+        stripped = key.strip()
+        if len(stripped) >= 2 and stripped[0] == stripped[-1] == '"':
+            return stripped[1:-1].replace('\\"', '"')
         newkey = key.rstrip().rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newkey[-1:] == "\\":
@@ -588,12 +575,17 @@ class DialectStrings(Dialect):
         - After value: ``"key" = "value" /* comment */;``
         """
         comments = []
+        # Most lines carry no comment at all, nothing to strip there
+        if "/*" not in line:
+            return line, comments
+
         result = []
+        length = len(line)
         i = 0
         in_quote = False
         escape_next = False
 
-        while i < len(line):
+        while i < length:
             char = line[i]
 
             # Handle escape sequences
@@ -617,37 +609,23 @@ class DialectStrings(Dialect):
                 continue
 
             # Only process comments outside of quotes
-            if not in_quote and i + 1 < len(line) and line[i : i + 2] == "/*":
-                # Found start of comment, find the end
-                comment_start = i
-                # Skip any whitespace before the comment
-                ws_start = i
-                while ws_start > 0 and line[ws_start - 1] in " \t":
-                    ws_start -= 1
+            if not in_quote and line.startswith("/*", i):
                 # Trim trailing whitespace before comment from result
                 while result and result[-1] in " \t":
                     result.pop()
 
-                i += 2
-                comment_found = False
-                while i < len(line):
-                    if i + 1 < len(line) and line[i : i + 2] == "*/":
-                        # Found end of comment
-                        comment = line[comment_start : i + 2]
-                        comments.append(comment)
-                        i += 2
-                        # Skip whitespace after comment
-                        while i < len(line) and line[i] in " \t":
-                            i += 1
-                        comment_found = True
-                        break
+                # Found start of comment, find the end
+                comment_end = line.find("*/", i + 2)
+                if comment_end == -1:
+                    # If no closing */ found, treat rest of line as comment
+                    comments.append(line[i:])
+                    break
+                comment_end += 2
+                comments.append(line[i:comment_end])
+                # Skip whitespace after comment
+                i = comment_end
+                while i < length and line[i] in " \t":
                     i += 1
-
-                # If no closing */ found, treat rest of line as comment
-                if not comment_found:
-                    comment = line[comment_start:]
-                    comments.append(comment)
-                    # i is already at end of line, loop will exit
             else:
                 result.append(char)
                 i += 1
@@ -684,6 +662,86 @@ class DialectStringsUtf8(DialectStrings):
     default_encoding = "utf-8"
 
 
+def validate_property_key(value: str, personality: Dialect) -> None:
+    """
+    Check serialized key spelling, including Java backslash escapes.
+
+    Java ``getid()`` returns the key as written in the file, not its decoded
+    value. Keeping that spelling ensures a parsed unit round trips unchanged.
+    """
+    if not isinstance(value, str):
+        raise TypeError("Property key must be a string")
+    quoted_key: bool = bool(personality.key_wrap_char) and not (
+        personality.skip_key_quote_re and personality.skip_key_quote_re.match(value)
+    )
+    # Tab is allowed only inside quoted keys
+    control_chars = r"[\x00-\x08\x0a-\x1f\x7f]" if quoted_key else r"[\x00-\x1f\x7f]"
+    if re.search(control_chars, value):
+        raise ValueError("Property key cannot be represented safely")
+    if is_line_continuation(value):
+        raise ValueError("Property key cannot be represented safely")
+    if not quoted_key and value.endswith("\\"):
+        # The property parser treats the following output delimiter as escaped.
+        raise ValueError("Property key cannot be represented safely")
+    if quoted_key:
+        backslashes = 0
+        for char in value:
+            if char == "\\":
+                backslashes += 1
+            else:
+                if char == personality.key_wrap_char and backslashes % 2:
+                    raise ValueError("Property key cannot be represented safely")
+                backslashes = 0
+        if backslashes % 2:
+            raise ValueError("Property key cannot be represented safely")
+        return
+    if personality.key_wrap_char and not re.fullmatch(r"[A-Za-z0-9_$/:.-]+", value):
+        raise ValueError("Property key cannot be represented safely")
+    if personality.name == "joomla" and (
+        not value
+        or any(char.isspace() or char in '?{}|&~!()^"[]=;$' for char in value)
+        or value.lower() in {"null", "yes", "no", "true", "false", "on", "off", "none"}
+    ):
+        raise ValueError("Property key cannot be represented safely")
+    escaped = False
+    for pos, char in enumerate(value):
+        if char == "\\":
+            escaped = not escaped
+            continue
+        if (
+            not personality.key_wrap_char
+            and escaped
+            and char == "u"
+            and not re.fullmatch(r"[0-9A-Fa-f]{4}", value[pos + 1 : pos + 5])
+        ):
+            raise ValueError("Property key cannot be represented safely")
+        if (
+            (
+                char in personality.delimiters
+                or (" " in personality.delimiters and char.isspace())
+            )
+            and not escaped
+        ) or (personality.key_wrap_char and char in {'"', ";"}):
+            raise ValueError("Property key cannot be represented safely")
+        escaped = False
+    if (
+        get_comment_one_line(value) is not None
+        or get_comment_start(value) is not None
+        or personality.key_strip(value) != value
+    ):
+        raise ValueError("Property key cannot be represented safely")
+
+
+def validate_property_key_encoding(value: str, encoding: str) -> None:
+    """Reject keys the store would fail to encode during serialization."""
+    try:
+        value.encode(encoding)
+    except UnicodeEncodeError as error:
+        raise ValueError(
+            "Property key cannot be represented in file encoding"
+        ) from error
+
+
 class proppluralunit(base.TranslationUnit):
     KEY = "other"
 
@@ -693,6 +751,39 @@ class proppluralunit(base.TranslationUnit):
         super().__init__(source)
         self.units = {}
         self.name = ""
+
+    _detached_target_language: str | None = None
+    _detached_source_tags: tuple[str, ...] = ()
+
+    def copy(self) -> Self:
+        members = {id(child): child.copy() for child in self.units.values()}
+        result = deepcopy(self, {id(self._store): None, **members})
+        result._detached_source_tags = tuple(self._get_source_mapping())
+        if self._store is not None:
+            result._detached_target_language = self._store.get_base_locale_code()
+        return result
+
+    def _target_mapping(self, target=None):
+        if (
+            self.personality.name == "gwt"
+            and isinstance(target, (list, multistring))
+            and len(self.get_plural_strings(target)) == 1
+        ):
+            return [self.KEY]
+        if self._store is None:
+            if self._detached_target_language is not None:
+                count = None if target is None else len(self.get_plural_strings(target))
+                return data.get_cldr_plural_tags(self._detached_target_language, count)
+            return self._get_existing_mapping()
+        return self._store.get_plural_tags(target)
+
+    def __eq__(self, other):
+        return super().__eq__(other) and (
+            not isinstance(other, proppluralunit)
+            or self.plural_forms == other.plural_forms
+        )
+
+    __hash__ = base.TranslationUnit.__hash__
 
     @staticmethod
     def _get_language_mapping(lang):
@@ -706,20 +797,32 @@ class proppluralunit(base.TranslationUnit):
         return [key for key in data.cldr_plural_categories if key in existing]
 
     def _get_source_mapping(self):
-        cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)  # ty:ignore[unresolved-attribute]
+        if self._store is None:
+            return self._detached_source_tags or self._get_existing_mapping()
+        cldr_mapping = self._get_language_mapping(self._store.sourcelanguage)
         if cldr_mapping:
             return cldr_mapping
         return self._get_existing_mapping()
 
-    def _get_units(self, mapping):
+    def _new_variant(self, tag):
+        child = propunit("", self.personality.name)
+        child._store = self._store
+        if self._store is None and self.KEY in self.units:
+            child._encoding = self.units[self.KEY].encoding
+        child.name = self.personality.get_key(self.name, tag)
+        return child
+
+    def _get_units(self, mapping, *, create=False):
         ret = []
         if len(self.units) > 1:
             for name in mapping:
                 if name not in self.units:
-                    unit = propunit("", self.personality.name)
-                    unit.name = self.personality.get_key(self.name, name)
-                    self.units[name] = unit
-                ret.append(self.units[name])
+                    unit = self._new_variant(name)
+                    if create:
+                        self.units[name] = unit
+                else:
+                    unit = self.units[name]
+                ret.append(unit)
         else:
             ret.append(self.units[proppluralunit.KEY])
         return ret
@@ -738,18 +841,48 @@ class proppluralunit(base.TranslationUnit):
         return ret
 
     def _get_source_unit(self):
-        self._get_units(self._get_source_mapping())  # Generate missing forms
         return self.units[proppluralunit.KEY]
 
-    def _get_ordered_units(self):
-        # Used for str (GWT order)
-        mapping = self.personality.get_expand_output_target_mapping(
-            self._store.get_plural_tags()  # ty:ignore[unresolved-attribute]
-        )
-        names = [
-            name for name in self.personality.get_cldr_names_order() if name in mapping
-        ]
-        return self._get_units(names)
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        if self.personality.name != "gwt" or not self.hasplural():
+            return None
+        return {
+            tag: child.target
+            if child.translation or child.explicit_empty_target
+            else child.source
+            for tag, child in self.units.items()
+        }
+
+    def _merge_named_target(self, forms) -> None:
+        if self.KEY not in forms or len(forms) < 2:
+            forms = {**dict.fromkeys(self.units, ""), **forms}
+        self._write_plural_forms(forms, merging=True)
+
+    def _replace_plural_forms(self, forms: dict[str, str]) -> None:
+        self._write_plural_forms(forms, merging=False)
+
+    def _write_plural_forms(self, forms: dict[str, str], *, merging: bool) -> None:
+        if "other" not in forms or len(forms) < 2:
+            raise ValueError("A GWT plural group needs a default and a named variant")
+        if forms.keys() - set(self.personality.get_cldr_names_order()):
+            raise ValueError("Unknown GWT plural variant")
+        current = self._get_plural_forms()
+        for tag in self.units.keys() - forms:
+            del self.units[tag]
+        for tag, value in forms.items():
+            if not merging and current is not None and current.get(tag) == value:
+                continue
+            child = self.units.get(tag)
+            if child is None:
+                child = self._new_variant(tag)
+                self.units[tag] = child
+            child.target = value
+            child.explicit_empty_target = not value
+        self._rich_source = self._rich_target = None
+        self._invalidate_store_indexes()
+
+    def _has_target_text(self) -> bool:
+        return any(child.target for child in self.units.values())
 
     def hasplural(self, key=None):
         if key is None:
@@ -767,22 +900,64 @@ class proppluralunit(base.TranslationUnit):
         else:
             strings = [text]
         if mapping is None:
-            mapping = self._store.get_plural_tags(text)  # ty:ignore[unresolved-attribute]
+            mapping = self._target_mapping(text)
+
+        removed: set[str] = set()
+        if (
+            self.personality.name == "gwt"
+            and self.hasplural()
+            and isinstance(text, (multistring, list))
+        ):
+            if len(strings) > len(mapping):
+                raise ValueError(
+                    f"Cannot map {len(strings)} positional forms to {', '.join(mapping)}"
+                )
+            if len(strings) == len(mapping) and strings == self.get_plural_strings(
+                self.target
+            ):
+                return
+            removed = set(mapping[len(strings) :])
+            if (
+                self.KEY in removed
+                or len((self.units.keys() | set(mapping[: len(strings)])) - removed) < 2
+            ):
+                raise ValueError(
+                    "A GWT plural group needs a default and a named variant"
+                )
+            mapping = mapping[: len(strings)]
 
         strings = self._get_strings(strings, mapping)
-        units = self._get_units(mapping)
+        sparse = (
+            self.personality.name == "gwt"
+            and self.hasplural()
+            and isinstance(text, (list, multistring))
+        )
+        units = self._get_units(mapping, create=not sparse)
         if len(strings) != len(units):
             raise ValueError(
                 f'Not same plural counts between "{strings}" and "{units}"'
             )
-        if "other" not in mapping and "other" in self.units:
-            self.units["other"].target = strings[-1]
 
-        for a, b in zip(strings, units, strict=True):
-            b.target = a
+        for tag in self.units.keys() & removed:
+            del self.units[tag]
+        for tag, value, child in zip(mapping, strings, units, strict=False):
+            if (sparse or child.explicit_empty_target) and value == child.target:
+                continue
+            if sparse:
+                self.units[tag] = child
+            child.target = value
+            if (sparse or isinstance(text, dict)) and not value:
+                child.explicit_empty_target = True
+        self._rich_source = self._rich_target = None
+        self._invalidate_store_indexes()
+        self.units = {
+            key: self.units[key]
+            for key in self.personality.get_cldr_names_order()
+            if key in self.units
+        }
 
     def gettarget(self):
-        ll = [x.target for x in self._get_units(self._store.get_plural_tags())]  # ty:ignore[unresolved-attribute]
+        ll = [x.target for x in self._get_units(self._target_mapping())]
         if len(ll) > 1:
             return multistring(ll)
         return ll[0]
@@ -810,7 +985,7 @@ class proppluralunit(base.TranslationUnit):
             mapping = self._get_source_mapping()
 
         strings = self._get_strings(strings, mapping)
-        units = self._get_units(mapping)
+        units = self._get_units(mapping, create=True)
         if len(strings) != len(units):
             raise ValueError(
                 f'Not same plural counts between "{strings}" and "{units}"'
@@ -859,6 +1034,8 @@ class proppluralunit(base.TranslationUnit):
         return self._get_source_unit().getlocations()
 
     def add_unit(self, unit, variant) -> None:
+        if self._store is not None:
+            unit._store = self._store
         self.units[variant] = unit
 
     def isblank(self) -> bool:
@@ -874,16 +1051,45 @@ class proppluralunit(base.TranslationUnit):
     def getid(self):
         return self.name
 
-    def setid(self, value) -> None:
-        self._invalidate_store_indexes()
+    def validate_id(self, value: str) -> None:
+        super().validate_id(value)
         previous = self.name
-        self.name = value
+        validate_property_key(value, self.personality)
+        if not value:
+            raise ValueError("Property plural base cannot be empty")
+        encoding = (
+            self._store.encoding
+            if self._store is not None
+            else self.personality.default_encoding
+        )
+        validate_property_key_encoding(value, encoding)
+        if self.personality.get_key_cldr_name(value) != (value, self.KEY):
+            raise ValueError("Property key changes plural base or variant")
         for variant, unit in self.units.items():
-            unit.setid(
+            name = (
                 value
                 if variant == self.KEY and unit.name == previous
                 else self.personality.get_key(value, variant)
             )
+            unit.validate_id(name)
+            if self.personality.get_key_cldr_name(name) != (value, variant):
+                raise ValueError("Property key changes plural base or variant")
+
+    def setid(self, value) -> None:
+        previous = self.name
+        self.validate_id(value)
+        names = {
+            variant: (
+                value
+                if variant == self.KEY and unit.name == previous
+                else self.personality.get_key(value, variant)
+            )
+            for variant, unit in self.units.items()
+        }
+        self._invalidate_store_indexes()
+        self.name = value
+        for variant, unit in self.units.items():
+            unit.setid(names[variant])
 
     @property
     def missing(self):
@@ -901,7 +1107,7 @@ class proppluralunit(base.TranslationUnit):
         return self.getoutput()
 
     def getoutput(self):
-        return "".join(unit.getoutput() for unit in self._get_ordered_units())
+        return "".join(unit.getoutput() for unit in self.units.values())
 
     @property
     def encoding(self):
@@ -950,12 +1156,21 @@ class propunit(base.TranslationUnit):
     associated.
     """
 
+    _encoding: str | None = None
+
+    def copy(self) -> Self:
+        """Copy a native unit without retaining its store or losing its encoding."""
+        result = deepcopy(self, {id(self._store): None})
+        result._encoding = self.encoding
+        return result
+
     def __init__(self, source="", personality="java") -> None:
         """Construct a blank propunit."""
         self.personality = get_dialect(personality)
         super().__init__(source)
         self.name = ""
         self.value = ""
+        self.explicit_empty_target = False
         self.translation = ""
         self.delimiter = "="
         self.comments = []
@@ -1013,6 +1228,7 @@ class propunit(base.TranslationUnit):
     @target.setter
     def target(self, target) -> None:
         self._rich_target = None
+        self.explicit_empty_target = False
         self.translation = self.personality.encode(target or "", self.encoding)
         self.explicitly_missing = not bool(target)
 
@@ -1020,7 +1236,7 @@ class propunit(base.TranslationUnit):
     def encoding(self):
         if self._store:
             return self._store.encoding
-        return self.personality.default_encoding
+        return self._encoding or self.personality.default_encoding
 
     def __str__(self) -> str:
         """Convert to a string."""
@@ -1043,7 +1259,11 @@ class propunit(base.TranslationUnit):
             key = key.replace(kwc, f"\\{kwc}")
             key = f"{kwc}{key}{kwc}"
         # encode value, if needed
-        value = self.translation or self.value
+        value = (
+            self.translation
+            if self.explicit_empty_target
+            else self.translation or self.value
+        )
         vwc = self.personality.value_wrap_char
         if vwc:
             value = value.replace(vwc, f"\\{vwc}")
@@ -1112,7 +1332,13 @@ class propunit(base.TranslationUnit):
     def getid(self):
         return self.name
 
+    def validate_id(self, value: str) -> None:
+        super().validate_id(value)
+        validate_property_key(value, self.personality)
+        validate_property_key_encoding(value, self.encoding)
+
     def setid(self, value) -> None:
+        self.validate_id(value)
         self._invalidate_store_indexes()
         self.name = value
 
@@ -1160,6 +1386,12 @@ class propfile(base.TranslationStore):
 
     UnitClass = propunit
 
+    def addunit(self, unit: base.TranslationUnit) -> None:
+        super().addunit(unit)
+        if isinstance(unit, proppluralunit):
+            for member in unit.units.values():
+                member._store = self
+
     def __init__(self, inputfile=None, personality="java", encoding=None) -> None:
         """Construct a propfile, optionally reading in from inputfile."""
         super().__init__()
@@ -1172,7 +1404,7 @@ class propfile(base.TranslationStore):
             self.parse(propsrc)
             self.makeindex()
 
-    def parse(self, propsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, propsrc) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read the source of a properties file in and include them as units."""
         text, encoding = self.detect_encoding(
             propsrc,
@@ -1425,29 +1657,7 @@ class XWikiPageProperties(xwikifile):
 
     Name = "XWiki Page Properties"
     Extensions = ["xml"]
-    XML_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
-
-<!--
- * See the NOTICE file distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: https://www.fsf.org.
--->
-
-"""
+    XML_HEADER = '<?xml version="1.1" encoding="UTF-8"?>\n'
 
     XWIKI_BASIC_XML = """<xwikidoc>
     <translation>0</translation>
@@ -1461,6 +1671,8 @@ class XWikiPageProperties(xwikifile):
         kwargs["personality"] = "xwiki"
         kwargs["encoding"] = "utf-8"
         self.root = None
+        self.xml_prolog = self.XML_HEADER.encode("utf-8")
+        self.xml_encoding = "utf-8"
         super(xwikifile, self).__init__(*args, **kwargs)
 
     def is_source_file(self):
@@ -1471,17 +1683,37 @@ class XWikiPageProperties(xwikifile):
         return get_safe_xml_parser(strip_cdata=False)
 
     def extract_language(self) -> None:
-        language_node = self.root.find("language")  # ty:ignore[unresolved-attribute]
+        language_node = self.root.find("language")  # ty:ignore[missing-union-attribute]
         if language_node is not None and language_node.text:
             self.setsourcelanguage(language_node.text)
         else:
-            language_node = self.root.find("defaultLanguage")  # ty:ignore[unresolved-attribute]
+            language_node = self.root.find("defaultLanguage")  # ty:ignore[missing-union-attribute]
             if language_node is not None and language_node.text:
                 self.setsourcelanguage(language_node.text)
 
-    def parse(self, propsrc) -> None:
+    def parse_xwiki_xml(self, propsrc) -> None:
+        """Read the XML wrapper and preserve its original prolog and encoding."""
+        self.root = None
+        self.xml_prolog = self.XML_HEADER.encode(self.encoding)
+        self.xml_encoding = "utf-8"
         if propsrc != b"\n":
             self.root = etree.XML(propsrc, self.get_parser())
+            self.xml_prolog = extract_xml_prolog(propsrc)
+            self.xml_encoding = self.root.getroottree().docinfo.encoding
+            # The prolog already contains any BOM. Use an explicit byte order
+            # so encoding the body and final newline does not insert another.
+            if self.xml_encoding.upper() == "UTF-16":
+                self.xml_encoding = (
+                    "UTF-16LE" if propsrc.startswith(BOM_UTF16_LE) else "UTF-16BE"
+                )
+            elif self.xml_encoding.upper() == "UTF-32":
+                self.xml_encoding = (
+                    "UTF-32LE" if propsrc.startswith(BOM_UTF32_LE) else "UTF-32BE"
+                )
+
+    def parse(self, propsrc) -> None:
+        self.parse_xwiki_xml(propsrc)
+        if self.root is not None:
             content = "".join(self.root.find("content").itertext())
             content = content.encode(self.encoding)
             self.extract_language()
@@ -1504,10 +1736,12 @@ class XWikiPageProperties(xwikifile):
             newroot.set("locale", language_node.text)
 
     def write_xwiki_xml(self, newroot, out) -> None:
-        xml_content = etree.tostring(newroot, encoding=self.encoding, method="xml")
-        out.write(self.XML_HEADER.encode(self.encoding))
+        xml_content = etree.tostring(
+            newroot, encoding=self.xml_encoding, method="xml", xml_declaration=False
+        )
+        out.write(self.xml_prolog)
         out.write(xml_content)
-        out.write(b"\n")
+        out.write("\n".encode(self.xml_encoding))
 
     def serialize(self, out) -> None:
         if self.root is None:
@@ -1538,8 +1772,8 @@ class XWikiFullPage(XWikiPageProperties):
     Name = "XWiki Full Page"
 
     def parse(self, propsrc) -> None:
-        if propsrc != b"\n":
-            self.root = etree.XML(propsrc, self.get_parser())
+        self.parse_xwiki_xml(propsrc)
+        if self.root is not None:
             content = "".join(self.root.find("content").itertext()).replace("\n", "\\n")
             title = "".join(self.root.find("title").itertext())
             forparsing = ""

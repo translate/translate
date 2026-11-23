@@ -21,15 +21,22 @@ r"""Class that manages YAML data files for translation."""
 from __future__ import annotations
 
 import uuid
+from copy import deepcopy
+from datetime import date
 from typing import TYPE_CHECKING, Any
 
 from ruamel.yaml import YAML, YAMLError
-from ruamel.yaml.comments import CommentedMap, TaggedScalar
+from ruamel.yaml.comments import CommentedMap, TaggedScalar, merge_attrib
 from ruamel.yaml.scalarstring import LiteralScalarString
 
 from translate.lang.data import cldr_plural_categories
 from translate.misc.multistring import multistring
 from translate.storage import base
+from translate.storage.yaml_limits import (
+    DEFAULT_MAX_YAML_NODES,
+    DEFAULT_MAX_YAML_UNITS,
+    YAMLTraversalBudget,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -114,25 +121,21 @@ class YAMLUnit(base.DictUnit):
         # Get the original value to check its type before it gets overwritten
         original_value = self._get_original_value(output)
 
-        # Preserve or convert to LiteralScalarString for better readability
-        # Always preserve LiteralScalarString if original was one, or
-        # for new values or plain strings, use LiteralScalarString if multiline
-        if (
-            isinstance(value, str)
-            and not unset
-            and (
-                isinstance(original_value, LiteralScalarString)
-                or (
-                    "\n" in value
-                    and (original_value is None or type(original_value) is str)
-                )
+        if not unset:
+            value = self._styled_value(original_value, value)
+        super().storevalue(output, value, override_key, unset)
+
+    @staticmethod
+    def _styled_value(original_value, value):
+        if isinstance(value, str) and (
+            isinstance(original_value, LiteralScalarString)
+            or (
+                "\n" in value
+                and (original_value is None or type(original_value) is str)
             )
         ):
-            value = LiteralScalarString(value)
-        # Otherwise keep the value as-is (e.g., DoubleQuotedScalarString stays quoted)
-
-        # Call parent storevalue
-        super().storevalue(output, value, override_key, unset)
+            return LiteralScalarString(value)
+        return value
 
     def storevalues(self, output: dict[str, Any] | list[Any]) -> None:
         self.storevalue(output, self.convert_target())
@@ -143,9 +146,21 @@ class YAMLFile(base.DictStore[YAMLUnit]):
 
     UnitClass = YAMLUnit
 
-    def __init__(self, inputfile=None, **kwargs) -> None:
-        """Construct a YAML file, optionally reading in from inputfile."""
+    def __init__(
+        self,
+        inputfile=None,
+        *,
+        max_yaml_nodes: int | None = DEFAULT_MAX_YAML_NODES,
+        max_yaml_units: int | None = DEFAULT_MAX_YAML_UNITS,
+        **kwargs,
+    ) -> None:
+        """
+        Construct a YAML file with optional traversal and unit limits.
+
+        Pass None for either limit to disable it for trusted input.
+        """
         super().__init__(**kwargs)
+        self._yaml_budget = YAMLTraversalBudget(max_yaml_nodes, max_yaml_units)
         self.filename = ""
         self._original = self.get_root_node()
         self.dump_args = {
@@ -254,56 +269,61 @@ class YAMLFile(base.DictStore[YAMLUnit]):
         key=None,
         previous_key=None,
         is_first_key=False,
-    ) -> Generator[tuple[base.UnitId, str, str | None]]:
+    ) -> Generator[tuple[base.UnitId, str | YAMLUnit, str | None]]:
         """
         Flatten YAML dictionary.
 
         Yields tuples of (unit_id, data, comment) where comment may be None.
         """
-        if prev is None:
-            prev = self.UnitClass.IdClass([])
-        if isinstance(data, dict):
-            yield from self._parse_dict(data, prev)
-        elif isinstance(data, str):
-            yield (
-                prev,
-                data,
-                self._get_key_comment(parent_map, key, previous_key, is_first_key),
-            )
-        elif isinstance(data, (bool, int)):
-            yield (
-                prev,
-                str(data),
-                self._get_key_comment(parent_map, key, previous_key, is_first_key),
-            )
-        elif isinstance(data, list):
-            for k, v in enumerate(data):
-                yield from self._flatten(
-                    v, prev.extend("index", k), parent_map=data, key=k
+        with self._yaml_budget.visit(data):
+            if prev is None:
+                prev = self.UnitClass.IdClass([])
+            if isinstance(data, dict):
+                yield from self._parse_dict(data, prev)
+            elif isinstance(data, str):
+                yield (
+                    prev,
+                    data,
+                    self._get_key_comment(parent_map, key, previous_key, is_first_key),
                 )
-        elif isinstance(data, TaggedScalar):
-            yield (
-                prev,
-                data.value,
-                self._get_key_comment(parent_map, key, previous_key, is_first_key),
-            )
-        elif data is None:
-            pass
-        else:
-            raise ValueError(
-                "We don't handle these values:\n"
-                f"Type: {type(data)}\n"
-                f"Data: {data}\n"
-                f"Previous: {prev}"
-            )
+            elif isinstance(data, (bool, int)):
+                yield (
+                    prev,
+                    str(data),
+                    self._get_key_comment(parent_map, key, previous_key, is_first_key),
+                )
+            elif isinstance(data, (float, date)):
+                # Not translatable; left as is in the output.
+                pass
+            elif isinstance(data, list):
+                for k, v in enumerate(data):
+                    yield from self._flatten(
+                        v, prev.extend("index", k), parent_map=data, key=k
+                    )
+            elif isinstance(data, TaggedScalar):
+                yield (
+                    prev,
+                    data.value,
+                    self._get_key_comment(parent_map, key, previous_key, is_first_key),
+                )
+            elif data is None:
+                pass
+            else:
+                raise ValueError(
+                    "We don't handle these values:\n"
+                    f"Type: {type(data)}\n"
+                    f"Data: {data}\n"
+                    f"Previous: {prev}"
+                )
 
     @staticmethod
     def preprocess(data):
         """Preprocess hook for child formats."""
         return data
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Parse the given file or file source string."""
+        self._yaml_budget.reset()
         if hasattr(input, "name"):
             self.filename = input.name
         elif not getattr(self, "filename", ""):
@@ -325,7 +345,8 @@ class YAMLFile(base.DictStore[YAMLUnit]):
         content = self.preprocess(self._original)
 
         for k, data, comment in self._flatten(content):
-            unit = self.UnitClass(data)
+            self._yaml_budget.count_unit()
+            unit = data if isinstance(data, YAMLUnit) else self.UnitClass(data)
             unit.set_unitid(k)
             if comment:
                 unit.addnote(comment, origin="developer")
@@ -359,12 +380,48 @@ class YAMLFile(base.DictStore[YAMLUnit]):
             parent.ca.items[new_key] = parent.ca.items.pop(old_key)
 
 
-class RubyYAMLUnit(YAMLUnit):
+class RubyYAMLUnit(base.NamedPluralUnit, YAMLUnit):
+    rich_source = base.TranslationUnit.rich_target
+
+    def storevalues(self, output) -> None:
+        forms = self._get_plural_forms()
+        if forms is None:
+            super().storevalues(output)
+            return
+        table = self._get_original_value(output)
+        if not isinstance(table, dict) or any(
+            tag not in cldr_plural_categories for tag in table
+        ):
+            table = CommentedMap()
+        elif forms == {tag: value for tag, value in table.items() if value is not None}:
+            return
+        else:
+            # YAML aliases share the original mapping. Edit a private copy,
+            # keeping comments and formatting on its category entries.
+            table = deepcopy(table)
+            if isinstance(table, CommentedMap):
+                table.yaml_set_anchor(None)
+                # A YAML merge has no syntax for excluding an inherited key.
+                # The copy already contains every resolved category.
+                if any(
+                    tag not in forms and table[tag] is not None
+                    for parent in getattr(table, merge_attrib, ())
+                    for tag in parent
+                ):
+                    delattr(table, merge_attrib)
+        for tag in list(table):
+            if tag not in forms and table[tag] is not None:
+                del table[tag]
+        for tag, value in forms.items():
+            if table.get(tag) != value:
+                table[tag] = self._styled_value(table.get(tag), value)
+        self.storevalue(output, table)
+
     def convert_target(self):
         if not isinstance(self.target, multistring):
             return self.target
 
-        tags = self._store.get_plural_tags(self.target)  # ty:ignore[unresolved-attribute]
+        tags = self._store.get_plural_tags(self.target)  # ty:ignore[missing-union-attribute]
 
         # Sync plural_strings elements to plural_tags count.
         strings = self.sync_plural_count(self.target, tags)
@@ -379,6 +436,15 @@ class RubyYAMLFile(YAMLFile):
     """Ruby YAML file, it has language code as first node."""
 
     UnitClass = RubyYAMLUnit
+
+    def __init__(self, inputfile=None, *, targetlanguage=None, **kwargs) -> None:
+        self.targetlanguage = targetlanguage
+        super().__init__(inputfile, **kwargs)
+
+    def addunit(self, unit) -> None:
+        if isinstance(unit, RubyYAMLUnit):
+            unit.bind_plural_projection(self)
+        super().addunit(unit)
 
     def preprocess(self, data):
         if isinstance(data, CommentedMap) and len(data) == 1:
@@ -401,16 +467,21 @@ class RubyYAMLFile(YAMLFile):
     def _parse_dict(self, data, prev):
         # Does this look like a plural?
         if data and all(x in cldr_plural_categories for x in data):
-            tags = self.get_plural_tags()
-            # Ensure we have correct plurals ordering.
-            values = [data[item] for item in tags if item in data]
-
-            # Skip blank values (all plurals are None)
-            if not all(value is None for value in values):
-                # Use blank string instead of None here
-                # Note: plurals don't have comments, so we pass None
-                yield (prev, multistring([value or "" for value in values]), None)
-
+            forms = {key: value for key, value in data.items() if value is not None}
+            if forms:
+                tags = [tag for tag in self.get_plural_tags() if tag in data]
+                if not any(forms.get(tag) for tag in tags):
+                    tags = (
+                        [tag for tag, text in forms.items() if text]
+                        or tags
+                        or list(forms)
+                    )
+                unit = self.UnitClass()
+                assert isinstance(unit, RubyYAMLUnit)
+                if not all(isinstance(text, str) for text in forms.values()):
+                    raise base.ParseError("Plural forms must contain strings")
+                unit.set_plural_projection(forms, tags)
+                yield prev, unit, None
             return
 
         # Handle normal dict

@@ -51,7 +51,7 @@ class tmxunit(lisa.MultilingualLISAunit):
             return None
         return language
 
-    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[incompatible-method-override]
         """Returns a langset xml Element setup with given parameters."""
         langset = etree.Element(self.languageNode)
         setXMLlang(langset, lang)
@@ -292,7 +292,7 @@ class tmxfile(lisa.LISAfile[tmxunit]):
         if context is not None and len(context) > 0:
             unit.setcontext(context)
 
-    def translate(self, sourcetext, sourcelang=None, targetlang=None):  # ty:ignore[invalid-method-override]
+    def translate(self, sourcetext, sourcelang=None, targetlang=None):  # ty:ignore[lost-keyword-for-regular-parameter]
         """Return the requested translation for a source string."""
         source_language = lisa.normalize_language(sourcelang)
         if source_language is None:

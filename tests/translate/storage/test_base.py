@@ -30,6 +30,14 @@ from translate.storage.placeables import general
 from translate.storage.placeables import parse as rich_parse
 
 
+def test_validate_id_rejects_xml_unsafe_controls() -> None:
+    unit = base.TranslationUnit()
+    for value in ("name\x00", "name\x1f", "name\ufffe", "name\uffff"):
+        with raises(ValueError, match="control character"):
+            unit.validate_id(value)
+    unit.validate_id("name\twith\nwhitespace\r")
+
+
 def headerless_len(units):
     """Return count of translatable (non header) units."""
     return len(list(filter(lambda x: not x.isheader(), units)))
@@ -544,3 +552,14 @@ class TestPrepareInputOwnership:
             base.prepare_input(handle, close_handle=True)
 
         assert handle.closed
+
+
+def test_rich_list_append_survives_getter() -> None:
+    unit = base.TranslationUnit(multistring(["source"]))
+    unit.target = multistring(["first"])
+    unit.rich_target.append(rich_parse("second", general.parsers))
+    unit.rich_target = unit.rich_target
+    assert unit.target.strings == ["first", "second"]
+    unit.rich_source.append(rich_parse("plural", general.parsers))
+    unit.rich_source = unit.rich_source
+    assert unit.source.strings == ["source", "plural"]

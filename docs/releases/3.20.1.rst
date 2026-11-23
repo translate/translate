@@ -1,0 +1,49 @@
+Translate Toolkit 3.20.1
+************************
+
+*Released on 23 October 2026*
+
+This release fixes plural-form handling, improves language-specific checks and
+punctuation conversion, and speeds up MDX and Qt TS processing.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Gettext PO to TMX
+
+  - Export every non-empty plural translation, pairing the first form with the
+    singular source and subsequent forms with the plural source
+
+- MDX
+
+  - Restore embedded blocks in one pass to improve performance on large documents
+
+- Qt TS
+
+  - Index contexts by name to speed up parsing files with many contexts
+
+Quality Checks and Languages
+----------------------------
+
+- Compare plural translations with their matching source forms to avoid false
+  positives in placeholder and other source-dependent checks
+- Add a Catalan language module that disables inappropriate acronym and
+  capitalization checks
+- Preserve newlines when converting Chinese punctuation
+
+Other
+-----
+
+- Add testing with Python 3.15
+- Require Python 3.14 or newer to build the documentation
+- Improve type annotations and update development tooling and CI dependencies
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Albert Simó, Michal Čihař, Rajvir Ahmed Shuvo, shiaho

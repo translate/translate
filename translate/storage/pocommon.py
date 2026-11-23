@@ -125,7 +125,7 @@ class pounit(base.TranslationUnit):
         # implementation specific fuzzy detection, must not use get_state_n()
         raise NotImplementedError
 
-    def markfuzzy(self, present: bool = True) -> None:  # ty:ignore[invalid-method-override]
+    def markfuzzy(self, present: bool = True) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
         else:

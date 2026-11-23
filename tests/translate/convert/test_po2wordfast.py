@@ -22,7 +22,7 @@ class TestPO2Wordfast:
     ) -> wordfast.WordfastTMFile:
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
-        outputfile.wffile = wordfast.WordfastTMFile()  # ty:ignore[unresolved-attribute]
+        outputfile.wffile = wordfast.WordfastTMFile()  # ty:ignore[missing-attribute]
         po2wordfast.convertpo(
             inputfile,
             outputfile,
@@ -30,7 +30,7 @@ class TestPO2Wordfast:
             sourcelanguage=sourcelanguage,
             targetlanguage=targetlanguage,
         )
-        return outputfile.wffile  # ty:ignore[unresolved-attribute]
+        return outputfile.wffile  # ty:ignore[missing-attribute]
 
     def test_languages(self) -> None:
         store = self.po2wordfast(MINIPO, sourcelanguage="en", targetlanguage="af_ZA")

@@ -1,0 +1,42 @@
+Translate Toolkit 3.20.4
+************************
+
+*Released on 6 November 2026*
+
+This release improves translation key validation and fixes Nextcloud JSON
+fallbacks for untranslated strings.
+
+Changes
+=======
+
+Storage API
+-----------
+
+- Add read-only ``validate_id()`` checks for translation keys, with
+  format-specific validation matching serialization rules
+- Reject invalid keys before modifying units and preserve valid existing
+  identifiers, including explicit XLIFF 2 segment IDs
+- Preserve plural forms when moving Apple .stringsdict XLIFF units between stores
+- Cache PHP key components during serialization to avoid repeated parsing of
+  nested prefixes
+
+Formats and Converters
+----------------------
+
+- Nextcloud JSON
+
+  - Omit untranslated entries when saving so Nextcloud can fall back to source
+    strings, while preserving partially translated plurals
+
+Other
+-----
+
+- Always include docutils in documentation dependencies for type checking
+- Update development tooling
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař

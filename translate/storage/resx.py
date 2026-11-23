@@ -25,7 +25,7 @@ from translate.misc.xml_helpers import (
     safely_set_text,
     setXMLspace,
 )
-from translate.storage import lisa
+from translate.storage import base, lisa
 from translate.storage.placeables import general
 
 
@@ -38,7 +38,7 @@ class RESXUnit(lisa.LISAunit):
     namespace = ""
     rich_parsers = general.parsers
 
-    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[invalid-method-override]
+    def createlanguageNode(self, lang, text, purpose):  # ty:ignore[incompatible-method-override]
         """Returns an xml Element setup with given parameters."""
         langset = etree.Element(self.namespaced(self.languageNode))
 
@@ -105,9 +105,13 @@ class RESXUnit(lisa.LISAunit):
             self.xmlelement.remove(note)
 
     def setid(self, value) -> None:
+        self.validate_id(value)
         self._invalidate_store_indexes()
-        if id is not None:
-            self.xmlelement.set("name", value)
+        self.xmlelement.set("name", value)
+
+    def validate_id(self, value: str) -> None:
+        super().validate_id(value)
+        base.validate_xml_id(value)
 
     def getid(self):
         return self.xmlelement.get("name")

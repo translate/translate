@@ -125,7 +125,7 @@ class SubtitleFile(base.TranslationStore):
             subtitle.end = unit._end
             # Restore SSA/ASS metadata only for SSA and ASS formats
             if (
-                self._format in {formats.SSA, formats.ASS}  # ty:ignore[unresolved-attribute]
+                self._format in {formats.SSA, formats.ASS}  # ty:ignore[missing-attribute]
                 and hasattr(subtitle, "ssa")
                 and subtitle.ssa
             ):
@@ -147,8 +147,8 @@ class SubtitleFile(base.TranslationStore):
         # Using transient output might be dropped if/when we have more control
         # over the open mode of out files.
         output = StringIO()
-        self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)  # ty:ignore[unresolved-attribute]
-        out.write(output.getvalue().encode(self._subtitlefile.encoding))  # ty:ignore[unresolved-attribute]
+        self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)  # ty:ignore[missing-attribute, missing-union-attribute]
+        out.write(output.getvalue().encode(self._subtitlefile.encoding))  # ty:ignore[missing-union-attribute]
 
     def _set_default_ssa_metadata(self, unit: SubtitleUnit) -> None:
         """Set default SSA metadata for a unit (helper for SSA/ASS subclasses)."""
@@ -174,7 +174,7 @@ class SubtitleFile(base.TranslationStore):
             newunit._duration = subtitle.duration_seconds
             # Preserve SSA/ASS metadata only for SSA and ASS formats
             if (
-                self._format in {formats.SSA, formats.ASS}  # ty:ignore[unresolved-attribute]
+                self._format in {formats.SSA, formats.ASS}  # ty:ignore[missing-attribute]
                 and hasattr(subtitle, "ssa")
                 and subtitle.ssa
             ):
@@ -216,7 +216,7 @@ class SubtitleFile(base.TranslationStore):
         newstore._parsefile(storefile)
         return newstore
 
-    def parse(self, input) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, input) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         if isinstance(input, bytes):
             # Gaupol does not allow parsing from strings
             original_filename = self.filename
@@ -257,9 +257,9 @@ class SubRipFile(SubtitleFile):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubRip(self.filename or "", self.encoding)
-            self._format = formats.SUBRIP  # ty:ignore[unresolved-attribute]
+            self._format = formats.SUBRIP  # ty:ignore[missing-attribute]
         if self._subtitlefile.newline is None:
-            self._subtitlefile.newline = newlines.UNIX  # ty:ignore[unresolved-attribute]
+            self._subtitlefile.newline = newlines.UNIX  # ty:ignore[missing-attribute]
 
 
 class MicroDVDFile(SubtitleFile):
@@ -273,9 +273,9 @@ class MicroDVDFile(SubtitleFile):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = MicroDVD(self.filename or "", self.encoding)
-            self._format = formats.MICRODVD  # ty:ignore[unresolved-attribute]
+            self._format = formats.MICRODVD  # ty:ignore[missing-attribute]
         if self._subtitlefile.newline is None:
-            self._subtitlefile.newline = newlines.UNIX  # ty:ignore[unresolved-attribute]
+            self._subtitlefile.newline = newlines.UNIX  # ty:ignore[missing-attribute]
 
 
 class AdvSubStationAlphaFile(SubtitleFile):
@@ -288,9 +288,9 @@ class AdvSubStationAlphaFile(SubtitleFile):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = AdvSubStationAlpha(self.filename or "", self.encoding)
-            self._format = formats.ASS  # ty:ignore[unresolved-attribute]
+            self._format = formats.ASS  # ty:ignore[missing-attribute]
         if self._subtitlefile.newline is None:
-            self._subtitlefile.newline = newlines.UNIX  # ty:ignore[unresolved-attribute]
+            self._subtitlefile.newline = newlines.UNIX  # ty:ignore[missing-attribute]
 
     def addsourceunit(self, source: str) -> base.TranslationUnit:
         """Add a unit with default SSA metadata."""
@@ -310,9 +310,9 @@ class SubStationAlphaFile(SubtitleFile):
         super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubStationAlpha(self.filename or "", self.encoding)
-            self._format = formats.SSA  # ty:ignore[unresolved-attribute]
+            self._format = formats.SSA  # ty:ignore[missing-attribute]
         if self._subtitlefile.newline is None:
-            self._subtitlefile.newline = newlines.UNIX  # ty:ignore[unresolved-attribute]
+            self._subtitlefile.newline = newlines.UNIX  # ty:ignore[missing-attribute]
 
     def addsourceunit(self, source: str) -> base.TranslationUnit:
         """Add a unit with default SSA metadata."""

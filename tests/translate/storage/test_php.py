@@ -1,9 +1,71 @@
 from io import BytesIO
+from time import perf_counter
+
+import pytest
+from pytest import mark, raises
 
 from translate.misc.multistring import multistring
-from translate.storage import php
+from translate.storage import base, php
 
 from . import test_monolingual
+
+
+@mark.parametrize(
+    ("store_class", "key"),
+    [(php.phpfile, "$lang['鍵']"), (php.LaravelPHPFile, "鍵")],
+)
+@mark.parametrize("encoding", ["iso-8859-1", "utf-8"])
+def test_key_validation_uses_destination_encoding(
+    store_class: type[php.phpfile], key: str, encoding: str
+) -> None:
+    store = store_class(encoding=encoding)
+    unit = store.UnitClass("value")
+    unit.setid("old")
+    store.addunit(unit)
+    before = bytes(store)
+    if encoding == "iso-8859-1":
+        with raises(ValueError, match="encoding"):
+            unit.validate_id(key)
+        with raises(ValueError, match="encoding"):
+            unit.setid(key)
+        assert bytes(store) == before
+    else:
+        unit.validate_id(key)
+        assert bytes(store) == before
+        unit.setid(key)
+        assert (
+            store_class(BytesIO(bytes(store)), encoding=encoding).units[0].getid()
+            == key
+        )
+
+
+@mark.parametrize("comment", ["//", "#"])
+def test_closing_tag_in_line_comment_is_rejected(comment: str) -> None:
+    store = php.phpfile()
+    unit = php.phpunit("value")
+    unit.setid("old")
+    store.addunit(unit)
+    before = bytes(store)
+    key = f"$lang[{comment} ?>\n'key']"
+    with raises(ValueError, match="PHP key"):
+        unit.validate_id(key)
+    with raises(ValueError, match="PHP key"):
+        unit.setid(key)
+    assert bytes(store) == before
+
+
+def test_attribute_expression_in_offset_is_rejected() -> None:
+    store = php.phpfile()
+    unit = php.phpunit("value")
+    unit.setid("old")
+    store.addunit(unit)
+    before = bytes(store)
+    key = "$lang[#[A] function(){} && print_r('injected') &&\n'key']"
+    with raises(ValueError, match="PHP key"):
+        unit.validate_id(key)
+    with raises(ValueError, match="PHP key"):
+        unit.setid(key)
+    assert bytes(store) == before
 
 
 def test_php_escaping_single_quote() -> None:
@@ -13,58 +75,20 @@ def test_php_escaping_single_quote() -> None:
     The tests are built mostly from examples from the PHP
     `string type definition <https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_.
     """
-    # Decoding - PHP -> Python
-    assert (
-        php.phpdecode(r"\'") == r"'"
-    )  # To specify a literal single quote, escape it with a backslash (\).
-    assert php.phpdecode(r'"') == r'"'
-    assert (
-        php.phpdecode(r"\\'") == r"\'"
-    )  # To specify a literal backslash before a single quote, or at the end of the string, double it (\\)
-    assert (
-        php.phpdecode(r"\x") == r"\x"
-    )  # Note that attempting to escape any other character will print the backslash too.
-    assert php.phpdecode(r"\t") == r"\t"
-    assert php.phpdecode(r"\n") == r"\n"
-    assert php.phpdecode(r"this is a simple string") == r"this is a simple string"
-    assert (
-        php.phpdecode(
-            """You can also have embedded newlines in
-strings this way as it is
-okay to do"""
-        )
-        == """You can also have embedded newlines in
-strings this way as it is
-okay to do"""
-    )
-    assert (
-        php.phpdecode(r"This will not expand: \n a newline")
-        == r"This will not expand: \n a newline"
-    )
-    assert (
-        php.phpdecode(r'Arnold once said: "I\'ll be back"')
-        == r'''Arnold once said: "I'll be back"'''
-    )
-    assert php.phpdecode(r"You deleted C:\\*.*?") == r"You deleted C:\*.*?"
-    assert php.phpdecode(r"You deleted C:\*.*?") == r"You deleted C:\*.*?"
-    assert (
-        php.phpdecode(r"\117\143\164\141\154") == r"\117\143\164\141\154"
-    )  # We don't handle Octal like " does
-    assert php.phpdecode(r"\x48\x65\x78") == r"\x48\x65\x78"  # Don't handle Hex either
     # Should implement for false interpretation of double quoted data.
     # Encoding - Python -> PHP
     assert (
         php.phpencode(r"'") == r"\'"
     )  # To specify a literal single quote, escape it with a backslash (\).
     assert (
-        php.phpencode(r"\'") == r"\\'"
+        php.phpencode(r"\'") == r"\\\'"
     )  # To specify a literal backslash before a single quote, or at the end of the string, double it (\\)
     assert php.phpencode(r'"') == r'"'
     assert (
-        php.phpencode(r"\x") == r"\x"
+        php.phpencode(r"\x") == r"\\x"
     )  # Note that attempting to escape any other character will print the backslash too.
-    assert php.phpencode(r"\t") == r"\t"
-    assert php.phpencode(r"\n") == r"\n"
+    assert php.phpencode(r"\t") == r"\\t"
+    assert php.phpencode(r"\n") == r"\\n"
     assert (
         php.phpencode(
             r"""String with
@@ -75,58 +99,17 @@ newline"""
     )
     assert (
         php.phpencode(r"This will not expand: \n a newline")
-        == r"This will not expand: \n a newline"
+        == r"This will not expand: \\n a newline"
     )
     assert (
         php.phpencode(r'''Arnold once said: "I'll be back"''')
         == r'''Arnold once said: "I\'ll be back"'''
     )
-    assert php.phpencode(r"You deleted C:\*.*?") == r"You deleted C:\*.*?"
+    assert php.phpencode(r"You deleted C:\*.*?") == r"You deleted C:\\*.*?"
 
 
 def test_php_escaping_double_quote() -> None:
     """Test the helper escaping functions for 'double quotes'."""
-    # Decoding - PHP -> Python
-    assert php.phpdecode("'", quotechar='"') == "'"  # we do nothing with single quotes
-    assert (
-        php.phpdecode(r"\n", quotechar='"') == "\n"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\r", quotechar='"') == "\r"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\t", quotechar='"') == "\t"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\v", quotechar='"') == "\v"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\f", quotechar='"') == "\f"
-    )  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\\", quotechar='"') == "\\"
-    )  # See table of escaped characters
-    # assert php.phpdecode(r"\$", quotechar='"') == "$"      # See table of escaped characters - this may cause confusion with actual variables in roundtripping
-    assert (
-        php.phpdecode(r"\$", quotechar='"') == "\\$"
-    )  # Just to check that we don't unescape this
-    assert php.phpdecode(r"\"", quotechar='"') == '"'  # See table of escaped characters
-    assert (
-        php.phpdecode(r"\117\143\164\141\154", quotechar='"') == "Octal"
-    )  # Octal: \[0-7]{1,3}
-    assert (
-        php.phpdecode(r"\x48\x65\x78", quotechar='"') == "Hex"
-    )  # Hex: \x[0-9A-Fa-f]{1,2}
-    assert php.phpdecode(r"\117\\c\164\141\154", quotechar='"') == r"O\ctal"  # Mixed
-    # Decoding - special examples
-    assert (
-        php.phpdecode(r"Don't escape me here\'s", quotechar='"')
-        == r"Don't escape me here\'s"
-    )  # See bug #589
-    assert (
-        php.phpdecode("Line1\nLine2") == "Line1\nLine2"
-    )  # Preserve newlines in multiline messages
-    assert php.phpdecode("Line1\r\nLine2") == "Line1\r\nLine2"  # DOS PHP files
     # Encoding - Python -> PHP
     assert php.phpencode("'", quotechar='"') == "'"
     assert (
@@ -145,24 +128,507 @@ def test_php_escaping_double_quote() -> None:
         php.phpencode("\f", quotechar='"') == r"\f"
     )  # See table of escaped characters
     assert (
-        php.phpencode(r"\\", quotechar='"') == r"\\"
+        php.phpencode(r"\\", quotechar='"') == r"\\\\"
     )  # See table of escaped characters
     # assert php.phpencode("\$", quotechar='"') == "$"      # See table of escaped characters - this may cause confusion with actual variables in roundtripping
     assert (
-        php.phpencode(r"\$", quotechar='"') == r"\$"
-    )  # Just to check that we don't unescape this
+        php.phpencode(r"\$", quotechar='"') == r"\\\$"
+    )  # Preserve the backslash and prevent interpolation.
     assert php.phpencode('"', quotechar='"') == r"\""
     assert (
         php.phpencode(r"Don't escape me here\'s", quotechar='"')
-        == r"Don't escape me here\'s"
+        == r"Don't escape me here\\'s"
     )  # See bug #589
+
+
+@mark.parametrize("quotechar", ["'", '"'])
+@mark.parametrize("backslashes", range(5))
+def test_phpencode_escapes_backslashes_before_quote(
+    quotechar: str, backslashes: int
+) -> None:
+    value = "x" + "\\" * backslashes + quotechar + "; echo 1;"
+    expected = "x" + "\\" * (2 * backslashes + 1) + quotechar + "; echo 1;"
+    assert php.phpencode(value, quotechar) == expected
+
+
+@mark.parametrize(
+    ("quotechar", "value", "expected"),
+    [
+        ("'", "\\", r"\\"),
+        ('"', "\\", r"\\"),
+        ('"', "$name", r"\$name"),
+        ('"', r"\$name", r"\\\$name"),
+        ('"', "{$name} ${name}", r"{\$name} \${name}"),
+        ('"', r"\n \x41 \u{41}", r"\\n \\x41 \\u{41}"),
+        ('"', "\r\t\v\f\n", "\\r\\t\\v\\f\n"),
+    ],
+)
+def test_phpencode_preserves_special_characters(
+    quotechar: str, value: str, expected: str
+) -> None:
+    assert php.phpencode(value, quotechar) == expected
+
+
+@mark.parametrize("store_class", [php.phpfile, php.LaravelPHPFile])
+@mark.parametrize("quotechar", ["'", '"'])
+def test_php_serialization_preserves_escaped_values(
+    store_class: type[php.phpfile], quotechar: str
+) -> None:
+    value = r"""x\'\"; echo 1; \{$name} \n"""
+    store = store_class()
+    unit = store.UnitClass("source")
+    unit.name = (
+        "return->'message'" if store_class is php.LaravelPHPFile else "$loc['message']"
+    )
+    unit.escape_type = quotechar
+    unit.target = value
+    store.addunit(unit)
+
+    output = bytes(store)
+    encoded_value = (
+        quotechar + php.phpencode(value.replace(r"\{", "{"), quotechar) + quotechar
+    ).encode()
+    assert encoded_value in output
+    reparsed = store_class(BytesIO(output))
+    assert len(reparsed.units) == 1
+    assert reparsed.units[0].source == value
+
+
+@mark.parametrize("store_class", [php.phpfile, php.LaravelPHPFile])
+@mark.parametrize("quotechar", ["'", '"'])
+@mark.parametrize("target", ["Hello {$name}!", "Hello $name!"])
+def test_php_translation_keeps_simple_variables(
+    store_class: type[php.phpfile], quotechar: str, target: str
+) -> None:
+    store = store_class()
+    unit = store.UnitClass("Hello")
+    unit.name = (
+        "return->'message'" if store_class is php.LaravelPHPFile else "$loc['message']"
+    )
+    unit.escape_type = quotechar
+    unit.target = target
+    store.addunit(unit)
+
+    output = bytes(store)
+    expected = f"{quotechar}Hello {quotechar} . $name . {quotechar}!{quotechar}"
+    assert expected.encode() in output
+    reparsed = store_class(BytesIO(output))
+    assert reparsed.units[0].source == "Hello {$name}!"
+
+
+@mark.parametrize("space", ["\u00a0", "\u202f"])
+def test_php_bare_placeholder_stops_at_unicode_whitespace(space: str) -> None:
+    store = php.phpfile(BytesIO(b"<?php $message = 'Original';"))
+    store.units[0].target = f"Bonjour $name{space}!"
+    output = bytes(store)
+    assert f" . $name . '{space}!'".encode() in output
+    assert php.phpfile(BytesIO(output)).units[0].source == f"Bonjour {{$name}}{space}!"
+
+
+@mark.parametrize("quoted", ['"$name"', '"{$name}"', '"${name}"'])
+def test_php_parser_accepts_simple_quoted_variable(quoted: str) -> None:
+    store = php.phpfile(BytesIO(f"<?php\n$message = {quoted};\n".encode()))
+    assert len(store.units) == 1
+    assert store.units[0].source == "{$name}"
+    assert b" . $name . " in bytes(store)
+
+
+@mark.parametrize(
+    ("source", "expected"),
+    [
+        ('return ["$a", "$b", "$a"];', ["{$a}", "{$b}", "{$a}"]),
+        ('return ["$a", 42, "$b"];', ["{$a}", "{$b}"]),
+        ('return [["$a", "$b"], "$c"];', ["{$a}", "{$b}", "{$c}"]),
+    ],
+)
+def test_php_quoted_variables_in_arrays(source: str, expected: list[str]) -> None:
+    store = php.phpfile(BytesIO(f"<?php\n{source}\n".encode()))
+    assert [unit.source for unit in store.units] == expected
+    assert [
+        unit.source for unit in php.phpfile(BytesIO(bytes(store))).units
+    ] == expected
+
+
+@mark.parametrize("number", ["-1", "+1", "-1.5"])
+def test_php_skips_signed_numeric_metadata(number: str) -> None:
+    source = f"<?php return ['offset' => {number}, 'label' => 'Text'];"
+    store = php.phpfile(BytesIO(source.encode()))
+    assert [unit.source for unit in store.units] == ["Text"]
+
+
+def test_php_skips_consecutive_metadata_entries() -> None:
+    source = b"""<?php return ['a' => 1, 'b' => 2, 'c' => -3, 'd' => false, 'label' => "Text"];"""
+    store = php.phpfile(BytesIO(source))
+    assert [(unit.name, unit.source) for unit in store.units] == [
+        ("return[]->'label'", "Text")
+    ]
+    assert b"'label' => \"Text\"" in bytes(store)
+
+
+@mark.parametrize("empty", ["[]", "array()", "['nested' => []]"])
+def test_php_skips_metadata_after_empty_arrays(empty: str) -> None:
+    source = (
+        f"""<?php return ['empty' => {empty}, 'version' => 1, 'label' => "Text"];"""
+    )
+    store = php.phpfile(BytesIO(source.encode()))
+    assert [(unit.name, unit.source) for unit in store.units] == [
+        ("return[]->'label'", "Text")
+    ]
+    assert b"'label' => \"Text\"" in bytes(store)
+
+
+def test_php_preserves_comment_at_empty_array_boundary() -> None:
+    source = b"<?php return ['empty' => []/* note */, 'label' => 'Text'];"
+    store = php.phpfile(BytesIO(source))
+    assert len(store.units) == 1
+    assert store.units[0].name == "return[]->'label'"
+    assert store.units[0].getnotes("developer") == "/* note */"
+    assert b"/* note */\n    'label' => 'Text'," in bytes(store)
+
+
+@mark.parametrize(
+    ("source", "entry"),
+    [
+        ("return ['computed' => $a . $b, 'label' => 'text'];", "computed"),
+        ("return ['computed' => $a];", "computed"),
+        ("return ['computed' => -$a];", "computed"),
+        ("$message = $a . $b;", r"\$message"),
+        ("define('MESSAGE', format('text'));", "MESSAGE"),
+        ('$message = "$items[0]";', r"\$message"),
+        ('$message = "Hi ${$name}";', r"\$message"),
+        ('$message = "Hi ${name[0]}";', r"\$message"),
+        ("""return ['computed' => "${'name'}"];""", "computed"),
+    ],
+)
+def test_php_rejects_unsupported_translation_values(source: str, entry: str) -> None:
+    with raises(base.ParseError, match=rf"Unsupported PHP translation value.*{entry}"):
+        php.phpfile(BytesIO(f"<?php\n{source}\n".encode()))
+
+
+@mark.parametrize(
+    "source",
+    [
+        r"'\\' . '$name'",
+        r"'C:\$items[$key]'",
+        r"'\${$name}'",
+        r"'\\\\${$name}'",
+    ],
+)
+def test_php_literal_source_markup_survives_translated_prefix(source: str) -> None:
+    store = php.phpfile(BytesIO(f"<?php\n$message = {source};\n".encode()))
+    unit = store.units[0]
+    unit.target = "Localized " + unit.source
+    output = bytes(store)
+    assert b" . $name . " not in output
+    assert b" . $key . " not in output
+    reparsed = php.phpfile(BytesIO(output))
+    assert len(reparsed.units) == 1
+    assert reparsed.units[0].source == unit.target
+
+
+def test_php_bare_placeholders_in_html_roundtrip_without_a_template() -> None:
+    store = php.phpfile(BytesIO(b"<?php $message = 'Original';"))
+    store.units[0].target = '<a href="$url">Website</a>&nbsp;$name<br>'
+    output = bytes(store)
+    assert b" . $url . " in output
+    assert b" . $name . " in output
+    reparsed = php.phpfile(BytesIO(output))
+    assert reparsed.units[0].source == '<a href="{$url}">Website</a>&nbsp;{$name}<br>'
+
+
+@mark.parametrize(
+    "value",
+    [
+        r"Hello \$name!",
+        r"C:\$items[$key]",
+        "$items[$key]",
+        "$object->format($value)",
+        "$name|$value",
+        "($name)",
+        """$object?->format (nested(")", $property))->next($object)""",
+        "Config::$property",
+        "$$$name",
+        r"$object->\{$property}",
+        r"$$\{$name}[$key]",
+    ],
+)
+@mark.parametrize("quotechar", ["'", '"'])
+def test_php_non_marker_text_stays_literal(value: str, quotechar: str) -> None:
+    unit = php.phpunit("source")
+    unit.name = "$message"
+    unit.escape_type = quotechar
+    unit.target = value
+    output = unit.getoutput()
+    assert " . $" not in output
+    reparsed = php.phpfile(BytesIO(("<?php\n" + output).encode()))
+    assert [unit.source for unit in reparsed.units] == [value]
+
+
+@mark.parametrize(
+    ("source", "markup"),
+    [
+        ("$name . 's'", "{$name}s"),
+        ("$name . '[key]'", "{$name}[key]"),
+        ('"Price: $" . $amount', "Price: ${$amount}"),
+    ],
+)
+def test_php_source_variable_boundaries_survive_fallback(
+    source: str, markup: str
+) -> None:
+    store = php.phpfile(BytesIO(f"<?php\n$message = {source};\n".encode()))
+    unit = store.units[0]
+    assert unit.source == markup
+    original_output = bytes(store)
+    unit.target = unit.source
+    assert bytes(store) == original_output
+
+
+@mark.parametrize(
+    ("value", "contains_variable"),
+    [
+        (r"\{$name}", False),
+        (r"\\{$name}", True),
+        (r"\\\{$name}", False),
+        (r"\\\\{$name}", True),
+        (r"\$name", False),
+        (r"\\\$name", False),
+    ],
+)
+def test_php_variable_marker_and_backslashes(
+    value: str, contains_variable: bool
+) -> None:
+    store = php.phpfile()
+    unit = php.phpunit("source")
+    unit.name = "$message"
+    unit.escape_type = '"'
+    unit.target = value
+    store.addunit(unit)
+
+    output = bytes(store)
+    assert php.phpfile(BytesIO(output)).units[0].source == value
+    assert (b" . $name . " in output) is contains_variable
+
+
+@mark.parametrize(
+    ("source", "expected_markup"),
+    [
+        ('"Hello " . $name . "!"', "Hello {$name}!"),
+        ('"Hello $name!"', "Hello {$name}!"),
+        (r'"Hello \$name!"', r"Hello \$name!"),
+        ("'Hello $name!'", r"Hello \$name!"),
+        (r'"\\" . $name', r"\\{$name}"),
+    ],
+)
+def test_php_parser_preserves_variable_origin(
+    source: str, expected_markup: str
+) -> None:
+    store = php.phpfile(BytesIO(f"<?php\n$message = {source};\n".encode()))
+    assert store.units[0].source == expected_markup
+    output = bytes(store)
+    assert php.phpfile(BytesIO(output)).units[0].source == expected_markup
+
+
+def test_php_array_with_variable_roundtrips() -> None:
+    source = b'<?php\nreturn ["welcome" => "Hello " . $name . "!"];\n'
+    store = php.LaravelPHPFile(BytesIO(source))
+    assert store.units[0].source == "Hello {$name}!"
+    output = bytes(store)
+    assert b'"Hello " . $name . "!"' in output
+    assert php.LaravelPHPFile(BytesIO(output)).units[0].source == "Hello {$name}!"
+
+
+def test_laravel_plural_target_does_not_reuse_source_fragments() -> None:
+    store = php.LaravelPHPFile(BytesIO(b"<?php\nreturn ['item' => 'one|many'];\n"))
+    unit = store.units[0]
+    assert unit.source == multistring(["one", "many"])
+    unit.target = "one"
+    output = bytes(store)
+    assert b"'item' => 'one'," in output
+    assert php.LaravelPHPFile(BytesIO(output)).units[0].source == "one"
+
+
+def test_laravel_plural_forms_have_independent_placeholder_boundaries() -> None:
+    store = php.LaravelPHPFile(BytesIO(b'<?php return ["item" => "one|many"];'))
+    store.units[0].target = multistring(["Bonjour $name", "$name vous salue"])
+    output = bytes(store)
+    assert b'"Bonjour " . $name . "|" . $name . " vous salue"' in output
+    assert php.LaravelPHPFile(BytesIO(output)).units[0].source == multistring(
+        ["Bonjour {$name}", "{$name} vous salue"]
+    )
+
+
+def test_laravel_literal_names_at_plural_boundaries_survive_editing() -> None:
+    store = php.LaravelPHPFile(BytesIO(b"<?php return ['item' => 'a $name|$name b'];"))
+    unit = store.units[0]
+    assert unit.source == multistring([r"a \$name", r"\$name b"])
+    unit.target = multistring([r"Edited \$name", r"\$name b"])
+    assert b"'Edited $name|$name b'" in bytes(store)
+
+
+def test_php_copy_preserves_parsed_variable_boundary() -> None:
+    source = b'<?php\n$message = "Hello " . $name . "->property";\n'
+    original = php.phpfile(BytesIO(source)).units[0]
+    copied = php.phpunit.buildfromunit(original)
+    assert copied.source == "Hello {$name}->property"
+    assert b'"Hello " . $name . "->property"' in copied.getoutput().encode()
 
 
 class TestPhpUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = php.phpunit
 
+    def test_parenthesized_offsets_do_not_require_recursion(self) -> None:
+        unit = self.UnitClass("value")
+        original = unit.getid()
+        key = "$lang[" + "(" * 10_000 + "'key'" + ")" * 10_000 + "]"
+        unit.validate_id(key)
+        with raises(ValueError, match="PHP key"):
+            unit.validate_id(key[:-2] + "]")
+        assert unit.getid() == original
+
     def test_difficult_escapes(self) -> None:
         pass
+
+    def test_validate_id_requires_exact_identity(self) -> None:
+        unit = self.UnitClass("value")
+        original = unit.getid()
+        with raises(ValueError, match="PHP key"):
+            unit.validate_id("name")
+        assert unit.getid() == original
+        unit.validate_id("$name")
+        unit.setid("name")
+        assert unit.getid() == "$name"
+
+    def test_validate_id_handles_long_malformed_offsets(self) -> None:
+        unit = self.UnitClass("value")
+        start = perf_counter()
+        with raises(ValueError, match="PHP key"):
+            unit.validate_id("$a" + "[ ]" * 1000 + "!")
+        assert perf_counter() - start < 1
+
+    @mark.parametrize(
+        "key",
+        ["return->'arrow->inside'", "$lang['arrow->inside']", "return->'it's -> safe'"],
+    )
+    def test_quoted_arrow_round_trips(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.validate_id(key)
+        original = unit.getid()
+        assert original != key
+        unit.setid(key)
+        store = php.phpfile()
+        store.addunit(unit)
+        assert php.phpfile(BytesIO(bytes(store))).units[0].getid() == key
+
+    @mark.parametrize(
+        "index", ["0", "-1", "0x10", "1.5", "1e2", "true", "false", "null"]
+    )
+    def test_numeric_and_coercive_offset_expressions_round_trip(
+        self, index: str
+    ) -> None:
+        key = f"$lang[{index}]"
+        unit = self.UnitClass("value")
+        unit.validate_id(key)
+        unit.setid(key)
+        store = php.phpfile()
+        store.addunit(unit)
+        assert php.phpfile(BytesIO(bytes(store))).units[0].getid() == key
+
+    @mark.parametrize(
+        "escape", [r"\u{}", r"\u{110000}", r"\u{D800}", r"\u{xyz}", r"\u{41"]
+    )
+    def test_setid_rejects_invalid_unicode_escape(self, escape: str) -> None:
+        unit = self.UnitClass("value")
+        original = unit.getid()
+        with raises(ValueError, match="PHP key"):
+            unit.setid(f'$lang["{escape}"]')
+        assert unit.getid() == original
+
+    @mark.parametrize("escape", [r"\u{41}", r"\u{10FFFF}", r"\u202e", r"\\u{}"])
+    def test_setid_accepts_valid_or_inert_unicode_escape(self, escape: str) -> None:
+        unit = self.UnitClass("value")
+        key = f'$lang["{escape}"]'
+        unit.setid(key)
+        assert unit.getid() == key
+
+    @mark.parametrize("key", ['$lang["$5"]', '$lang["total $"]'])
+    def test_setid_accepts_literal_dollar_in_double_quoted_index(
+        self, key: str
+    ) -> None:
+        unit = self.UnitClass("value")
+        unit.setid(key)
+        assert unit.getid() == key
+
+    @mark.parametrize(
+        "key",
+        [
+            '$lang["{$ {print(123)}}"]',
+            '$lang["{$/*x*/{print(123)}}"]',
+            '$lang["\\{$ {print(123)}}"]',
+        ],
+    )
+    def test_setid_rejects_braced_interpolation(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        with raises(ValueError, match="PHP key"):
+            unit.validate_id(key)
+        with raises(ValueError, match="PHP key"):
+            unit.setid(key)
+
+    @mark.parametrize("key", ["$£", "$a·b"])
+    def test_setid_accepts_non_ascii_php_variable_names(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid(key)
+        assert unit.getid() == key
+        copied = self.UnitClass.buildfromunit(unit)
+        assert copied.getid() == key
+
+    @mark.parametrize(
+        "key",
+        [
+            '$loc["hello"]; system($_GET["c"]); $loc["hello"]',
+            '$loc[system("id")]',
+            "$loc[`id`]",
+            '$loc["$name"]',
+            '$loc[b"$name"]',
+            "$loc['broken' => 'key']",
+            "$loc[/* unterminated 'key']",
+            "define(/* unterminated 'NAME'",
+            "$loc['key'] /* unterminated",
+            "$loc['key'] // ?>\n",
+            "$loc['key'] #[A] function(){}",
+            "$loc['key'] // comment",
+            "$loc['key'] # comment",
+            "$loc['key'] ",
+            "$loc[(system('id'))]",
+            "$loc[('key' . system('id'))]",
+            "$loc[(('key')]",
+            "$loc[('key'))]",
+            "define('NAME' /* unterminated",
+            "define('NAME' // ?>\n'OTHER'",
+        ],
+    )
+    def test_setid_rejects_php_injection(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        original = unit.getid()
+        with raises(ValueError, match="PHP key"):
+            unit.setid(key)
+        assert unit.getid() == original
+
+    def test_source_like_leaf_is_escaped_as_data(self) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("return[]->'safe'; system('id'); return[]->'safe'")
+        store = php.phpfile()
+        store.addunit(unit)
+        output = bytes(store)
+        assert b"safe\\'; system(" in output
+        reparsed = php.phpfile(BytesIO(output))
+        assert len(reparsed.units) == 1
+        assert reparsed.units[0].getid() == unit.getid()
+
+    @mark.parametrize("key", ["name", '$lang["it\'s"]', "define('NAME'"])
+    def test_setid_accepts_safe_php_keys(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.setid(key)
+        assert unit.getid() == ("$name" if key == "name" else key)
 
 
 class TestPhpFile(test_monolingual.TestMonolingualStore):
@@ -177,6 +643,151 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
     def phpregen(self, phpsource):
         """Helper that converts php source to phpfile object and back."""
         return bytes(self.phpparse(phpsource)).decode("utf-8")
+
+    @mark.parametrize(
+        "phpsource",
+        [
+            """<?php
+return [
+    'item\\'s 1' => 'value',
+];
+""",
+            """<?php
+$days = array(
+    'Sunday',
+);
+""",
+            """<?php
+$lang['App\\User'] = 'value';
+""",
+            """<?php
+$lang["\\$name"] = 'value';
+""",
+            """<?php
+$lang["a\\tb"] = 'value';
+""",
+            """<?php
+$lang[ 'mediaselect' ] = 'value';
+""",
+            """<?php
+$lang[0x10] = 'value';
+""",
+            """<?php
+$lang[01] = 'value';
+""",
+            """<?php
+$lang[0b1010] = 'value';
+""",
+            """<?php
+$lang[1e2] = 'value';
+""",
+            """<?php
+$lang["{count}"] = 'value';
+""",
+            """<?php
+$lang["$5"] = 'value';
+""",
+            """<?php
+$lang["total $"] = 'value';
+""",
+            """<?php
+$lang[true] = 'value';
+""",
+            """<?php
+$lang[FALSE] = 'value';
+""",
+            """<?php
+$lang[null] = 'value';
+""",
+            """<?php
+define( "_FINISH", "Done");
+""",
+            """<?php
+$days[] = 'Sunday';
+""",
+        ],
+    )
+    def test_parsed_key_can_be_reapplied_and_copied(self, phpsource: str) -> None:
+        store = self.phpparse(phpsource)
+        unit = store.units[0]
+        key = unit.getid()
+
+        unit.setid(key)
+        assert unit.getid() == key
+        assert bytes(store).decode() == phpsource
+
+        copied = php.phpunit.buildfromunit(unit)
+        assert copied.getid() == key
+
+    @mark.parametrize(
+        "source",
+        [
+            "<?php\n$lang[\n 'key'\n] = 'value';\n",
+            "<?php\n$lang[\r\n 'key'\r\n] = 'value';\n",
+            "<?php\ndefine(\n 'NAME', 'value');\n",
+            "<?php\n$lang[/* context */ 'key' /* end */] = 'value';\n",
+            "<?php\n$lang[/* ?> */ 'key'] = 'value';\n",
+            "<?php\n$lang['key'] /* context */ = 'value';\n",
+            "<?php\n$lang[/* user's group -> [ */ 'group'] = array('leaf' => 'value');\n",
+            "<?php\n$lang[// context\n 'key'] = 'value';\n",
+            "<?php\n$lang[# context\n 'key'] = 'value';\n",
+            "<?php\ndefine(/* context */ 'NAME', 'value');\n",
+            "<?php\ndefine('NAME' /* context */, 'value');\n",
+            "<?php\n$lang[('key')] = 'value';\n",
+            "<?php\n$lang[(( /* context */ 'key' ))] = 'value';\n",
+            "<?php\n$lang[((1))] = 'value';\n",
+            "<?php\n$lang[(true)] = 'value';\n",
+            "<?php\n$lang[b'key'] = 'value';\n",
+            "<?php\n$lang[B\"key\"] = 'value';\n",
+            "<?php\n$lang[(b'key')] = 'value';\n",
+        ],
+    )
+    def test_multiline_key_tokens_round_trip(self, source: str) -> None:
+        store = php.phpfile(BytesIO(source.encode()))
+        unit = store.units[0]
+        key = unit.getid()
+        before = bytes(store)
+        unit.validate_id(key)
+        assert bytes(store) == before
+        unit.setid(key)
+        assert bytes(store) == before
+        assert php.phpunit.buildfromunit(unit).getid() == key
+        assert php.phpfile(BytesIO(bytes(store))).units[0].getid() == key
+
+    @mark.parametrize("store_class", [php.phpfile, php.LaravelPHPFile])
+    def test_decoded_leaf_punctuation_round_trips(
+        self, store_class: type[php.phpfile]
+    ) -> None:
+        source = b"<?php\nreturn array(\n    'Use \\'File\\', then continue' => 'value',\n);\n"
+        store = store_class(BytesIO(source))
+        unit = store.units[0]
+        key = unit.getid()
+        before = bytes(store)
+        unit.validate_id(key)
+        assert bytes(store) == before
+        unit.setid(key)
+        assert bytes(store) == before
+        copied = unit.__class__.buildfromunit(unit)
+        assert copied.getid() == key
+        assert store_class(BytesIO(bytes(store))).units[0].getid() == key
+
+    @mark.parametrize("whitespace", ["\t", "\n", "\r"])
+    @mark.parametrize("quotechar", ["'", '"'])
+    def test_quoted_php_index_with_literal_whitespace_round_trips(
+        self, whitespace: str, quotechar: str
+    ) -> None:
+        key = f"$lang[{quotechar}line{whitespace}break{quotechar}]"
+        source = f"<?php\n{key} = 'value';\n".encode()
+        store = php.phpfile(BytesIO(source))
+        unit = store.units[0]
+        assert unit.getid() == key
+        before = bytes(store)
+        unit.validate_id(key)
+        assert bytes(store) == before
+        unit.setid(key)
+        assert bytes(store) == before
+        assert php.phpfile(BytesIO(bytes(store))).units[0].getid() == key
+        assert php.phpunit.buildfromunit(unit).getid() == key
 
     def test_nested_arrays_are_indexed_once(self) -> None:
         """Serializing nested arrays should not rescan all units per array."""
@@ -205,6 +816,47 @@ $messages = array(
 
         assert bytes(store).decode() == phpsource
         assert units.iterations == 2
+
+    def test_deep_array_serialization_parses_each_key_once(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        depth = 36
+        key = "return->" + "->".join(
+            [*(f"'level-{index}'[]" for index in range(depth)), "'leaf->value'"]
+        )
+        store = php.phpfile()
+        nested = php.phpunit("value")
+        nested.setid(key)
+        store.addunit(nested)
+        numeric = php.phpunit("number")
+        numeric.setid("$lang[0x10]")
+        store.addunit(numeric)
+
+        split = php._split_php_name
+        calls = 0
+
+        def count_split(name: str) -> list[str] | None:
+            nonlocal calls
+            calls += 1
+            return split(name)
+
+        monkeypatch.setattr(php, "_split_php_name", count_split)
+        output = bytes(store)
+        assert calls == len(store.units)
+        assert output.count(b" => [\n") == depth
+        assert b"'leaf->value' => 'value'" in output
+        assert b"$lang[0x10] = 'number';" in output
+        reparsed = php.phpfile(BytesIO(output))
+        assert [unit.getid() for unit in reparsed.units] == [key, "$lang[0x10]"]
+
+    def test_nested_short_arrays_serialize_as_array_members(self) -> None:
+        source = b"<?php\nreturn [\n    'nested' => [\n        'leaf' => 'value',\n    ],\n];\n"
+        store = php.phpfile(BytesIO(source))
+        output = bytes(store)
+        assert output == source
+        assert php.phpfile(BytesIO(output)).units[0].getid() == (
+            "return[]->'nested'[]->'leaf'"
+        )
 
     def test_simpledefinition(self) -> None:
         """Checks that a simple php definition is parsed correctly."""
@@ -396,7 +1048,7 @@ return [
         assert phpunit.name == "return[]->'6\\\"'"
         assert phpunit.source == "value6"
 
-        assert bytes(phpfile).decode() == phpsource
+        assert bytes(phpfile).decode() == phpsource.replace(r"""'6\"'""", r"""'6\\"'""")
 
     def test_parsing_arrays_non_textual(self) -> None:
         """Don't break on non-textual data. Bug #1684."""
@@ -1049,13 +1701,13 @@ $messages['greeting'] = 'Hi ' . $name;
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang['mediaselect']"
-        assert phpunit.source == 'Really "something"$variable"something else"'
+        assert phpunit.source == 'Really "something"{$variable}"something else"'
         phpunit = phpfile.units[1]
         assert phpunit.name == "$messages['welcome']"
-        assert phpunit.source == "Welcome $name!"
+        assert phpunit.source == "Welcome {$name}!"
         phpunit = phpfile.units[2]
         assert phpunit.name == "$messages['greeting']"
-        assert phpunit.source == "Hi $name"
+        assert phpunit.source == "Hi {$name}"
 
     def test_serialize(self) -> None:
         phpsource = """<?php
@@ -1201,6 +1853,21 @@ return array(
         assert phpunit.source == "pesca"
         assert bytes(phpfile).decode() == phpsource
 
+    def test_return_array_concatenated_value(self) -> None:
+        phpsource = """<?php
+return [
+    'long' => 'This is a long ' .
+        'sentence',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return[]->'long'"
+        assert phpunit.source == "This is a long sentence"
+        phpunit.target = "Une longue phrase"
+        assert "'long' => 'Une longue phrase'" in bytes(phpfile).decode()
+
     def test_return_array_with_spaces(self) -> None:
         """Test that return array with spaces before 'array' is handled correctly."""
         phpsource = """<?php
@@ -1294,6 +1961,113 @@ $sec = 'second';
 
 class TestLaravelPhpUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = php.LaravelPHPUnit
+
+    @mark.parametrize("key", ["9223372036854775807", "-9223372036854775808"])
+    def test_integer_boundary_keys_remain_numeric(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.validate_id(key)
+        unit.setid(key)
+        assert unit.name == f"return->{key}"
+
+    @mark.parametrize(
+        "key", ["9" * 5000, "9223372036854775808", "-9223372036854775809"]
+    )
+    def test_oversized_numeric_key_stays_quoted(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.validate_id(key)
+        unit.setid(key)
+        assert unit.name == f"return->'{key}'"
+        store = php.LaravelPHPFile()
+        store.addunit(unit)
+        assert f"'{key}' =>".encode() in bytes(store)
+        assert php.LaravelPHPFile(BytesIO(bytes(store))).units[0].getid() == key
+
+    @mark.parametrize("key", ["arrow->inside", "it's -> safe"])
+    def test_quoted_arrow_round_trips(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.validate_id(key)
+        original = unit.getid()
+        unit.setid(key)
+        assert original != key
+        store = php.LaravelPHPFile()
+        store.addunit(unit)
+        assert php.LaravelPHPFile(BytesIO(bytes(store))).units[0].getid() == key
+
+    def test_setid_rejects_braced_interpolation(self) -> None:
+        unit = self.UnitClass("value")
+        key = '"{$ {print(123)}}"'
+        with raises(ValueError, match="PHP key"):
+            unit.validate_id(key)
+        with raises(ValueError, match="PHP key"):
+            unit.setid(key)
+
+    def test_setid_rejects_escaped_apostrophe_in_leaf(self) -> None:
+        unit = self.UnitClass("value")
+        original = unit.getid()
+        payload = r"x\' => print(123), // "
+        with raises(ValueError, match="PHP key"):
+            unit.validate_id(payload)
+        with raises(ValueError, match="PHP key"):
+            unit.setid(payload)
+        assert unit.getid() == original
+
+    def test_setid_accepts_inert_backslash_in_leaf(self) -> None:
+        unit = self.UnitClass("value")
+        unit.validate_id(r"App\User")
+        unit.setid(r"App\User")
+        assert unit.getid() == r"App\User"
+
+    @mark.parametrize("key", ["line\nbreak", "tab\tkey", "line\r\nbreak"])
+    def test_setid_accepts_whitespace_in_decoded_leaf(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        unit.validate_id(key)
+        unit.setid(key)
+        assert unit.getid() == key
+        copied = self.UnitClass.buildfromunit(unit)
+        assert copied.getid() == key
+        store = php.LaravelPHPFile()
+        store.addunit(unit)
+        assert php.LaravelPHPFile(BytesIO(bytes(store))).units[0].getid() == key
+
+    def test_validate_id_requires_exact_identity(self) -> None:
+        unit = self.UnitClass("value")
+        unit.validate_id("greeting")
+        unit.validate_id("it's safe")
+        unit.validate_id("nested'[]->'new")
+        unit.validate_id("01")
+        with raises(ValueError, match="exactly"):
+            unit.validate_id("return->'greeting'")
+        with raises(ValueError, match="exactly"):
+            unit.validate_id("'greeting'")
+        unit.setid("return->'greeting'")
+        assert unit.getid() == "greeting"
+        unit.setid("01")
+        assert unit.name == "return->'01'"
+
+    @mark.parametrize(
+        "key",
+        [
+            "return[]->'nested'[]->system('id')",
+            "nested'[]->system('id')",
+        ],
+    )
+    def test_setid_rejects_php_injection(self, key: str) -> None:
+        unit = self.UnitClass("value")
+        original = unit.getid()
+        with raises(ValueError, match="PHP key"):
+            unit.setid(key)
+        assert unit.getid() == original
+
+    def test_setid_accepts_nested_key(self) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("nested'[]->'new")
+        assert unit.getid() == "nested'[]->'new"
+
+    def test_setid_quotes_apostrophe(self) -> None:
+        unit = self.UnitClass("value")
+        unit.setid("it's safe")
+        assert unit.getid() == "it's safe"
+        assert unit.getoutput("", "'it's safe'") == "'it\\'s safe' => 'value',\n"
 
 
 class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):

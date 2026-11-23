@@ -32,7 +32,6 @@ from translate.storage import base
 class DefaultDialect(csv.excel):
     skipinitialspace = True
     quoting = csv.QUOTE_ALL
-    escapechar = "\\"
 
 
 csv.register_dialect("default", DefaultDialect)
@@ -77,7 +76,7 @@ class csvunit(base.TranslationUnit):
     def getcontext(self):
         return self.context
 
-    def setcontext(self, value) -> None:  # ty:ignore[invalid-method-override]
+    def setcontext(self, value) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         self._invalidate_store_indexes()
         self.context = value
 
@@ -339,9 +338,9 @@ class csvfile(base.TranslationStore):
             inputfile.close()
             self.parse(csvsrc)
 
-    def parse(
+    def parse(  # ty:ignore[lost-keyword-for-regular-parameter]
         self, csvsrc, sample_length: int | None = 1024, *, dialect: str | None = None
-    ) -> None:  # ty:ignore[invalid-method-override]
+    ) -> None:
         if self._encoding == "auto":
             self._automatic_encoding = True
             text, encoding = self.detect_encoding(

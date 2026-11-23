@@ -101,6 +101,14 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 end_entity_re = re.compile(rb"[\"']\s*>")
 DTD_VALIDATION_SYSTEM_ID = "translate-toolkit.dtd"
 _DTD_XML_WRAPPER = "translate-toolkit-root"
+_XML_NAME_START = (
+    r"A-Z_a-z\xC0-\xD6\xD8-\xF6\xF8-\u02FF\u0370-\u037D\u037F-\u1FFF"
+    r"\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF"
+    r"\uFDF0-\uFFFD\U00010000-\U000EFFFF"
+)
+_XML_NAME = re.compile(
+    rf"[{_XML_NAME_START}][{_XML_NAME_START}0-9.\-\xB7\u0300-\u036F\u203F-\u2040]*"
+)
 
 
 def quoteforandroid(source):
@@ -281,12 +289,21 @@ class DTDValidationResolver(etree.Resolver):
 class dtdunit(base.TranslationUnit):
     """An entity definition from a DTD file (and any associated comments)."""
 
+    # Populated by dtdfile.parse when the corresponding content is encountered.
+    hashprefix: str
+    entitytype: str
+    entityparameter: str
+    _locfilenotes: list[tuple[str, str]]
+    _locgroupstarts: list[tuple[str, str]]
+    _locgroupends: list[tuple[str, str]]
+    _locnotes: list[tuple[str, str]]
+
     def __init__(self, source="", android=False) -> None:
         """Construct the dtdunit, prepare it for parsing."""
         self.android = android
 
         super().__init__(source)
-        self.comments = []
+        self.comments: list[tuple[str, str]] = []
         self.unparsedlines = []
         self.incomment = False
         self.inentity = False
@@ -335,7 +352,26 @@ class dtdunit(base.TranslationUnit):
     def getid(self):
         return self.entity
 
-    def setid(self, new_id) -> None:  # ty:ignore[invalid-method-override]
+    def validate_id(self, value: str) -> None:
+        super().validate_id(value)
+        if _XML_NAME.fullmatch(value) is None or any(char.isspace() for char in value):
+            raise ValueError("DTD entity name cannot be represented safely")
+        encoding = (
+            self._store.encoding
+            if self._store is not None
+            else dtdfile.default_encoding
+        )
+        try:
+            value.encode(encoding)
+        except UnicodeEncodeError as error:
+            raise ValueError(
+                "DTD entity name cannot be represented in file encoding"
+            ) from error
+
+    def setid(self, new_id) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
+        # Empty names mark omitted entities during DTD to PO conversion.
+        if new_id or not isinstance(new_id, str):
+            self.validate_id(new_id)
         self._invalidate_store_indexes()
         self.entity = new_id
 
@@ -375,11 +411,11 @@ class dtdunit(base.TranslationUnit):
         # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, "entitytype", None) == "external":
-                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"  # ty:ignore[unresolved-attribute]
+                entityline = f"<!ENTITY % {self.entity} {self.entityparameter} {self.definition}{self.closing}"
             else:
                 entityline = f"<!ENTITY{self.space_pre_entity}{self.entity}{self.space_pre_definition}{self.definition}{self.closing}"
             if getattr(self, "hashprefix", None):
-                entityline = f"{self.hashprefix} {entityline}"  # ty:ignore[unresolved-attribute]
+                entityline = f"{self.hashprefix} {entityline}"
             lines.append(f"{entityline}\n")
         return "".join(lines)
 
@@ -417,10 +453,10 @@ class dtdfile(base.TranslationStore):
         """Store a comment in the appropriate list on the unit."""
         commentpair = (commenttype, comment)
         comment_targets = {
-            "locfile": unit._locfilenotes,  # ty:ignore[unresolved-attribute]
-            "locgroupstart": unit._locgroupstarts,  # ty:ignore[unresolved-attribute]
-            "locgroupend": unit._locgroupends,  # ty:ignore[unresolved-attribute]
-            "locnote": unit._locnotes,  # ty:ignore[unresolved-attribute]
+            "locfile": unit._locfilenotes,
+            "locgroupstart": unit._locgroupstarts,
+            "locgroupend": unit._locgroupends,
+            "locnote": unit._locnotes,
             "comment": unit.comments,
         }
         comment_targets.get(commenttype, unit.comments).append(commentpair)
@@ -480,7 +516,7 @@ class dtdfile(base.TranslationStore):
             )
         raise ValueError(f"Unexpected quote character... {quote_char!r}")
 
-    def parse(self, dtdsrc) -> None:  # ty:ignore[invalid-method-override]
+    def parse(self, dtdsrc) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Read the source code of a dtd file in and include them as dtdunits in self.units."""
         if not dtdsrc:
             return
@@ -506,10 +542,10 @@ class dtdfile(base.TranslationStore):
 
             # Initialize unit state
             newdtd.comments = []
-            newdtd._locfilenotes = newdtd.comments  # ty:ignore[unresolved-attribute]
-            newdtd._locgroupstarts = newdtd.comments  # ty:ignore[unresolved-attribute]
-            newdtd._locgroupends = newdtd.comments  # ty:ignore[unresolved-attribute]
-            newdtd._locnotes = newdtd.comments  # ty:ignore[unresolved-attribute]
+            newdtd._locfilenotes = newdtd.comments
+            newdtd._locgroupstarts = newdtd.comments
+            newdtd._locgroupends = newdtd.comments
+            newdtd._locnotes = newdtd.comments
             newdtd.entity = None
             newdtd.definition = ""
             newdtd.unparsedlines = []
@@ -574,7 +610,7 @@ class dtdfile(base.TranslationStore):
                         has_content = True
                         beforeentity = line[:entitypos].strip()
                         if beforeentity.startswith("#"):
-                            newdtd.hashprefix = beforeentity  # ty:ignore[unresolved-attribute]
+                            newdtd.hashprefix = beforeentity
                         entitypart = "start"
                     else:
                         # Add to unparsed lines
@@ -601,10 +637,10 @@ class dtdfile(base.TranslationStore):
                         newdtd.entity = entity_name
                         assert quote.rstripeol(entity_name) == entity_name
                         if newdtd.entity:
-                            newdtd.entitytype = entitytype  # ty:ignore[unresolved-attribute]
+                            newdtd.entitytype = entitytype
                             if entitytype == "external":
                                 entitypart = "parameter"
-                                newdtd.entityparameter = ""  # ty:ignore[unresolved-attribute]
+                                newdtd.entityparameter = ""
                             else:
                                 entitypart = "definition"
                             # Remember the start position and the quote character
@@ -623,7 +659,7 @@ class dtdfile(base.TranslationStore):
                         paramstart = e
                         while e < len(line) and line[e].isalnum():
                             e += 1
-                        newdtd.entityparameter += line[paramstart:e]  # ty:ignore[unresolved-attribute]
+                        newdtd.entityparameter += line[paramstart:e]
                         while e < len(line) and line[e].isspace():
                             e += 1
                         line = line[e:]
@@ -692,14 +728,10 @@ class dtdfile(base.TranslationStore):
 
     def serialize(self, out) -> None:
         """Write content to file."""
-        content = b""
-        for dtd in self.units:
-            unit_str = str(dtd).encode(self.encoding)
-            out.write(unit_str)
-            content += unit_str
+        content = b"".join(str(unit).encode(self.encoding) for unit in self.units)
         if not self._valid_store(content):
-            warnings.warn(f"DTD file '{self.filename}' does not validate")
-            out.truncate(0)
+            raise ValueError(f"DTD file '{self.filename}' does not validate")
+        out.write(content)
 
     def _valid_store(self, content: bytes) -> bool:
         """

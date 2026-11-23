@@ -97,6 +97,35 @@ def parse_xml_file(
     )
 
 
+class _XMLRootFound(Exception):
+    """Stop scanning once the XML root start tag has been reached."""
+
+
+def extract_xml_prolog(xml: bytes) -> bytes:
+    """
+    Return the original bytes before the root element of an XML document.
+
+    Like XMLTextParser, use parser byte offsets to preserve original markup.
+    Stop before parsing the root contents; callers must validate the document
+    separately. External entities are never loaded.
+    """
+    parser = ParserCreate()
+    parser.SetParamEntityParsing(XML_PARAM_ENTITY_PARSING_NEVER)
+    root_start = 0
+
+    def root_found(_name, _attributes) -> None:
+        nonlocal root_start
+        root_start = parser.CurrentByteIndex
+        raise _XMLRootFound
+
+    parser.StartElementHandler = root_found
+    try:
+        parser.Parse(xml, True)
+    except _XMLRootFound:
+        return xml[:root_start]
+    return b""
+
+
 class XMLTextParser:
     """Process XML character data while preserving the original markup."""
 
@@ -269,23 +298,58 @@ def normalize_xml_space(node, xml_space: str, remove_start: bool = False) -> Non
     Normalize spaces following the nodes xml:space, or alternatively the
     given xml_space parameter.
     """
+    parent = node.getparent()
+    tail_space = (
+        getXMLspaceInherited(parent, xml_space) if parent is not None else xml_space
+    )
     xml_space = getXMLspace(node) or xml_space
-    if xml_space == "preserve":
-        return
-    if node.text:
-        node.text = normalize_space(node.text)
-        if remove_start and node.text[0] == " ":
-            node.text = node.text.lstrip()
+
+    last_text_node: etree._Element | None = None
+
+    def normalize_element(element, inherited_space: str) -> None:
+        nonlocal remove_start, last_text_node
+        element_space = getXMLspace(element) or inherited_space
+
+        # Empty inline elements represent placeholders between text runs.
+        if not element.text and len(element) == 0:
             remove_start = False
-        if len(node.text) > 0 and node.text.endswith(" "):
-            remove_start = True
-        if len(node) == 0:
-            node.text = node.text.rstrip()
-    if node.tail:
+            last_text_node = None
+        if element.text:
+            if element_space != "preserve":
+                element.text = normalize_space(element.text)
+                if remove_start:
+                    element.text = element.text.lstrip(" ")
+            if element.text:
+                remove_start = element.text[-1] in " \t\r\n"
+                last_text_node = (
+                    element
+                    if len(element) == 0 and element_space != "preserve"
+                    else None
+                )
+
+        for child in element:
+            if isinstance(child.tag, str):
+                normalize_element(child, element_space)
+            elif child.tag is etree.Entity:
+                remove_start = False
+                last_text_node = None
+            # Tails belong to the parent, including tails of preserved children.
+            if child.tail:
+                if element_space != "preserve":
+                    child.tail = normalize_space(child.tail)
+                    if remove_start:
+                        child.tail = child.tail.lstrip(" ")
+                if child.tail:
+                    remove_start = child.tail[-1] in " \t\r\n"
+                    last_text_node = None
+
+    normalize_element(node, xml_space)
+    if node.tail and tail_space != "preserve":
         node.tail = normalize_space(node.tail)
 
-    for child in node:
-        normalize_xml_space(child, remove_start)  # ty:ignore[invalid-argument-type]
+    # Delay trimming until all following text and placeholders are accounted for.
+    if last_text_node is not None and last_text_node.text:
+        last_text_node.text = last_text_node.text.rstrip(" ")
 
 
 def reindent(

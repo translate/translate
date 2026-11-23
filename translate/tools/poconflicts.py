@@ -37,7 +37,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         """Sets the formats and customizes the input/output option help text."""
         super().setformats(formats, usetemplates)
         # Override the input/output option help text to be more descriptive
-        inputoption = optrecurse.optparse.Option(
+        inputoption = optrecurse.RecursiveOption(
             "-i",
             "--input",
             dest="input",
@@ -46,10 +46,10 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             metavar="INPUT",
             help="read from INPUT (directory or file(s)) in po format",
         )
-        inputoption.optionalswitch = True  # ty:ignore[unresolved-attribute]
-        inputoption.required = True  # ty:ignore[unresolved-attribute]
+        inputoption.optionalswitch = True
+        inputoption.required = True
         self.define_option(inputoption)
-        outputoption = optrecurse.optparse.Option(
+        outputoption = optrecurse.RecursiveOption(
             "-o",
             "--output",
             dest="output",
@@ -57,8 +57,8 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             metavar="OUTPUT",
             help="write to OUTPUT (directory) in po format",
         )
-        outputoption.optionalswitch = True  # ty:ignore[unresolved-attribute]
-        outputoption.required = True  # ty:ignore[unresolved-attribute]
+        outputoption.optionalswitch = True
+        outputoption.required = True
         self.define_option(outputoption)
 
     def parse_args(self, args=None, values=None):
@@ -144,7 +144,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             string = string.replace(accelerator, "")
         return string.strip()
 
-    def processfile(self, fileprocessor, options, fullinputpath) -> bool:  # ty:ignore[invalid-method-override]
+    def processfile(self, fileprocessor, options, fullinputpath) -> bool:  # ty:ignore[incompatible-method-override]
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputfile = factory.getobject(inputfile)

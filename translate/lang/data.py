@@ -114,7 +114,7 @@ languages = {
     "hy": ("Armenian", 2, "n > 1"),
     "ia": ("Interlingua (International Auxiliary Language Association)", 2, "(n != 1)"),
     "id": ("Indonesian", 1, "0"),
-    "is": ("Icelandic", 2, "(n != 1)"),
+    "is": ("Icelandic", 2, "(n%10!=1 || n%100==11)"),
     "it": ("Italian", 2, "(n != 1)"),
     "ja": ("Japanese", 1, "0"),
     "jbo": ("Lojban", 1, "0"),
@@ -895,6 +895,18 @@ def get_cldr_plural_tags(
     return plural_tags["en"]
 
 
+def get_apple_plural_tags(locale: str | None, count: int | None) -> list[str]:
+    """Resolve the legacy Apple projection, including the optional zero slot."""
+    if locale is None:
+        return list(cldr_plural_categories)
+    tags = get_cldr_plural_tags(locale, count).copy()
+    if "zero" not in tags and count != 1:
+        if count == 2 and locale not in plural_tags:
+            return ["zero", "other"]
+        tags.insert(0, "zero")
+    return tags
+
+
 # CLDR plurals with additional decimal tags
 DECIMAL_EXTRA_TAGS = {
     "be": ["other"],
@@ -1256,6 +1268,34 @@ def is_rtl(language_code: str | None) -> bool:
     # Check base language (e.g., 'ar' for 'ar_SA')
     base = normalized.split("_")[0]
     return base in _NORMALIZED_RTL_LANGS
+
+
+def get_gettext_plural_tags(locale: str | None) -> list[str]:
+    """Map gettext integer indexes to category names using the toolkit's language data."""
+    locale = locale or "en"
+    base = _normalize_to_underscore(locale).split("_")[0]
+    tags = get_cldr_plural_tags(base)
+    language = get_language(locale) or get_language(base)
+    if language is None:
+        return tags
+    count = language[1]
+    if count == len(tags):
+        return tags
+    if count == 1:
+        return ["other"]
+    if count == 2:
+        # Welsh's gettext expression tests n == 2; the other two-form
+        # expressions distinguish singular and plural.
+        return ["other", "two"] if base == "cy" else ["one", "other"]
+    # These gettext rules have different categories from the CLDR list.
+    return {
+        "csb": ["one", "few", "many"],
+        "kw": ["one", "two", "few", "other"],
+        "mnk": ["zero", "one", "other"],
+        "mt": ["one", "few", "many", "other"],
+        "sa": ["one", "two", "other"],
+        "szl": ["one", "few", "many"],
+    }[base]
 
 
 def get_language(code):

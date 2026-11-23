@@ -98,7 +98,7 @@ class PoXliffUnit(xliff.xliffunit):
         self._invalidate_store_indexes()
         self.setsource(source, sourcelang="en")
 
-    def setsource(self, source, sourcelang="en") -> None:  # ty:ignore[invalid-method-override]
+    def setsource(self, source, sourcelang="en") -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         self._invalidate_store_indexes()
         self._rich_source = None
         if not hasplurals(source):
@@ -157,13 +157,14 @@ class PoXliffUnit(xliff.xliffunit):
             # Propagate group ID to new child trans-units
             group_id = self.xmlelement.get("id")
             if group_id and self.units:
+                group_id = group_id.replace(xliff.ID_SEPARATOR_SAFE, xliff.ID_SEPARATOR)
                 for i, unit in enumerate(self.units):
-                    unit.setid(f"{group_id}[{i}]")
+                    unit._set_local_id(f"{group_id}[{i}]")
             if had_target and target is not None:
                 self.target = target
 
     # We don't support any rich strings yet
-    multistring_to_rich = base.TranslationUnit.multistring_to_rich  # ty:ignore[invalid-method-override]
+    multistring_to_rich = base.TranslationUnit.multistring_to_rich  # ty:ignore[lost-keyword-for-regular-parameter]
     rich_to_multistring = base.TranslationUnit.rich_to_multistring
 
     rich_source = base.TranslationUnit.rich_source
@@ -235,7 +236,7 @@ class PoXliffUnit(xliff.xliffunit):
             )
             if contexts:
                 alternative.setcontext(contexts.pop())
-            alternative._xliff_alttrans_units = plural_alternatives  # ty:ignore[unresolved-attribute]
+            alternative._xliff_alttrans_units = plural_alternatives  # ty:ignore[missing-attribute]
             alternatives.append(alternative)
         for child_index, child_units in enumerate(child_alternatives):
             alternatives.extend(
@@ -427,7 +428,7 @@ class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
 
     def createfilenode(
         self, filename, sourcelanguage="en-US", datatype="po"
-    ) -> etree.Element:  # ty:ignore[invalid-method-override]
+    ) -> etree._Element:  # ty:ignore[incompatible-method-override]
         # Let's ignore the sourcelanguage parameter opting for the internal
         # one. PO files will probably be one language
         return super().createfilenode(
@@ -495,6 +496,7 @@ class PoXliffFile(xliff.xlifffile[U], poheader.poheader):
             xmlsrc = xml.read()
             xml = xmlsrc
         self.document = parse_xml(xml).getroottree()
+        self._remember_utf8_bom(xml)
         self.initbody()
         root_node = self.document.getroot()
         assert root_node.tag == self.namespaced(self.rootNode)

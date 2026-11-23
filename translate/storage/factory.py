@@ -25,7 +25,7 @@ from functools import lru_cache
 from importlib import import_module
 from typing import BinaryIO
 
-from translate.storage.base import TranslationStore
+from translate.storage.base import ParseError, TranslationStore, limit_parsed_units
 
 # TODO: Monolingual formats (with template?)
 
@@ -33,6 +33,30 @@ decompressclass = {
     "gz": ("gzip", "GzipFile"),
     "bz2": ("bz2", "BZ2File"),
 }
+
+
+class _LimitedReader:
+    """Bound bytes returned by a compressed stream's read method."""
+
+    def __init__(self, stream: BinaryIO, limit: int) -> None:
+        if limit < 0:
+            raise ValueError("decompressed byte limit must be nonnegative")
+        self.stream = stream
+        self.limit = limit
+        self.total = 0
+
+    def read(self, size: int = -1) -> bytes:
+        available = self.limit - self.total + 1
+        data = self.stream.read(min(size, available) if size >= 0 else available)
+        self.total += len(data)
+        if self.total > self.limit:
+            raise ParseError(
+                f"decompressed file exceeds the {self.limit} byte extraction limit"
+            )
+        return data
+
+    def __getattr__(self, name: str):
+        return getattr(self.stream, name)
 
 
 _classes_str = {
@@ -217,6 +241,9 @@ def getobject(
     classes: dict | None = None,
     classes_str: dict | None = None,
     hiddenclasses: dict | None = None,
+    *,
+    max_decompressed_bytes: int | None = None,
+    max_units: int | None = None,
 ) -> TranslationStore:
     """
     Factory that returns a usable object for the type of file presented.
@@ -249,10 +276,20 @@ def getobject(
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
         _name, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep) :].lower()
+        parse_source = storefile
+        compressed_source = None
         if ext in decompressclass:
             file = import_class(*decompressclass[ext])
-            storefile = file(storefilename)
-        store = storeclass.parsefile(storefile)
+            compressed_source = file(storefilename)
+            parse_source = compressed_source
+            if max_decompressed_bytes is not None:
+                parse_source = _LimitedReader(parse_source, max_decompressed_bytes)
+        try:
+            with limit_parsed_units(max_units):
+                store = storeclass.parsefile(parse_source)
+        finally:
+            if compressed_source is not None:
+                compressed_source.close()
     else:
         store = storeclass()
         store.filename = storefilename

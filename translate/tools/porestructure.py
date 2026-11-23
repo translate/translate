@@ -90,7 +90,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 success = False
             progress_bar.report_progress(inputpath, success)
 
-    def processfile(self, options, fullinputpath) -> bool:  # ty:ignore[invalid-method-override]
+    def processfile(self, options, fullinputpath) -> bool:  # ty:ignore[incompatible-method-override]
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
         inputpofile = po.pofile(inputfile)

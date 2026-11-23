@@ -38,6 +38,45 @@ Conformance
   doesn't contain special characters that interfere with the HTML.
 
 
+Translatable attributes
+=======================
+
+Toolkit extracts nonblank values of ``alt``, ``title``, ``summary``, ``abbr``, and
+``value``. Translating a form control's ``value`` can change the value submitted
+to the server.
+
+For the following attributes, extraction depends on the element:
+
+* ``lang`` on the root ``html`` element identifies the document language.
+* ``label`` on ``optgroup``, ``option``, and ``track`` supplies a display label.
+* ``placeholder`` on ``input`` and ``textarea`` supplies a hint for entering text.
+* ``download`` on ``a`` and ``area`` supplies a suggested filename. A bare or
+  blank ``download`` supplies no filename.
+* ``content`` on ``meta`` is extracted for recognized metadata names, including
+  ``description``, ``keywords``, and ``application-name`` in the ``name`` attribute.
+  Toolkit also recognizes social metadata such as ``property="og:title"``.
+
+Embedded HTML in ``srcdoc`` and CSS in ``style`` require recursive processing.
+Toolkit excludes both from standalone attribute extraction.
+See the `HTML translatable attributes
+<https://html.spec.whatwg.org/multipage/dom.html#translatable-attributes>`_
+and `application name metadata
+<https://html.spec.whatwg.org/multipage/semantics.html#meta-application-name>`_.
+
+Accessible names and descriptions can be translated through ``aria-label`` and
+``aria-description``. Toolkit also extracts ``aria-placeholder``,
+``aria-roledescription``, ``aria-valuetext``, ``aria-braillelabel``,
+``aria-brailleroledescription``, ``aria-colindextext``, and ``aria-rowindextext``.
+These properties contain wording presented by assistive technology.
+See the `WAI-ARIA 1.3 draft list of translatable attributes
+<https://www.w3.org/TR/wai-aria-1.3/#translatable-attributes>`_.
+
+Attributes such as ``aria-labelledby`` and ``aria-describedby`` contain lists of
+element IDs. Translate the text in the referenced elements. Toolkit preserves
+the IDs and their order. Numeric properties, state tokens, and keyboard shortcut
+syntax are also excluded from attribute translation.
+
+
 .. _html#ignoring_content:
 
 Ignoring Content from Translation

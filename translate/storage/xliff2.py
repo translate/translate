@@ -33,6 +33,7 @@ from __future__ import annotations
 
 from lxml import etree
 
+from translate.storage import base
 from translate.storage.workflow import StateEnum as state
 from translate.storage.xliff_common import XliffFile, XliffUnit
 
@@ -79,7 +80,7 @@ class Xliff2Unit(XliffUnit):
             return
         self._ensure_xml_space_preserve()
 
-    def addnote(self, text: str, origin: str | None = None) -> None:  # ty:ignore[invalid-method-override]
+    def addnote(self, text: str, origin: str | None = None) -> None:  # ty:ignore[incompatible-method-override]
         """Add a note specifically in the XLIFF 2.0 way."""
         if not text:
             return
@@ -135,7 +136,7 @@ class Xliff2Unit(XliffUnit):
         unit_element.append(self.xmlelement)
         return unit_element
 
-    def getid(self) -> str | None:  # ty:ignore[invalid-method-override]
+    def getid(self) -> str | None:  # ty:ignore[incompatible-method-override]
         """Get the unit id."""
         segment_id = self.xmlelement.get("id")
         unit_element = self.getunitelement()
@@ -152,16 +153,39 @@ class Xliff2Unit(XliffUnit):
 
     def setid(self, value: str) -> None:
         """Set the unit id."""
+        self.validate_id(value)
         self._invalidate_store_indexes()
-        if value:
-            segment_id = None
-            if SEGMENT_SEPARATOR in value:
-                unit_id, segment_id = value.split(SEGMENT_SEPARATOR, 1)
-            else:
-                unit_id = value
-            self.getunitelement().set("id", unit_id)
-            if segment_id and not segment_id.startswith(SEGMENT_AUTO_ID):
-                self.xmlelement.set("id", segment_id)
+        unit_id, separator, segment_id = value.partition(SEGMENT_SEPARATOR)
+        if separator and "id" not in self.xmlelement.attrib:
+            parent = self.xmlelement.getparent()
+            if parent is not None:
+                segments = list(parent.iterchildren(self.namespaced("segment")))
+                generated_id = f"{SEGMENT_AUTO_ID}{segments.index(self.xmlelement) + 1}"
+                if len(segments) > 1 and segment_id == generated_id:
+                    self.getunitelement().set("id", unit_id)
+                    return
+        self.getunitelement().set("id", unit_id)
+        if separator:
+            self.xmlelement.set("id", segment_id)
+
+    def validate_id(self, value: str) -> None:
+        """Check XML representation of both parts of a composite ID."""
+        super().validate_id(value)
+        base.validate_xml_id(value)
+        if not value:
+            raise ValueError("XLIFF 2 unit identifier cannot be empty")
+        unit_id, separator, segment_id = value.partition(SEGMENT_SEPARATOR)
+        if not unit_id or (separator and not segment_id):
+            raise ValueError("XLIFF 2 identifier has an empty component")
+        parent = self.xmlelement.getparent()
+        segments = (
+            list(parent.iterchildren(self.namespaced("segment")))
+            if parent is not None
+            else [self.xmlelement]
+        )
+        existing_segment_id = self.xmlelement.get("id")
+        if not separator and (existing_segment_id or len(segments) != 1):
+            raise ValueError("XLIFF 2 identifier requires its segment component")
 
     def isfuzzy(self) -> bool:
         return bool(self.target) and self.xmlelement.get("state", None) == "initial"
@@ -304,13 +328,13 @@ class Xliff2File(XliffFile[Xliff2Unit]):
         super().addunit(unit, new=False)
         if new:
             # TODO: merge units with same ID and different segment
-            self.body.append(unit.getunitelement())  # ty:ignore[unresolved-attribute]
+            self.body.append(unit.getunitelement())  # ty:ignore[missing-union-attribute]
 
     def getsourcelanguage(self) -> str:
         """Get the source language for this file."""
         return self.document.getroot().get("srcLang", "en")
 
-    def setsourcelanguage(self, lang: str) -> None:  # ty:ignore[invalid-method-override]
+    def setsourcelanguage(self, lang: str) -> None:  # ty:ignore[lost-keyword-for-regular-parameter]
         """Set the source language for this file."""
         self.document.getroot().set("srcLang", lang)
 
@@ -318,7 +342,7 @@ class Xliff2File(XliffFile[Xliff2Unit]):
         """Get the target language for this file."""
         return self.document.getroot().get("trgLang")
 
-    def settargetlanguage(self, lang: str) -> None:  # ty:ignore[invalid-method-override]
+    def settargetlanguage(self, lang: str) -> None:  # ty:ignore[incompatible-method-override]
         """Set the target language for this file."""
         if lang:
             self.document.getroot().set("trgLang", lang)

@@ -18,6 +18,11 @@
 
 """Tests for Qt Linguist phase book storage class."""
 
+from codecs import BOM_UTF8
+from io import BytesIO
+
+import pytest
+
 from translate.storage import qph
 from translate.storage.placeables import parse, xliff
 
@@ -45,6 +50,47 @@ class TestQphUnit(test_base.TestTranslationUnit):
 
 class TestQphFile(test_base.TestTranslationStore):
     StoreClass = qph.QphFile
+
+    @pytest.mark.parametrize("input_bom", [False, True])
+    @pytest.mark.parametrize("option", [None, False, True])
+    @pytest.mark.parametrize("file_like", [False, True])
+    def test_utf8_bom(self, input_bom, option, file_like) -> None:
+        document = """<!DOCTYPE QPH>
+<QPH language="cs" sourcelanguage="en">
+<phrase><source>Hello</source><target>Příliš žluťoučký</target></phrase>
+</QPH>
+""".encode()
+        data = (BOM_UTF8 if input_bom else b"") + document
+        store = (
+            self.StoreClass(BytesIO(data))
+            if file_like
+            else self.StoreClass.parsestring(data)
+        )
+        assert store.XMLutf8BOM is None
+        store.XMLutf8BOM = option
+        expected_bom = input_bom if option is None else option
+        outputs = []
+        for _ in range(2):
+            out = BytesIO()
+            store.serialize(out)
+            outputs.extend([out.getvalue(), bytes(store)])
+        assert all(output == outputs[0] for output in outputs)
+        for output in outputs:
+            assert output.count(BOM_UTF8) == int(expected_bom)
+            assert output.startswith(
+                (BOM_UTF8 if expected_bom else b"") + b"<!DOCTYPE QPH>"
+            )
+            assert b"<?xml" not in output
+            assert "Příliš žluťoučký".encode() in output
+            restored = self.StoreClass.parsestring(output)
+            assert restored.units[0].target == "Příliš žluťoučký"
+
+    def test_utf8_bom_new_store(self) -> None:
+        store = self.StoreClass()
+        assert not bytes(store).startswith(BOM_UTF8)
+        for option in (True, False, None):
+            store.XMLutf8BOM = option
+            assert bytes(store).startswith(BOM_UTF8) == (option is True)
 
     def test_basic(self) -> None:
         qphfile = self.StoreClass()

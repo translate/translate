@@ -182,7 +182,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 ".SH NAME\n",
                 "{} \\- {}\n".format(
                     self.get_prog_name(),
-                    self.description.split("\n\n")[0],  # ty:ignore[unresolved-attribute]
+                    self.description.split("\n\n")[0],  # ty:ignore[missing-union-attribute]
                 ),
                 ".SH SYNOPSIS\n",
                 ".PP\n",
@@ -192,7 +192,7 @@ class RecursiveOptionParser(optparse.OptionParser):
         usage += " ".join(self.getusageman(option) for option in self.option_list)
         usage += "\\fP"
         result.append(f"{formatprog(usage)}\n")
-        description_lines = self.description.split("\n\n")[1:]  # ty:ignore[unresolved-attribute]
+        description_lines = self.description.split("\n\n")[1:]  # ty:ignore[missing-union-attribute]
         if description_lines:
             result.extend(
                 (
@@ -211,7 +211,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 (
                     ".TP\n",
                     "{}\n".format(str(option).replace("-", "\\-")),
-                    "{}\n".format(option.help.replace("-", "\\-")),  # ty:ignore[unresolved-attribute]
+                    "{}\n".format(option.help.replace("-", "\\-")),  # ty:ignore[missing-union-attribute]
                 )
             )
         return "".join(result)

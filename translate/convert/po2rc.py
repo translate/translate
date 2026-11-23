@@ -47,7 +47,7 @@ class rerc:
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None) -> None:
         self.templatecontent = templatefile.read()
         self.templatestore = rcfile()
-        self.templatestore.charset = charset  # ty:ignore[unresolved-attribute]
+        self.templatestore.charset = charset  # ty:ignore[missing-attribute]
         self.templatestore.parse(self.templatecontent)
         self.inputstore = None
         self.escaped_sourceindex = {}
@@ -138,7 +138,11 @@ class rerc:
     def convert_block_options(self, s, loc, toks, name=None):
         for option in toks:
             yield " "
-            if option.language:
+            if option.comment:
+                yield from self.convert_comment(True, option.comment)
+                # A following option or BEGIN must not become part of // text.
+                yield self.templatestore.newline
+            elif option.language:
                 yield from self.convert_language(s, loc, option)
             elif option.caption:
                 yield from self.convert_caption(option, name)

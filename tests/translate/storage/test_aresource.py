@@ -10,6 +10,42 @@ from translate.storage.base import TranslationStore
 from . import test_monolingual
 
 
+def test_plural_tag_fixup_preserves_placeholder_name() -> None:
+    store = aresource.AndroidResourceFile()
+    store.settargetlanguage("en")
+    unit = aresource.AndroidResourceUnit("one message")
+    store.addunit(unit)
+    unit.target = multistring(["one", "many"])
+    assert unit.getid() == "one message"
+    assert unit.xmlelement.tag == "plurals"
+    assert unit.xmlelement.getparent() is not None
+    unit.setid("message_count")
+    reparsed = aresource.AndroidResourceFile.parsestring(bytes(store))
+    assert reparsed.units[0].getid() == "message_count"
+    assert reparsed.units[0].target == multistring(["one", "many"])
+
+
+@pytest.mark.parametrize(
+    "name", ["hello_world", "_name", "étiquette", "name.with-dash"]
+)
+def test_resource_id_round_trip(name: str) -> None:
+    unit = aresource.AndroidResourceUnit("old")
+    unit.validate_id(name)
+    assert unit.getid() == "old"
+    unit.setid(name)
+    assert parse_xml(str(unit)).get("name") == name
+
+
+@pytest.mark.parametrize("name", ["", "1name", "bad name", "bad:name", "bad\x00name"])
+def test_resource_id_rejected_without_mutation(name: str) -> None:
+    unit = aresource.AndroidResourceUnit("old")
+    with pytest.raises(ValueError):
+        unit.validate_id(name)
+    with pytest.raises(ValueError):
+        unit.setid(name)
+    assert unit.getid() == "old"
+
+
 class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.AndroidResourceUnit
 
@@ -765,6 +801,120 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     </plurals>
 </resources>
 """
+        )
+
+    @pytest.mark.parametrize("locale", ["cs", "sk"])
+    def test_named_forms(self, locale) -> None:
+        store = self.StoreClass()
+        store.targetlanguage = locale
+        store.parse(
+            b'<resources><plurals name="days" custom="yes"><item quantity="other" note="keep">days</item><!--keep--><item quantity="many"><b>fraction</b></item><item quantity="unexpected"/></plurals></resources>'
+        )
+        unit = store.units[0]
+        original = bytes(store)
+        assert unit.plural_forms == {
+            "other": "days",
+            "many": "<b>fraction</b>",
+            "unexpected": "",
+        }
+        unit.plural_forms = dict(unit.plural_forms)
+        assert bytes(store) == original
+        unit.update_plural_forms({"other": "changed"})
+        assert bytes(store) == original.replace(b">days<", b">changed<")
+        unit.update_plural_forms({"one": "", "many": "<b>decimal</b>"})
+        assert unit.plural_forms["one"] == ""
+        assert "few" not in unit.plural_forms
+        assert unit.target.strings == ["", "", "changed"]
+        unit.update_plural_forms({"unexpected": None})
+        unit.target = multistring(["one", "few", "other"])
+        assert unit.plural_forms["many"] == "<b>decimal</b>"
+        unit.plural_forms = {"many": "", "other": "other"}
+        unit.target = multistring(["one", "few", "other"])
+        assert unit.plural_forms["many"] == ""
+        unit.plural_forms = {}
+        assert unit.plural_forms == {}
+
+    def test_incompatible_donor_leaves_group_untouched(self) -> None:
+        store = self.StoreClass.parsestring(
+            b'<resources><plurals name="x"><item quantity="one">original</item></plurals></resources>'
+        )
+        donor = self.StoreClass.parsestring(
+            b'<resources><plurals name="x"><item quantity="custom">custom</item></plurals></resources>'
+        )
+        before = bytes(store)
+        with pytest.raises(
+            ValueError, match="No compatible plural identifiers: custom"
+        ):
+            store.units[0].merge(donor.units[0], overwrite=True)
+        assert bytes(store) == before
+
+    def test_fractional_status(self) -> None:
+        store = self.StoreClass()
+        store.targetlanguage = "cs"
+        store.parse(
+            b'<resources><plurals name="days" translatable="false"><item quantity="many">fraction</item></plurals></resources>'
+        )
+        unit = store.units[0]
+        assert not unit.target
+        assert unit.istranslated()
+        assert not unit.istranslatable()
+        assert not unit.isblank()
+        unit.update_plural_forms({"many": ""})
+        assert not unit.istranslated()
+        assert not unit.isblank()
+        unit.target = multistring(["first", "few", "other"])
+        assert store.findunit("first") is unit
+        unit.target = multistring(["changed", "few", "other"])
+        assert store.findunit("first") is None
+        assert store.findunit("changed") is unit
+
+    def test_named_structure(self) -> None:
+        original = b"""<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="days">
+        <item quantity="one" note="keep">day</item>
+        <!-- keep this comment -->
+        <item quantity="unexpected">saved</item>
+    </plurals>
+</resources>
+"""
+        store = self.StoreClass()
+        store.parse(original)
+        unit = store.units[0]
+        with pytest.raises(ValueError, match="invalid"):
+            unit.update_plural_forms({"one": "changed", "invalid": "bad"})
+        with pytest.raises(ValueError, match="invalid"):
+            unit.plural_forms = {"invalid": "bad"}
+        assert bytes(store) == original
+        unit.update_plural_forms({"few": "days", "unexpected": "edited"})
+        added = original.replace(b"saved", b"edited").replace(
+            b"    </plurals>",
+            b'        <item quantity="few">days</item>\n    </plurals>',
+        )
+        assert bytes(store) == added
+        store = self.StoreClass()
+        store.parse(added)
+        store.units[0].update_plural_forms({"unexpected": None})
+        removed = added.replace(
+            b'        <item quantity="unexpected">edited</item>\n', b""
+        )
+        assert bytes(store) == removed
+        store = self.StoreClass()
+        store.parse(removed)
+        assert store.units[0].plural_forms == {"one": "day", "few": "days"}
+        assert bytes(store) == removed
+
+    def test_named_mixed_markup(self) -> None:
+        store = self.StoreClass()
+        store.parse(
+            b'<resources><plurals name="days"><item quantity="one"><b>day</b></item><item quantity="many"><![CDATA[<b>days</b>]]></item><item quantity="other">&lt;b&gt;days&lt;/b&gt;</item></plurals></resources>'
+        )
+        original = bytes(store)
+        store.units[0].update_plural_forms(
+            {"many": "<b>fraction</b>", "other": "<b>several</b>"}
+        )
+        assert bytes(store) == original.replace(b">days<", b">fraction<").replace(
+            b"gt;days&lt;", b"gt;several&lt;"
         )
 
     def test_parse_decimal_plurals(self) -> None:

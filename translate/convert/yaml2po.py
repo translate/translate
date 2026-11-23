@@ -24,6 +24,8 @@ for examples and usage instructions.
 """
 
 from translate.convert import convert
+from translate.lang.data import get_gettext_plural_tags
+from translate.misc.multistring import multistring
 from translate.storage import po, yaml
 
 
@@ -77,16 +79,41 @@ class yaml2po:
 
     def merge_stores(self) -> None:
         """Convert two source format files to a target format file."""
-        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"  # ty:ignore[unresolved-attribute]
+        self.extraction_msg = f"extracted from {self.template_store.filename}, {self.source_store.filename}"  # ty:ignore[missing-union-attribute]
 
         self.source_store.makeindex()
-        for template_unit in self.template_store.units:  # ty:ignore[unresolved-attribute]
+        for template_unit in self.template_store.units:  # ty:ignore[missing-union-attribute]
             target_unit = self.convert_unit(template_unit)
 
             for location in target_unit.getlocations():
                 if location in self.source_store.id_index:
                     source_unit = self.source_store.id_index[location]
-                    target_unit.target = source_unit.target
+                    forms = source_unit.plural_forms
+                    if forms is None:
+                        target_unit.target = source_unit.target
+                    elif not target_unit.hasplural():
+                        # A sparse Ruby template can have a scalar PO msgid.
+                        tag = (
+                            template_unit._projection[0]
+                            if template_unit.plural_forms is not None
+                            else "other"
+                        )
+                        tags = get_gettext_plural_tags(
+                            self.source_store.gettargetlanguage()
+                        )
+                        target_unit.target = forms.get(
+                            tags[0] if len(tags) == 1 else tag, ""
+                        )
+                    else:
+                        # PO indexes use the target locale's integer plural rules.
+                        target_unit.target = multistring(
+                            [
+                                forms.get(tag, "")
+                                for tag in get_gettext_plural_tags(
+                                    self.source_store.gettargetlanguage()
+                                )
+                            ]
+                        )
             self.target_store.addunit(target_unit)
 
     def run(self) -> int:
