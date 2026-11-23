@@ -2,7 +2,7 @@ import pytest
 from ruamel.yaml.comments import CommentedMap
 
 from translate.misc.multistring import multistring
-from translate.storage import base, yaml
+from translate.storage import base, jsonl10n, yaml
 
 from . import test_monolingual
 
@@ -177,6 +177,18 @@ foo: True
             == b"""foo: 'True'
 """
         )
+
+    def test_float_and_date(self) -> None:
+        store = self.StoreClass()
+        store.parse(
+            """
+hello: Hi
+version: 1.5
+when: 2026-01-01
+"""
+        )
+        assert [unit.source for unit in store.units] == ["Hi"]
+        assert bytes(store).decode() == "hello: Hi\nversion: 1.5\nwhen: 2026-01-01\n"
 
     def test_integer(self) -> None:
         store = self.StoreClass()
@@ -673,6 +685,146 @@ key2: value2
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
 
+    @pytest.mark.parametrize("edited", [0, 1])
+    def test_edit_aliased_plural(self, edited) -> None:
+        data = b"en:\n  first: &items\n    one: |-\n      original\n    other: items\n  second: *items\n"
+        store = self.StoreClass()
+        store.parse(data)
+        assert bytes(store) == data
+        store.units[edited].update_plural_forms({"one": "line 1\nline 2"})
+        result = bytes(store)
+        assert result.count(b"one: |-") == 2
+        parsed = self.StoreClass()
+        parsed.parse(result)
+        assert parsed.units[edited].plural_forms["one"] == "line 1\nline 2"
+        assert parsed.units[1 - edited].plural_forms["one"] == "original"
+        assert bytes(parsed) == result
+
+    @pytest.mark.parametrize("positional", [False, True])
+    def test_delete_inherited_plural(self, positional) -> None:
+        data = b"en:\n  defaults: &base {one: item, other: items}\n  message:\n    <<: *base\n"
+        store = self.StoreClass()
+        store.parse(data)
+        assert bytes(store) == data
+        unit = store.units[1]
+        if positional:
+            unit.target = multistring(["item"])
+        else:
+            unit.update_plural_forms({"other": None})
+        parsed = self.StoreClass()
+        parsed.parse(bytes(store))
+        assert parsed.units[0].plural_forms == {"one": "item", "other": "items"}
+        assert parsed.units[1].plural_forms == {"one": "item"}
+
+    def test_project_nonempty_fractional_form(self) -> None:
+        store = self.StoreClass()
+        data = b"cs: {message: {other: '', many: fraction}}\n"
+        store.parse(data)
+        unit = store.units[0]
+        assert str(unit.target) == "fraction"
+        assert unit.plural_forms == {"other": "", "many": "fraction"}
+        assert bytes(store) == data
+
+    @pytest.mark.parametrize("reassign", [False, True])
+    def test_append_to_sparse_projection(self, reassign) -> None:
+        store = self.StoreClass()
+        store.parse("en: {message: {one: item}}")
+        unit = store.units[0]
+        unit.target.extra_strings.append("items")
+        if reassign:
+            unit.target = unit.target
+        parsed = self.StoreClass()
+        parsed.parse(bytes(store))
+        assert parsed.units[0].plural_forms == {"one": "item", "other": "items"}
+
+    def test_bind_detached_append(self) -> None:
+        store = self.StoreClass()
+        store.parse("cs: {k: {one: one}}")
+        unit = store.units[0].copy()
+        unit.target.extra_strings.append("few")
+        destination = self.StoreClass()
+        destination.settargetlanguage("en")
+        destination.addunit(unit)
+        assert unit.plural_forms == {"one": "one", "few": "few"}
+
+    def test_rich_edit_after_append(self) -> None:
+        store = self.StoreClass()
+        store.parse("en: {k: {other: items}}")
+        unit = store.units[0]
+        assert len(unit.rich_target) == 1
+        unit.target.extra_strings.append("item")
+        unit.rich_target = unit.rich_target
+        assert unit.plural_forms == {"other": "items", "one": "item"}
+
+    def test_replace_nonplural_mapping(self) -> None:
+        store = self.StoreClass()
+        store.parse("en:\n  message: {old: null}\n")
+        unit = store.UnitClass(multistring(["one", "other"]))
+        unit.setid("message")
+        store.addunit(unit)
+        parsed = self.StoreClass()
+        parsed.parse(bytes(store))
+        assert len(parsed.units) == 1
+        assert parsed.units[0].plural_forms == {"one": "one", "other": "other"}
+
+    def test_merge_foreign_plural_categories(self) -> None:
+        store = self.StoreClass()
+        store.settargetlanguage("cs")
+        store.parse("cs: {k: {one: '1', many: fraction, other: '5'}}")
+        unit = store.units[0]
+        donor = jsonl10n.I18NextV4File()
+        donor.settargetlanguage("cs")
+        donor.parse('{"k_one":"single","k_few":"several","k_other":"rest"}')
+        unit.merge(donor.units[0], overwrite=True)
+        assert unit.plural_forms == {"one": "single", "few": "several", "other": "rest"}
+        assert (
+            type(store).parsestring(bytes(store)).units[0].plural_forms
+            == unit.plural_forms
+        )
+
+    def test_foreign_scalar_merge(self) -> None:
+        store = self.StoreClass()
+        store.parse("en: {k: {one: one, other: rest}}")
+        unit = store.units[0]
+        donor = base.TranslationUnit()
+        donor.target = "replacement"
+        store.settargetlanguage("cs")
+        unit.merge(donor, overwrite=True)
+        assert unit.plural_forms["other"] == "replacement"
+        unit.rich_target = unit.rich_target
+        assert unit.plural_forms["other"] == "replacement"
+
+    def test_rich_source_edits_fractional_category(self) -> None:
+        store = self.StoreClass.parsestring(b"cs: {message: {many: fraction}}")
+        unit = store.units[0]
+        unit.rich_source = [type(unit.rich_source[0])(["edited"])]
+        assert self.StoreClass.parsestring(bytes(store)).units[0].plural_forms == {
+            "many": "edited"
+        }
+
+    def test_named_forms(self) -> None:
+        store = self.StoreClass()
+        data = """cs:
+  days:
+    many: fraction  # keep
+    few:
+    other: ''
+"""
+        store.parse(data)
+        unit = store.units[0]
+        assert unit.plural_forms == {"many": "fraction", "other": ""}
+        assert bytes(store).decode() == data
+        unit.update_plural_forms({"one": "new"})
+        unit.update_plural_forms({"other": None})
+        with pytest.raises(ValueError):
+            unit.plural_forms = {}
+        result = bytes(store)
+        assert b"    few:\n" in result
+        assert b"# keep" in result
+        reparsed = self.StoreClass()
+        reparsed.parse(result)
+        assert reparsed.units[0].plural_forms == {"many": "fraction", "one": "new"}
+
     def test_alias_node_limit(self) -> None:
         store = self.StoreClass(max_yaml_nodes=10, max_yaml_units=None)
         data = "en:\n" + "".join(
@@ -870,12 +1022,4 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse(data)
         assert len(store.units) == 1
         assert store.units[0].target == multistring(["value 1", "value 2"])
-        assert (
-            bytes(store).decode()
-            == """en:
-  string:
-  message:
-    one: value 1
-    other: value 2
-"""
-        )
+        assert bytes(store).decode() == data

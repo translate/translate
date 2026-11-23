@@ -38,13 +38,19 @@ from __future__ import annotations
 
 import os
 import re
+from copy import deepcopy
 from typing import IO, Any
 
 from lxml import etree
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import getText, getXMLspace, setXMLspace
+from translate.misc.xml_helpers import (
+    getText,
+    getXMLspace,
+    getXMLspaceInherited,
+    setXMLspace,
+)
 from translate.storage import base, xliff
 
 
@@ -66,13 +72,86 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
         self.format_value_type = ""
         self._plural_source: multistring | None = None
         self._plural_target: multistring | None = None
+        self._exposed_target: tuple[multistring, tuple[str, ...]] | None = None
         self._plural_base_key: str | None = None
         self._plural_forms: dict[str, etree._Element] = {}
         self._plural_tags: list[str] = []
+        self._detached_locale: str | None = None
         self._plural_dirty: bool = False
         self._plural_dirty_targets: set[str] = set()
         self._plural_state_override: int | None = None
         super().__init__(source, **kwargs)
+
+    def copy(self):
+        if not self.hasplural():
+            return super().copy()
+        clone = deepcopy(self, {id(self._store): None})
+        if isinstance(self._store, AppleStringsXliffFile):
+            clone._remember_plural_locale(self._store)
+            self._preserve_inherited_space(clone)
+        return clone
+
+    def _preserve_inherited_space(self, detached) -> None:
+        for tag, form in self._plural_forms.items():
+            if getXMLspace(form) is None and (space := getXMLspaceInherited(form)):
+                setXMLspace(detached._plural_forms[tag], space)
+
+    def _remember_plural_locale(self, store) -> None:
+        self._detached_locale = (
+            store.get_base_locale_code() if store.gettargetlanguage() else None
+        )
+        if not self._plural_tags and self._plural_target is not None:
+            self._plural_tags = store._get_target_plural_tags(self._plural_target)
+
+    def __eq__(self, other):
+        if isinstance(other, AppleStringsXliffUnit) and (
+            self.hasplural() or other.hasplural()
+        ):
+            return (
+                super().__eq__(other)
+                and self.plural_forms == other.plural_forms
+                and self.source == other.source
+                and self.target == other.target
+                and self.format_value_type == other.format_value_type
+            )
+        return super().__eq__(other)
+
+    def merge(
+        self, otherunit, overwrite=False, comments=True, authoritative=False
+    ) -> None:
+        if (
+            self.hasplural()
+            and isinstance(otherunit, AppleStringsXliffUnit)
+            and otherunit.hasplural()
+        ):
+            if overwrite or not self._has_target_text():
+                if (
+                    self._can_edit_plural_forms()
+                    and (forms := otherunit.plural_forms) is not None
+                ):
+                    recipient_sources = self._source_plural_forms()
+                    donor_sources = otherunit._source_plural_forms()
+                    fuzzy = otherunit.isfuzzy() or any(
+                        donor_sources.get(tag) != recipient_sources.get(tag)
+                        for tag in forms
+                    )
+                    self.plural_forms = forms
+                    if self._has_target_text():
+                        state = self.S_NEEDS_TRANSLATION if fuzzy else self.S_TRANSLATED
+                        self._plural_state_override = None
+                        self._set_present_plural_state(state)
+                else:
+                    self.target = multistring(
+                        self.get_plural_strings(
+                            otherunit.target if otherunit.target is not None else ""
+                        )
+                    )
+                    if self._has_target_text():
+                        self._merge_translation_state(otherunit)
+            if comments:
+                self.addnote(otherunit.getnotes())
+            return
+        super().merge(otherunit, overwrite, comments, authoritative)
 
     @staticmethod
     def correctorigin(node, origin):
@@ -125,6 +204,197 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
             return self.S_TRANSLATED, False
         return self.S_UNTRANSLATED, False
 
+    def isblank(self) -> bool:
+        blank = super().isblank()
+        if not blank or not self.hasplural():
+            return blank
+        if self._has_target_text():
+            return False
+        return not any(self._source_plural_forms().values())
+
+    def isfuzzy(self) -> bool:
+        if self.hasplural():
+            return not self.isapproved() and self._has_target_text()
+        return super().isfuzzy()
+
+    def _target_changed_in_place(self) -> bool:
+        exposed = self._exposed_target
+        return (
+            exposed is not None
+            and exposed[0] is self._plural_target
+            and tuple(exposed[0].extra_strings) != exposed[1]
+        )
+
+    def _get_plural_forms(self) -> dict[str, str] | None:
+        forms = self._stored_plural_forms()
+        if self._target_changed_in_place() and self._plural_target is not None:
+            tags = tuple(self._plural_tags_for_target(self._plural_target))
+            return base.NamedPluralUnit._merge_positional(
+                self._plural_target, tags, forms
+            )
+        return forms
+
+    def _insert_form_node(self, form, role):
+        node = form.makeelement(self.namespaced(role))
+        if role == "target":
+            # XLIFF 1.2 permits seg-source between source and target.
+            for name in ("seg-source", "source"):
+                previous = form.find(self.namespaced(name))
+                if previous is not None:
+                    previous.addnext(node)
+                    return node
+        form.insert(0, node)
+        return node
+
+    def _set_form_text(self, node, text):
+        for child in list(node):
+            node.remove(child)
+        node.text = text
+        if self.getNodeText(node, self._default_xml_space) != text:
+            setXMLspace(node, "preserve")
+
+    def _stored_plural_forms(self) -> dict[str, str] | None:
+        if not self.hasplural() or (
+            not self._plural_forms
+            and not self._plural_tags_for_target(self._plural_target)
+        ):
+            return None
+        forms = self._xml_plural_forms()
+        if self._plural_dirty and self._plural_target is not None:
+            tags = self._plural_tags_for_target(self._plural_target)
+            strings = self._plural_target.strings
+            for tag in tags[len(strings) :]:
+                forms.pop(tag, None)
+            for tag, text in zip(tags, strings, strict=False):
+                if str(text) or tag in self._plural_dirty_targets:
+                    forms[tag] = str(text)
+        return forms
+
+    def _xml_plural_forms(self) -> dict[str, str]:
+        forms = {}
+        for tag, form in self._plural_forms.items():
+            node = form.find(self.namespaced("target"))
+            if node is not None:
+                forms[tag] = self.getNodeText(node, self._default_xml_space)
+        return forms
+
+    @staticmethod
+    def _inline_target_edit(node, original: str, replacement: str):
+        """Find the XML text slot containing a localized plain-text edit."""
+        raw = str(node.xpath("string(.)"))
+
+        def normalize(text):
+            # XPath normalize-space collapses only XML whitespace.
+            return re.sub(r"[ \t\r\n]+", " ", text).strip(" ")
+
+        offset = 0
+        for slot in node.xpath(".//text()"):
+            prefix, suffix = raw[:offset], raw[offset + len(slot) :]
+            offset += len(slot)
+            boundaries = [(prefix, suffix)]
+            if raw != original:
+                boundaries.append((normalize(prefix), normalize(suffix)))
+            for left, right in boundaries:
+                end = len(replacement) - len(right)
+                if (
+                    end < len(left)
+                    or not replacement.startswith(left)
+                    or not replacement.endswith(right)
+                ):
+                    continue
+                value = replacement[len(left) : end]
+                rendered = prefix + value + suffix
+                if rendered == replacement or (
+                    raw != original and normalize(rendered) == replacement
+                ):
+                    return slot.getparent(), "tail" if slot.is_tail else "text", value
+        raise ValueError("Plural edit spans inline XLIFF codes")
+
+    def _can_edit_plural_forms(self) -> bool:
+        return self._plural_base_key is not None and (
+            self._store is not None or bool(self._plural_tags)
+        )
+
+    def _replace_plural_forms(self, forms: dict[str, str], *, tags=None) -> None:
+        store = self._store
+        if not self._can_edit_plural_forms():
+            raise ValueError(
+                "Attach the Apple plural group before editing named targets"
+            )
+        current = self._xml_plural_forms()
+        if tags is None:
+            tags = (
+                store._get_target_plural_tags(self._plural_target)
+                if store is not None
+                else self._plural_tags
+            )
+        if (
+            current == forms
+            and not self._plural_dirty
+            and self._plural_tags == tags
+            and not self._target_changed_in_place()
+        ):
+            return
+        inline_edits = set()
+        for tag, text in forms.items():
+            if tag not in data.cldr_plural_categories:
+                raise ValueError(f"Unknown Apple plural category: {tag}")
+            # Check XML characters before modifying siblings.
+            etree.Element("target").text = text
+            form = self._plural_forms.get(tag)
+            if form is not None and text and current.get(tag) != text:
+                node = form.find(self.namespaced("target"))
+                if node is not None and len(node):
+                    self._inline_target_edit(node, current[tag], text)
+                    inline_edits.add(tag)
+
+        if self._plural_dirty and store is not None:
+            store._sync_plural_unit_to_xml(self)
+            current = self._stored_plural_forms() or {}
+        for tag in current.keys() - forms:
+            form = self._plural_forms[tag]
+            node = form.find(self.namespaced("target"))
+            if node is not None:
+                form.remove(node)
+        for tag, text in forms.items():
+            if current.get(tag) == text:
+                continue
+            if tag in inline_edits:
+                node = self._plural_forms[tag].find(self.namespaced("target"))
+                element, field, replacement = self._inline_target_edit(
+                    node, current[tag], text
+                )
+                setattr(element, field, replacement)
+                if self.getNodeText(node, self._default_xml_space) != text:
+                    setXMLspace(node, "preserve")
+                continue
+            form = self._plural_forms.get(tag)
+            if form is None:
+                form = AppleStringsXliffFile._make_trans_unit_xml_element(
+                    etree.QName(self.xmlelement).namespace,
+                    f"{self._plural_base_key}:dict/{tag}:dict/:string",
+                    "",
+                    text,
+                )
+                anchor = next(reversed(self._plural_forms.values()), self.xmlelement)
+                if store is not None:
+                    anchor.addnext(form)
+                self._plural_forms[tag] = form
+            else:
+                node = form.find(self.namespaced("target"))
+                if node is None:
+                    node = self._insert_form_node(form, "target")
+                self._set_form_text(node, text)
+                if not text:
+                    node.attrib.pop("state", None)
+                    node.attrib.pop("state-qualifier", None)
+        self._plural_dirty_targets.clear()
+        self._set_plural_tags(tags)
+        self._plural_target = multistring([forms.get(tag, "") for tag in tags])
+        self._plural_state_override = None
+        self._rich_target = None
+        self._invalidate_store_indexes()
+
     def _plural_explicit_states(self) -> dict[str, tuple[int, str | None]]:
         """Return explicit states indexed by plural tag."""
         states = {}
@@ -137,6 +407,28 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
             if is_explicit and target_node is not None:
                 states[tag] = (state_n, target_node.get("state-qualifier"))
         return states
+
+    def _source_plural_forms(self) -> dict[str, str]:
+        sources = {
+            tag: self.getNodeText(
+                form.find(self.namespaced("source")), self._default_xml_space
+            )
+            or ""
+            for tag, form in self._plural_forms.items()
+        }
+        if self._plural_source is not None:
+            tags = self._plural_tags_for_target(self._plural_target)
+            strings = self._plural_source.strings
+            for index, tag in enumerate(tags):
+                sources[tag] = strings[index] if index < len(strings) else ""
+        return sources
+
+    def _set_plural_tags(self, tags) -> None:
+        if tuple(self._plural_tags) != tuple(tags):
+            sources = self._source_plural_forms()
+            self._plural_source = multistring([sources.get(tag, "") for tag in tags])
+            self._plural_tags = list(tags)
+            self._invalidate_store_indexes()
 
     def _plural_tags_for_target(self, target: multistring | None) -> list[str]:
         """Return stored or inferred plural tags for an in-memory target."""
@@ -153,11 +445,11 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
         source_strings = self._plural_source.strings if self._plural_source else []
         target_strings = self._plural_target.strings if self._plural_target else []
         plural_tags = self._plural_tags_for_target(self._plural_target)
-        for index, tag in enumerate(plural_tags):
+        for index, tag in enumerate(dict.fromkeys([*plural_tags, *self._plural_forms])):
             form = self._plural_forms.get(tag)
             source = str(source_strings[index]) if index < len(source_strings) else ""
             target = str(target_strings[index]) if index < len(target_strings) else ""
-            if self._plural_dirty and not source and not target:
+            if self._plural_dirty and tag in plural_tags and not source and not target:
                 continue
             if not self._plural_dirty and form is None:
                 continue
@@ -205,18 +497,7 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
 
         if self.hasplural():
             self._plural_state_override = value
-            missing_target = not self._plural_forms
-            for form in self._plural_form_elements():
-                form.attrib.pop("approved", None)
-                target_node = next(
-                    form.iterchildren(self.namespaced("target")),
-                    None,
-                )
-                if target_node is None:
-                    missing_target = True
-                    continue
-                self._set_target_state(target_node, value)
-            if missing_target:
+            if self._set_present_plural_state(value):
                 self._plural_dirty = True
             return
 
@@ -225,6 +506,21 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
             target_node = self.createlanguageNode("xx", "", "target")
             self.set_target_dom(target_node)
         self._set_target_state(target_node, value)
+
+    def _set_present_plural_state(self, value: int) -> bool:
+        """Update existing target nodes and report whether any are missing."""
+        missing_target = not self._plural_forms
+        for form in self._plural_form_elements():
+            form.attrib.pop("approved", None)
+            target_node = next(
+                form.iterchildren(self.namespaced("target")),
+                None,
+            )
+            if target_node is None:
+                missing_target = True
+                continue
+            self._set_target_state(target_node, value)
+        return missing_target
 
     def isapproved(self):
         """Return approval inferred from Apple's target state."""
@@ -249,21 +545,89 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
     def source(self, value) -> None:
         self._invalidate_store_indexes()
         if isinstance(value, multistring):
-            self._plural_source = value
-            self._plural_dirty = True
+            self._assign_plural_source(
+                value, use_bound_tags=value is self._plural_source
+            )
         else:
             self._plural_source = None
             self.setsource(value)
 
+    def _assign_plural_source(
+        self, value: multistring, *, use_bound_tags: bool
+    ) -> None:
+        if not use_bound_tags and self._plural_tags and self._can_edit_plural_forms():
+            tags = self._replacement_tags(len(value.strings))
+            if self._plural_tags != tags:
+                # Preserve existing target labels before binding both views
+                # to the destination order of this fresh source.
+                self._replace_plural_forms(self._get_plural_forms() or {}, tags=tags)
+        self._plural_source = value
+        self._plural_dirty = True
+
     @property
     def target(self):
         if self._plural_target is not None:
+            if self._plural_forms and (
+                self._exposed_target is None
+                or self._exposed_target[0] is not self._plural_target
+            ):
+                self._exposed_target = (
+                    self._plural_target,
+                    tuple(self._plural_target.extra_strings),
+                )
             return self._plural_target
         return super().target
 
     @target.setter
     def target(self, value) -> None:
+        self._assign_target(value, use_bound_tags=value is self._plural_target)
+
+    def _replacement_tags(self, count: int) -> list[str]:
+        if isinstance(self._store, AppleStringsXliffFile):
+            return self._store._plural_tags_for_count(count)
+        return data.get_apple_plural_tags(self._detached_locale, count)
+
+    def _assign_target(self, value, *, use_bound_tags: bool) -> None:
+        if (
+            isinstance(value, multistring)
+            and self._plural_forms
+            and (self._store is not None or self._plural_tags)
+        ):
+            tags = (
+                tuple(self._plural_tags)
+                if use_bound_tags and self._plural_tags
+                else tuple(self._replacement_tags(len(value.strings)))
+            )
+            if (
+                tags == tuple(self._plural_tags)
+                and self._plural_target is not None
+                and value.strings == self._plural_target.strings
+                and not self._target_changed_in_place()
+            ):
+                self._plural_target = value
+                self._exposed_target = value, tuple(value.extra_strings)
+                return
+            current = self._get_plural_forms() or {}
+            forms = base.NamedPluralUnit._merge_positional(value, tags, current)
+            self._replace_plural_forms(forms, tags=tags)
+            self._plural_dirty_targets = {
+                tag
+                for tag in current.keys() | forms.keys()
+                if current.get(tag) != forms.get(tag)
+            }
+            self._exposed_target = value, tuple(value.extra_strings)
+            self._plural_target = value
+            return
         if isinstance(value, multistring):
+            if isinstance(self._store, AppleStringsXliffFile) or self._plural_tags:
+                tags = tuple(
+                    self._plural_tags
+                    if use_bound_tags and self._plural_tags
+                    else self._replacement_tags(len(value.strings))
+                )
+                base.NamedPluralUnit._merge_positional(value, tags, None)
+                if self._plural_tags and not use_bound_tags:
+                    self._plural_tags = list(tags)
             old_target = self._plural_target
             old_strings = old_target.strings if old_target else []
             new_strings = value.strings
@@ -296,8 +660,10 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
     def rich_source(self, value) -> None:
         if self.hasplural():
             self._invalidate_store_indexes()
-            self._plural_source = self.rich_to_multistring(value)
-            self._plural_dirty = True
+            source = self.rich_to_multistring(value)
+            self._assign_plural_source(
+                source, use_bound_tags=self._rich_uses_bound_tags(source)
+            )
         else:
             self.set_rich_source(value)
 
@@ -310,9 +676,21 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
     @rich_target.setter
     def rich_target(self, value) -> None:
         if self.hasplural():
-            self.target = self.rich_to_multistring(value)
+            target = self.rich_to_multistring(value)
+            self._assign_target(
+                target, use_bound_tags=self._rich_uses_bound_tags(target)
+            )
         else:
             self.set_rich_target(value)
+
+    def _rich_uses_bound_tags(self, value: multistring) -> bool:
+        count = len(value.strings)
+        # A one-slot assignment can bind the locale's shorter order without
+        # the optional zero. Keep it when a rich edit fills the other slots.
+        return count == len(self._plural_tags) and (
+            self._plural_tags == self._replacement_tags(count)
+            or self._plural_tags == self._replacement_tags(1)
+        )
 
     # getid() adds filename prefix then the raw XML id.  For plural units we
     # return the base key (without the ":dict" suffix used in the XML).
@@ -372,6 +750,12 @@ class AppleStringsXliffUnit(xliff.Xliff1Unit):
                         ):
                             body.remove(child)
                 self._plural_base_key = None
+                self._plural_forms.clear()
+                self._plural_tags = []
+                self._plural_dirty_targets.clear()
+                self._plural_state_override = None
+                self._exposed_target = None
+                self._plural_dirty = False
             super()._set_local_id(component)
 
     # ------------------------------------------------------------------
@@ -474,14 +858,17 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         "zero" is included first when there is room for optional forms.
         """
-        locale = (
-            self.get_base_locale_code()
-            if self.gettargetlanguage() is not None
-            else None
-        )
         count = (
             len(self.UnitClass.get_plural_strings(target))
             if target is not None
+            else None
+        )
+        return self._plural_tags_for_count(count)
+
+    def _plural_tags_for_count(self, count: int | None) -> list[str]:
+        locale = (
+            self.get_base_locale_code()
+            if self.gettargetlanguage() is not None
             else None
         )
         return data.get_apple_plural_tags(locale, count)
@@ -623,11 +1010,11 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         self.units = new_units
 
+    @staticmethod
     def _make_trans_unit_xml_element(
-        self, unit_id: str, source_text: str, target_text: str
+        ns, unit_id: str, source_text: str, target_text: str
     ):
         """Create a ``<trans-unit>`` XML element with the given id, source and target."""
-        ns = self.namespace
         trans_unit = etree.Element(
             etree.QName(ns, "trans-unit") if ns else "trans-unit"
         )
@@ -667,6 +1054,21 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         explicit_states = unit._plural_explicit_states()
 
+        # A marker-less catalog can use the first form as the container.
+        # Keep a copy of that form before normalizing the marker.
+        retained = dict(unit._plural_forms)
+        for tag, form in retained.items():
+            if form is unit.xmlelement or form.getparent() is not body:
+                copied = deepcopy(form)
+                old_ns = etree.QName(form).namespace
+                if old_ns != self.namespace:
+                    for child in copied.iter(etree.Element):
+                        name = etree.QName(child)
+                        if name.namespace == old_ns:
+                            child.tag = unit.namespaced(name.localname)
+                    etree.cleanup_namespaces(copied)
+                retained[tag] = copied
+
         # --- Ensure the container XML element has the marker structure ---
         unit.xmlelement.set("id", f"{base_key}:dict")
         # Update XML source/target nodes to NSStringPluralRuleType
@@ -694,6 +1096,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
 
         # --- Insert new format-type element ---
         format_el = self._make_trans_unit_xml_element(
+            self.namespace,
             f"{base_key}:dict/:string",
             unit.format_value_type,
             unit.format_value_type,
@@ -701,7 +1104,7 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         body.insert(marker_pos + 1, format_el)
 
         # --- Insert new form elements ---
-        plural_tags = self._get_target_plural_tags(unit._plural_target)
+        plural_tags = unit._plural_tags_for_target(unit._plural_target)
         source_strs = unit._plural_source.strings if unit._plural_source else []
         target_strs = unit._plural_target.strings if unit._plural_target else []
 
@@ -710,11 +1113,27 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         for i, tag in enumerate(plural_tags):
             src = str(source_strs[i]) if i < len(source_strs) else ""
             tgt = str(target_strs[i]) if i < len(target_strs) else ""
-            if not src and not tgt:
-                continue
-            form_el = self._make_trans_unit_xml_element(
-                f"{base_key}:dict/{tag}:dict/:string", src, tgt
-            )
+            form_el = retained.get(tag)
+            form_id = f"{base_key}:dict/{tag}:dict/:string"
+            if form_el is None:
+                if not src and not tgt:
+                    continue
+                form_el = self._make_trans_unit_xml_element(
+                    self.namespace, form_id, src, tgt
+                )
+            else:
+                form_el.set("id", form_id)
+                for role, text in (("source", src), ("target", tgt)):
+                    node = form_el.find(unit.namespaced(role))
+                    needs_target = (
+                        role == "target" and unit._plural_state_override is not None
+                    )
+                    if node is None:
+                        if not text and not needs_target:
+                            continue
+                        node = unit._insert_form_node(form_el, role)
+                    if unit.getNodeText(node, unit._default_xml_space) != text:
+                        unit._set_form_text(node, text)
             explicit_metadata = explicit_states.get(tag)
             explicit_state = unit._plural_state_override
             state_qualifier = (
@@ -733,23 +1152,53 @@ class AppleStringsXliffFile(xliff.Xliff1File):
                 unit._set_target_state(target_node, explicit_state)
                 if state_qualifier is not None:
                     target_node.set("state-qualifier", state_qualifier)
+            elif tag in unit._plural_dirty_targets and not tgt:
+                node = form_el.find(unit.namespaced("target"))
+                if node is not None:
+                    node.attrib.pop("state", None)
+                    node.attrib.pop("state-qualifier", None)
             body.insert(marker_pos + offset, form_el)
             plural_forms[tag] = form_el
             offset += 1
+
+        for tag, form in retained.items():
+            if tag not in plural_tags:
+                form.set("id", f"{base_key}:dict/{tag}:dict/:string")
+                if unit._plural_state_override is not None:
+                    target_node = form.find(unit.namespaced("target"))
+                    if target_node is None:
+                        target_node = unit._insert_form_node(form, "target")
+                    unit._set_target_state(target_node, unit._plural_state_override)
+                body.insert(marker_pos + offset, form)
+                offset += 1
+                plural_forms[tag] = form
 
         unit._plural_forms = plural_forms
         unit._plural_tags = plural_tags
         unit._plural_dirty_targets.clear()
         unit._plural_dirty = False
 
+    def addunit(self, unit, new=True) -> None:
+        if new and isinstance(unit.target, multistring) and not unit._plural_forms:
+            tags = tuple(self._get_target_plural_tags(unit.target))
+            base.NamedPluralUnit._merge_positional(unit.target, tags, None)
+        super().addunit(unit, new)
+        if new and unit._plural_forms:
+            self._sync_plural_unit_to_xml(unit)
+
     def removeunit(self, unit: AppleStringsXliffUnit) -> None:
         """Remove a unit; for plural units also removes their sibling XML elements."""
+        if unit.hasplural():
+            unit._remember_plural_locale(self)
+            unit._preserve_inherited_space(unit)
         if unit._plural_base_key is not None:
             base_key = unit._plural_base_key
             body = unit.xmlelement.getparent()
             if body is not None:
                 for child in list(body):
-                    if self._is_plural_sibling(child.get("id", ""), base_key):
+                    if child is not unit.xmlelement and self._is_plural_sibling(
+                        child.get("id", ""), base_key
+                    ):
                         body.remove(child)
         super().removeunit(unit)
 
@@ -771,6 +1220,14 @@ class AppleStringsXliffFile(xliff.Xliff1File):
         form-unit structure expected by Apple tools.
         """
         for unit in self.units:
+            if unit._target_changed_in_place():
+                target = unit.target
+                unit._replace_plural_forms(
+                    unit._get_plural_forms(), tags=unit._plural_tags_for_target(target)
+                )
+                # Keep the legacy target reference live across a save.
+                unit._plural_target = target
+                unit._exposed_target = target, tuple(target.extra_strings)
             if unit._plural_base_key is not None and unit._plural_dirty:
                 self._sync_plural_unit_to_xml(unit)
         super().serialize(out)

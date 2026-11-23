@@ -77,8 +77,8 @@ def _contributor_has_year(years: list[str], year: str) -> bool:
     return False
 
 
-nplural_re = re.compile(r"nplurals=(.+?);")
-plural_re = re.compile(r"plural=(.+?);?$")
+nplural_re = re.compile(r"(?:^|;)\s*nplurals\s*=\s*([^;]+)")
+plural_re = re.compile(r"(?:^|;)\s*plural\s*=\s*([^;]+)")
 
 default_header = {
     "Project-Id-Version": "PACKAGE VERSION",

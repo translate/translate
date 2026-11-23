@@ -168,16 +168,17 @@ class XliffUnit(lisa.LISAunit):
     ) -> None:
         # TODO: consider other attributes like "approved"
         super().merge(otherunit, overwrite, comments)
-        if self.target:
-            self.marktranslated()  # ty:ignore[missing-attribute]
-            if otherunit.isfuzzy():
-                self.markfuzzy()
-            elif otherunit.source == self.source:
-                self.markfuzzy(False)
-            elif otherunit.source != self.source:
-                self.markfuzzy(True)
+        if self._has_target_text():
+            self._merge_translation_state(otherunit)
         if comments:
             self.addnote(otherunit.getnotes())
+
+    def _merge_translation_state(self, otherunit) -> None:
+        self.marktranslated()  # ty:ignore[missing-attribute]
+        self.markfuzzy(self._merged_target_is_fuzzy(otherunit))
+
+    def _merged_target_is_fuzzy(self, otherunit) -> bool:
+        return otherunit.isfuzzy() or otherunit.source != self.source
 
     def markapproved(self, value=True) -> None:
         raise NotImplementedError
