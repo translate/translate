@@ -59,9 +59,12 @@ def create_termunit(
     termunit = po.pounit(term)
     if unit is not None:
         termunit.merge(unit, overwrite=False, comments=False)
-    if len(targets.keys()) > 1:
+    if len(targets) > 1:
+        sorted_targets = sorted(
+            targets.items(), key=lambda item: len(item[1]), reverse=True
+        )
         txt = "; ".join(
-            f"{target} {{{', '.join(files)}}}" for target, files in targets.items()
+            f"{target} {{{', '.join(files)}}}" for target, files in sorted_targets
         )
         if termunit.target.find("};") < 0:
             termunit.target = txt
