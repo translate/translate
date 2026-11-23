@@ -218,11 +218,11 @@ def get_plural_mapping(
 def _parse_pattern(text: str) -> ast.Pattern:
     """Parse a Fluent pattern, as found in a gettext plural form."""
     entry = fluent.FluentUnit(source=text, unit_id="plural-form").to_entry()
-    if entry is None or entry.value is None or entry.attributes:  # ty:ignore[unresolved-attribute]
+    if entry is None or entry.value is None or entry.attributes:  # ty:ignore[missing-attribute]
         raise fluent.FluentContentError(
             f"Plural form is not a Fluent pattern without attributes: {text!r}"
         )
-    return entry.value  # ty:ignore[unresolved-attribute]
+    return entry.value  # ty:ignore[missing-attribute]
 
 
 def _template_selector(entry: ast.Message | ast.Term) -> ast.InlineExpression | None:
