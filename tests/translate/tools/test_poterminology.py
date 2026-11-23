@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from translate.storage import factory
+from translate.storage import factory, po
 from translate.tools import poterminology
 
 base_dir = Path(__file__).parent.parent.parent
@@ -67,3 +67,64 @@ class TestPOTerminology:
         assert "ignored" not in extractor.stopwords
         assert "bad stopword entry starts with" in caplog.text
         assert "all lines after error ignored" in caplog.text
+
+    def test_multiple_translations_sorted_by_frequency(self) -> None:
+        """Multiple translations for a term should be ordered by frequency."""
+        file_translations = [
+            ("a.po", "parti"),
+            ("b.po", "spel"),
+            ("c.po", "spel"),
+            ("d.po", "spel"),
+        ]
+        extractor = poterminology.TerminologyExtractor()
+        for filename, target in file_translations:
+            unit = po.pounit("game")
+            unit.target = target
+            extractor.processunits([unit], filename)
+
+        terms = extractor.extract_terms(inputmin=1, fullmsgmin=1, locmin=1)
+        termunit = terms["game"][1]
+        assert termunit.target == "spel {b.po, c.po, d.po}; parti {a.po}"
+        assert termunit.isfuzzy()
+
+    def test_equal_frequency_translations_preserve_encounter_order(self) -> None:
+        """Targets with equal occurrence counts should stay in encounter order."""
+        termunit = poterminology.create_termunit(
+            term="example",
+            unit=None,
+            targets={
+                "alpha": ["a.po", "b.po"],
+                "beta": ["c.po", "d.po"],
+                "gamma": ["e.po", "f.po", "g.po"],
+            },
+            locations=set(),
+            sourcenotes=set(),
+            transnotes=set(),
+            filecounts={},
+        )
+        assert (
+            termunit.target
+            == "gamma {e.po, f.po, g.po}; alpha {a.po, b.po}; beta {c.po, d.po}"
+        )
+
+    def test_create_termunit_update_note_sorted_by_frequency(self) -> None:
+        """Translator notes for existing multi-term units should also sort by frequency."""
+        existing = po.pounit("game")
+        existing.target = "old {x.po}; older {y.po}"
+
+        termunit = poterminology.create_termunit(
+            term="game",
+            unit=existing,
+            targets={
+                "parti": ["a.po"],
+                "spel": ["b.po", "c.po", "d.po"],
+            },
+            locations=set(),
+            sourcenotes=set(),
+            transnotes=set(),
+            filecounts={},
+        )
+        assert termunit.target == "old {x.po}; older {y.po}"
+        assert "spel {b.po, c.po, d.po}; parti {a.po}" in termunit.getnotes(
+            "translator"
+        )
