@@ -719,7 +719,7 @@ class GoTextJsonUnit(base.NamedPluralUnit, BaseJsonUnit):
         self._forms = donor._forms
         self._projection = donor._projection
         self._projection_language = self._receiver_projection_language(
-            donor._projection_language
+            self._projection_language
         )
         self._translation_template = donor._translation_template
         self._rich_source = self._rich_target = None

@@ -1187,6 +1187,20 @@ class TestGoTextJsonFile(test_monolingual.TestMonolingualStore):
         clone.update_plural_forms({"other": "clone"})
         assert unit.plural_forms["other"] == "edited"
 
+    def test_native_merge_before_binding_keeps_sparse_label(self) -> None:
+        store = self.StoreClass.parsestring(
+            b'{"language":"en","messages":[{"id":"k","translation":{"select":{"feature":"plural","cases":{"other":"rest"}}}}]}'
+        )
+        unit = store.UnitClass("old")
+        unit.merge(store.units[0], overwrite=True)
+        destination = self.StoreClass()
+        destination.settargetlanguage("cs")
+        destination.addunit(unit)
+        unit.rich_target = unit.rich_target
+        assert json.loads(bytes(destination))["messages"][0]["translation"]["select"][
+            "cases"
+        ] == {"other": "rest"}
+
     def test_rich_edit_after_retargeting_selector(self) -> None:
         store = self.StoreClass()
         selector = {"feature": "plural", "cases": {"one": "1", "few": "2", "many": "5"}}
