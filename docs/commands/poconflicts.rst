@@ -31,7 +31,7 @@ Where:
 +-------------+--------------------------------------------------------------+
 | <po>        | is a directory of existing PO files or an individual PO file |
 +-------------+--------------------------------------------------------------+
-| <conflicts> | is a directory containing one PO file for each conflict      |
+| <conflicts> | is a directory containing the conflict reports               |
 +-------------+--------------------------------------------------------------+
 
 Options:
@@ -48,6 +48,7 @@ Options:
 -o OUTPUT, --output=OUTPUT  write to OUTPUT in po format
 -I, --ignore-case    ignore case distinctions
 -v, --invert         invert the conflicts thus extracting conflicting destination words
+--per-string         write one numbered PO file per complete conflicting string
 --accelerator=ACCELERATORS
                       ignores the given :doc:`accelerator characters <option_accelerator>` when matching
 
@@ -61,7 +62,10 @@ Here are some examples that demonstrate the usefulness of poconflict ::
   poconflicts --accelerator=~ -I xhosa conflicts
 
 This extracts messages from the PO files in the *xhosa* directory and places a
-new PO file for each identified conflict in *conflicts*.  We are working with
+PO report files in *conflicts*. By default related conflicts are grouped by
+their longest word. Use ``--per-string`` to keep every complete conflicting
+string in a separate report. Reports in that mode are numbered in sorted
+order to distinguish strings with similar filenames. We are working with
 OpenOffice files and we therefore use the tilde (*~*) as the accelerator marker
 (with this set *F~ile* is considered the same as *~File*).  We are also
 ignoring the case of the message using :opt:`-I` (thus *File* is considered the
