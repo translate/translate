@@ -115,6 +115,8 @@ def convertjson(
     if store_class is None:
         raise ValueError(f"Unsupported JSON personality: {personality}")
     if filter is not None:
+        if personality != "default":
+            raise ValueError(f"--filter is not supported for {personality} personality")
         filter = filter.split(",")
     input_store = store_class(input_file, filter=filter)
     convertor = json2po()

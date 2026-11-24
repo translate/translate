@@ -194,6 +194,33 @@ msgstr ""
                 BytesIO(b'{"a": "b"}'), BytesIO(), None, personality="unknown"
             )
 
+    def test_convertjson_filter_default(self) -> None:
+        """Filter selects matching keys for the default JSON personality."""
+        output = BytesIO()
+        assert (
+            json2po.convertjson(
+                BytesIO(b'{"keep": "Keep me", "drop": "Drop me"}'),
+                output,
+                None,
+                filter="keep",
+            )
+            == 1
+        )
+        po_text = output.getvalue().decode("utf-8")
+        assert 'msgid "Keep me"' in po_text
+        assert 'msgid "Drop me"' not in po_text
+
+    def test_convertjson_filter_with_webextension(self) -> None:
+        """Combining --filter with webextension personality raises ValueError."""
+        with pytest.raises(ValueError, match="--filter is not supported"):
+            json2po.convertjson(
+                BytesIO(b'{"greeting": {"message": "Hi"}}'),
+                BytesIO(),
+                None,
+                filter="greeting",
+                personality="webextension",
+            )
+
 
 class TestJson2POCommand(test_convert.TestConvertCommand, TestJson2PO):
     """Tests running actual json2po commands on files."""
