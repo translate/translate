@@ -60,6 +60,18 @@ class TestPO2MD(test_convert.TestConvertCommand):
             "right translated \\| between pixes"  # codespell:ignore
         )
 
+    def test_legacy_html_break_key(self) -> None:
+        self.given_markdown_file("Hello <em>world</em>\nagain.\n")
+        self.given_translation_file(
+            lines=[
+                "#: file.md:1",
+                r'msgid "Hello {1}world{2}\nagain."',
+                'msgstr "Welcome {1}world{2} back."',
+            ]
+        )
+        self.run_command("translation.po", "out.md", template="file.md")
+        assert self.read_testfile("out.md") == b"Welcome <em>world</em> back.\n"
+
     def given_markdown_file(self, content: str | None = None) -> None:
         self.create_testfile(
             "file.md", content or "# Markdown\nYou are only coming through in waves."

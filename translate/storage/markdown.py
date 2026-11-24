@@ -436,6 +436,7 @@ class Fragment:
     hard_line_break: bool = False
     placeholder_content: list[Fragment] | None = None
     important: bool = False
+    html_soft_break: bool = False
 
 
 class TranslatingMarkdownRenderer:
@@ -601,7 +602,7 @@ class TranslatingMarkdownRenderer:
                 (index and nodes[index - 1].type == "html_inline")
                 or (index + 1 < len(nodes) and nodes[index + 1].type == "html_inline")
             ):
-                yield Fragment("\n", hard_line_break=True)
+                yield Fragment("\n", wordwrap=True, html_soft_break=True)
             else:
                 yield from self.render_inline(node)
 
@@ -912,7 +913,11 @@ class TranslatingMarkdownRenderer:
 
     @classmethod
     def fragments_to_lines(
-        cls, fragments: Iterable[Fragment], max_line_length: float | None
+        cls,
+        fragments: Iterable[Fragment],
+        max_line_length: float | None,
+        *,
+        legacy_html_breaks: bool = False,
     ) -> Iterable[str]:
         if not max_line_length:
             lines = "".join(fragment.text for fragment in fragments).split("\n")
@@ -922,7 +927,7 @@ class TranslatingMarkdownRenderer:
             return
 
         line = ""
-        for word in cls.make_words(fragments):
+        for word in cls.make_words(fragments, legacy_html_breaks=legacy_html_breaks):
             if word == "\n":
                 yield line
                 line = ""
@@ -939,20 +944,24 @@ class TranslatingMarkdownRenderer:
     _whitespace = re.compile(r"\s+")
 
     @classmethod
-    def make_words(cls, fragments: Iterable[Fragment]) -> Iterable[str]:
+    def make_words(
+        cls, fragments: Iterable[Fragment], *, legacy_html_breaks: bool = False
+    ) -> Iterable[str]:
         word = ""
         for fragment in fragments:
-            if fragment.wordwrap:
+            if fragment.hard_line_break or (
+                legacy_html_breaks and fragment.html_soft_break
+            ):
+                yield word + fragment.text[:-1]
+                yield "\n"
+                word = ""
+            elif fragment.wordwrap:
                 first, *rest = cls._whitespace.split(fragment.text)
                 word += first
                 for part in rest:
                     if word:
                         yield word
                     word = part
-            elif fragment.hard_line_break:
-                yield word + fragment.text[:-1]
-                yield "\n"
-                word = ""
             else:
                 word += fragment.text
         if word:
@@ -1001,30 +1010,19 @@ class TranslatingMarkdownRenderer:
                 translated_md, translation_found = self._lookup_heading_translation(
                     content_md, translated_md, legacy_heading_suffix
                 )
-                # If no placeholder-based translation matched, try expanded
-                # Markdown links and their legacy heading-ID form.
-                if not translation_found and placeholders and self.lookup_callback:
-                    expanded_content_md = self.remove_placeholder_markers(
-                        content_md, placeholders
+                use_placeholders = placeholders
+                if not translation_found and (placeholders or "\n" in source):
+                    fallback = self._lookup_span_fallback(
+                        content_md,
+                        content,
+                        placeholders,
+                        legacy_heading_suffix,
+                        # The unmerged fragments include breaks inside placeholders.
+                        try_legacy_breaks="\n" in source
+                        and any(fragment.html_soft_break for fragment in fragments),
                     )
-                    expanded_translated_md = self.lookup_callback(expanded_content_md)
-                    if expanded_translated_md is None and legacy_heading_suffix:
-                        expanded_translated_md = self.lookup_callback(
-                            expanded_content_md + legacy_heading_suffix
-                        )
-                    if expanded_translated_md is not None:
-                        if legacy_heading_suffix:
-                            expanded_translated_md, _expanded_suffix = (
-                                _split_explicit_heading_id(expanded_translated_md)
-                            )
-                        translated_md = expanded_translated_md
-                        # The expanded translation already contains full markdown
-                        # syntax (e.g. links), so skip placeholder replacement.
-                        use_placeholders = []
-                    else:
-                        use_placeholders = placeholders
-                else:
-                    use_placeholders = placeholders
+                    if fallback is not None:
+                        translated_md, use_placeholders = fallback
                 translated_md = translated_md.replace("\n", "\\\n").strip(" \t")
                 translated_md = self.remove_placeholder_markers(
                     translated_md, use_placeholders
@@ -1040,6 +1038,53 @@ class TranslatingMarkdownRenderer:
             # list-ify to let all generators run before exiting the try/finally block
             expanded = list(self.expand_placeholders(fragments))
             return self.fragments_to_lines(expanded, max_line_length=max_line_length)
+
+    def _lookup_span_fallback(
+        self,
+        source: str,
+        fragments: Iterable[Fragment],
+        placeholders: list[Fragment],
+        heading_suffix: str,
+        *,
+        try_legacy_breaks: bool,
+    ) -> tuple[str, list[Fragment]] | None:
+        """Check expanded keys and keys that used hard breaks beside HTML."""
+        if self.lookup_callback is None:
+            return None
+
+        checked = {source, source + heading_suffix}
+        for legacy in (False, True) if try_legacy_breaks else (False,):
+            key = source
+            candidates: list[tuple[str, list[Fragment]]] = []
+            if legacy:
+                key = "\n".join(
+                    self.fragments_to_lines(
+                        fragments, float("inf"), legacy_html_breaks=True
+                    )
+                )
+                candidates.append((key, placeholders))
+            if placeholders:
+                expanded = self.remove_placeholder_markers(
+                    key, placeholders, legacy_html_breaks=legacy
+                )
+                candidates.append((expanded, []))
+
+            for key, target_placeholders in candidates:
+                for candidate in (key, key + heading_suffix):
+                    if candidate in checked:
+                        continue
+                    checked.add(candidate)
+                    target = self.lookup_callback(candidate)
+                    if target is None:
+                        continue
+                    if heading_suffix:
+                        target, _suffix = _split_explicit_heading_id(target)
+                    if legacy and target == key:
+                        # A legacy identity target follows the corrected source
+                        # wrapping. Edited targets keep their explicit newlines.
+                        return source, placeholders
+                    return target, target_placeholders
+        return None
 
     @classmethod
     def merge_adjacent_placeholders(
@@ -1118,13 +1163,19 @@ class TranslatingMarkdownRenderer:
         return placeholders
 
     def remove_placeholder_markers(
-        self, markdown: str, placeholders: Iterable[Fragment]
+        self,
+        markdown: str,
+        placeholders: Iterable[Fragment],
+        *,
+        legacy_html_breaks: bool = False,
     ) -> str:
         """Replaces placeholder markers in the given markdown with placeholder content."""
         for index, placeholder in enumerate(placeholders):
             content = self.expand_placeholders(placeholder.placeholder_content or [])
             content_md = "\n".join(
-                self.fragments_to_lines(content, max_line_length=float("inf"))
+                self.fragments_to_lines(
+                    content, float("inf"), legacy_html_breaks=legacy_html_breaks
+                )
             )
             markdown = markdown.replace(f"{{{index + 1}}}", content_md)
 
