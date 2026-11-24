@@ -329,10 +329,12 @@ class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
             "## \n",
             "#\n",
             "### ###\n",
+            "## \t  #### \t\n",
         ]
         store = self.parse("".join(input))
         unit_sources = self.get_translation_unit_sources(store)
         assert unit_sources == []
+        assert self.get_translated_output(store) == "##\n#\n### ###\n## ####\n"
 
     def test_setext_heading(self) -> None:
         store = self.parse("mm potatoes\n-----------\n")

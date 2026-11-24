@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 ATX_HEADING = re.compile(
-    r"^ {0,3}(?P<marker>#{1,6})(?:[ \t]+(?P<title>.*?))?"
+    r"^ {0,3}(?P<marker>#{1,6})(?:[ \t]+(?P<title>(?!#+[ \t]*$)[^ \t].*?))?"
     r"(?:[ \t]+(?P<closing>#+))?[ \t]*$"
 )
 _LIST_MARKER = re.compile(r" *(?:\d{1,9}[.)]|[-+*])(?P<space>[ \t]*)")
