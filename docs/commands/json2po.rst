@@ -40,7 +40,7 @@ Options (json2po):
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in JSON format
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
---filter=FILTER  leaves to extract e.g. 'name,desc': (default: extract everything)
+--filter=FILTER  leaves to extract e.g. 'name,desc': (default: extract everything; supported with default personality)
 --personality=TYPE  override the input JSON format: default, webextension
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
