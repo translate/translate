@@ -141,6 +141,23 @@ def test_ignored_hard_breaks_keep_their_original_markers() -> None:
     assert not store.units
 
 
+@pytest.mark.parametrize(
+    ("no_placeholders", "inline"),
+    [(False, "{1}the guide{2}"), (True, "<em>the guide</em>")],
+)
+def test_soft_breaks_next_to_html_are_word_wrapped(
+    no_placeholders: bool, inline: str
+) -> None:
+    store = markdown.MarkdownFile(
+        BytesIO(b"Read\n<em>the guide</em>\nagain.  \nNext line.\n"),
+        no_placeholders=no_placeholders,
+    )
+    assert [unit.source for unit in store.units] == [
+        f"Read {inline} again.\nNext line."
+    ]
+    assert store.filesrc == "Read <em>the guide</em> again.\\\nNext line.\n"
+
+
 class TestMarkdownTranslationUnitExtractionAndTranslation(TestCase):
     def test_empty_document(self) -> None:
         store = self.parse("")

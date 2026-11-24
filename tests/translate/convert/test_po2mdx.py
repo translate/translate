@@ -142,6 +142,54 @@ The status appears on the dashboard.
 
         assert output == b"Read [docs](url) and {1}.\n"
 
+    @pytest.mark.parametrize(
+        ("no_placeholders", "legacy_inline"),
+        [
+            (False, "{1}world{2}"),
+            (False, "<em>world</em>"),
+            (True, "<em>world</em>"),
+        ],
+    )
+    def test_legacy_html_break_key(
+        self, no_placeholders: bool, legacy_inline: str
+    ) -> None:
+        template = b"Hello <em>world</em>\nagain.\n"
+        legacy_key = f"Hello {legacy_inline}\nagain."
+        legacy_target = f"Welcome {legacy_inline}\nback."
+        current_inline = "<em>world</em>" if no_placeholders else "{1}world{2}"
+        current_key = f"Hello {current_inline} again."
+        corrected = b"Hello <em>world</em> again.\n"
+
+        assert (
+            self.translate(
+                template, [(legacy_key, legacy_key)], no_placeholders=no_placeholders
+            )
+            == corrected
+        )
+        assert (
+            self.translate(
+                template, [(legacy_key, legacy_target)], no_placeholders=no_placeholders
+            )
+            == b"Welcome <em>world</em>\\\nback.\n"
+        )
+        assert (
+            self.translate(
+                template,
+                [(legacy_key, legacy_target), (current_key, current_key)],
+                no_placeholders=no_placeholders,
+            )
+            == corrected
+        )
+
+    def test_legacy_expanded_key_with_breaks_inside_grouped_placeholders(self) -> None:
+        template = b"Read <em>\n<strong>the guide</strong>\n</em> today.\n"
+        legacy_key = "Read <em>\n<strong>the guide</strong>\n</em> today."
+        output = self.translate(
+            template,
+            [(legacy_key, "Read <em><strong>the manual</strong></em> today.")],
+        )
+        assert output == b"Read <em><strong>the manual</strong></em> today.\n"
+
     def test_explicit_heading_id_identity_translation_beats_legacy(self):
         """A current identity translation wins over a stale legacy unit."""
         template = b"### Name {#name}\n"
