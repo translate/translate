@@ -20,6 +20,8 @@
 
 from io import BytesIO
 
+import pytest
+
 from translate.convert import json2po
 from translate.storage import jsonl10n
 
@@ -28,11 +30,16 @@ from . import test_convert
 
 class TestJson2PO:
     @staticmethod
-    def json2po(jsonsource, template=None, filter=None):
+    def json2po(jsonsource, template=None, filter=None, personality="default"):
         """Helper that converts json source to po source without requiring files."""
         inputfile = BytesIO(jsonsource.encode())
-        inputjson = jsonl10n.JsonFile(inputfile, filter=filter)
+        store_class = json2po.JSON_PERSONALITIES[personality]
+        inputjson = store_class(inputfile, filter=filter)
         convertor = json2po.json2po()
+        if template is not None:
+            templatefile = BytesIO(template.encode())
+            templatejson = store_class(templatefile)
+            return convertor.merge_store(templatejson, inputjson)
         return convertor.convert_store(inputjson)
 
     @staticmethod
@@ -131,6 +138,62 @@ msgstr ""
         print(len(poresult.units))
         assert len(poresult.units) == 11
 
+    def test_webextension_comments(self) -> None:
+        """WebExtension JSON descriptions are extracted as developer comments."""
+        jsonsource = """{
+    "greeting": {
+        "message": "Hello, world!",
+        "description": "Greeting shown on the popup."
+    },
+    "plain": {
+        "message": "Plain text"
+    }
+}
+"""
+        poresult = self.json2po(jsonsource, personality="webextension")
+        assert len(poresult.units) == 3
+        assert poresult.units[1].getlocations() == ["greeting"]
+        assert poresult.units[1].source == "Hello, world!"
+        assert poresult.units[1].getnotes("developer") == "Greeting shown on the popup."
+        assert poresult.units[2].getlocations() == ["plain"]
+        assert poresult.units[2].source == "Plain text"
+        assert poresult.units[2].getnotes("developer") == ""
+
+    def test_webextension_merge(self) -> None:
+        """Merging WebExtension JSON files keeps template developer comments."""
+        templatesource = """{
+    "greeting": {
+        "message": "Hello, $USER$!",
+        "description": "Greets the active user.",
+        "placeholders": {
+            "user": {
+                "content": "$1"
+            }
+        }
+    }
+}
+"""
+        translatedsource = """{
+    "greeting": {
+        "message": "Ahoj, $USER$!"
+    }
+}
+"""
+        poresult = self.json2po(
+            translatedsource, template=templatesource, personality="webextension"
+        )
+        assert len(poresult.units) == 2
+        assert poresult.units[1].source == "Hello, $USER$!"
+        assert poresult.units[1].target == "Ahoj, $USER$!"
+        assert poresult.units[1].getnotes("developer") == "Greets the active user."
+
+    def test_convertjson_invalid_personality(self) -> None:
+        """Unsupported JSON personality raises a ValueError."""
+        with pytest.raises(ValueError, match="Unsupported JSON personality"):
+            json2po.convertjson(
+                BytesIO(b'{"a": "b"}'), BytesIO(), None, personality="unknown"
+            )
+
 
 class TestJson2POCommand(test_convert.TestConvertCommand, TestJson2PO):
     """Tests running actual json2po commands on files."""
@@ -143,4 +206,45 @@ class TestJson2POCommand(test_convert.TestConvertCommand, TestJson2PO):
         "--duplicates",
         "-t TEMPLATE, --template=TEMPLATE",
         "--filter",
+        "--personality=TYPE",
     ]
+
+    def test_webextension_personality(self) -> None:
+        """Test CLI conversion with --personality=webextension."""
+        jsonsource = """{
+    "title": {
+        "message": "Extension title",
+        "description": "Comment for translator"
+    }
+}
+"""
+        self.create_testfile("messages.json", jsonsource)
+        self.run_command(i="messages.json", o="messages.po", personality="webextension")
+        output = self.read_testfile("messages.po").decode("utf-8")
+        assert "#. Comment for translator" in output
+        assert 'msgid "Extension title"' in output
+
+    def test_webextension_template_command(self) -> None:
+        """Test CLI merge with --template and --personality=webextension."""
+        templatesource = """{
+    "title": {
+        "message": "Extension title",
+        "description": "Comment for translator"
+    }
+}
+"""
+        translatedsource = """{
+    "title": {
+        "message": "Název rozšíření"
+    }
+}
+"""
+        self.create_testfile("en.json", templatesource)
+        self.create_testfile("cs.json", translatedsource)
+        self.run_command(
+            i="cs.json", template="en.json", o="cs.po", personality="webextension"
+        )
+        output = self.read_testfile("cs.po").decode("utf-8")
+        assert "#. Comment for translator" in output
+        assert 'msgid "Extension title"' in output
+        assert 'msgstr "Název rozšíření"' in output

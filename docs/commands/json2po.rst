@@ -41,6 +41,7 @@ Options (json2po):
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
 --filter=FILTER  leaves to extract e.g. 'name,desc': (default: extract everything)
+--personality=TYPE  override the input JSON format: default, webextension
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
