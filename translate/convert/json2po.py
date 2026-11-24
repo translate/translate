@@ -26,6 +26,11 @@ for examples and usage instructions.
 from translate.convert import convert
 from translate.storage import jsonl10n, po
 
+JSON_PERSONALITIES = {
+    "default": jsonl10n.JsonFile,
+    "webextension": jsonl10n.WebExtensionJsonFile,
+}
+
 
 class json2po:
     """Convert a JSON file to a PO file."""
@@ -85,6 +90,9 @@ class json2po:
         output_unit = po.pounit(encoding="UTF-8")
         output_unit.addlocation(input_unit.getid())
         output_unit.source = input_unit.source
+        notes = input_unit.getnotes()
+        if notes:
+            output_unit.addnote(notes, commenttype)
         output_unit.target = ""
         return output_unit
 
@@ -97,21 +105,25 @@ def convertjson(
     duplicatestyle="msgctxt",
     dialect="default",
     filter=None,
+    personality="default",
 ) -> int:
     """
     Reads in *input_file* using jsonl10n, converts using :class:`json2po`,
     writes to *output_file*.
     """
+    store_class = JSON_PERSONALITIES.get(personality)
+    if store_class is None:
+        raise ValueError(f"Unsupported JSON personality: {personality}")
     if filter is not None:
         filter = filter.split(",")
-    input_store = jsonl10n.JsonFile(input_file, filter=filter)
+    input_store = store_class(input_file, filter=filter)
     convertor = json2po()
     if template_file is None:
         output_store = convertor.convert_store(
             input_store, duplicatestyle=duplicatestyle
         )
     else:
-        template_store = jsonl10n.JsonFile(template_file)
+        template_store = store_class(template_file)
         output_store = convertor.merge_store(
             template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle
         )
@@ -137,9 +149,20 @@ def main(argv=None) -> None:
         help="leaves to extract e.g. 'name,desc': (default: extract everything)",
         metavar="FILTER",
     )
+    parser.add_option(
+        "",
+        "--personality",
+        dest="personality",
+        default="default",
+        type="choice",
+        choices=list(JSON_PERSONALITIES),
+        help="override the input JSON format: default, webextension",
+        metavar="TYPE",
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("filter")
+    parser.passthrough.append("personality")
     parser.run(argv)
 
 
