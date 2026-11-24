@@ -778,6 +778,42 @@ msgstr "Mon Titre de Page"
         assert '<meta property="og:url" content="https://example.com/">' in result
         assert '<meta name="twitter:card" content="summary">' in result
 
+    def test_data_translate_attribute(self) -> None:
+        """Translate custom attributes listed in data-translate-attribute."""
+        htmlsource = (
+            '<meta property="custom:description" content="Meta text" data-translate-attribute="content" />'
+            '<button data-popover="Hover text" data-error="Try later" '
+            'data-translate-attribute="data-popover, data-error">OK</button>'
+            '<p data-note="Ignored note" data-translate-attribute="data-note" data-translate-ignore>Skip</p>'
+        )
+        posource = """msgid "Meta text"
+msgstr "Meta translated"
+
+msgid "Hover text"
+msgstr "Info \\"quoted\\""
+
+msgid "Try later"
+msgstr "Retry soon"
+
+msgid "OK"
+msgstr "Accept"
+
+msgid "Ignored note"
+msgstr "Should not apply"
+"""
+        result = self.converthtml(posource, htmlsource)
+        assert (
+            '<meta property="custom:description" content="Meta translated" data-translate-attribute="content" />'
+            in result
+        )
+        assert 'data-popover="Info &quot;quoted&quot;"' in result
+        assert 'data-error="Retry soon"' in result
+        assert (
+            'data-translate-attribute="data-popover, data-error">Accept</button>'
+            in result
+        )
+        assert 'data-note="Ignored note"' in result
+
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     """Tests running actual po2html commands on files."""
