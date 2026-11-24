@@ -1,8 +1,10 @@
 import os
+import sys
 import tempfile
 from io import BytesIO
 
 from translate.storage import po
+from translate.tools import poconflicts
 from translate.tools.poconflicts import ConflictOptionParser
 
 
@@ -47,6 +49,49 @@ def make_po_bytes(units):
     buf = BytesIO()
     store.serialize(buf)
     return buf.getvalue()
+
+
+def test_per_string_keeps_conflicts_with_the_same_filename_slug_separate(
+    tmp_path, monkeypatch
+):
+    inputdir = tmp_path / "input"
+    outputdir = tmp_path / "output"
+    inputdir.mkdir()
+    outputdir.mkdir()
+    (inputdir / "a.po").write_bytes(
+        make_po_bytes([("Co-operate", "Collaborer"), ("co operate", "Coopérer")])
+    )
+    (inputdir / "b.po").write_bytes(
+        make_po_bytes([("co-operate", "S'entraider"), ("CO OPERATE", "Travailler")])
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "poconflicts",
+            "--per-string",
+            "-I",
+            "-i",
+            str(inputdir),
+            "-o",
+            str(outputdir),
+        ],
+    )
+
+    poconflicts.main()
+
+    reports = sorted(outputdir.glob("*.po"))
+    assert [report.name for report in reports] == [
+        "0001-co-operate.po",
+        "0002-co-operate.po",
+    ]
+    groups = []
+    for report in reports:
+        with report.open("rb") as stream:
+            groups.append(
+                {unit.source.lower() for unit in po.pofile(stream).units if unit.source}
+            )
+    assert groups == [{"co operate"}, {"co-operate"}]
 
 
 class TestConflictOptionParser:
