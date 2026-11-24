@@ -76,6 +76,14 @@ element IDs. Translate the text in the referenced elements. Toolkit preserves
 the IDs and their order. Numeric properties, state tokens, and keyboard shortcut
 syntax are also excluded from attribute translation.
 
+To extract additional attributes on a specific element, list them in
+``data-translate-attribute`` separated by spaces or commas:
+
+.. code-block:: html
+
+   <meta property="custom:description" content="Text here" data-translate-attribute="content" />
+   <button data-popover="Click to activate" data-error="Unavailable" data-translate-attribute="data-popover data-error">OK</button>
+
 
 .. _html#ignoring_content:
 

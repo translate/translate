@@ -627,21 +627,32 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         attributes = dict(attrs)
         return (attributes.get("name") or attributes.get("property") or "").lower()
 
+    @staticmethod
+    def extra_translatable_attributes(attrs) -> set[str]:
+        """Return lowercase attribute names listed in data-translate-attribute."""
+        raw = dict(attrs).get("data-translate-attribute")
+        if not raw:
+            return set()
+        names = {part.lower() for part in raw.replace(",", " ").split()}
+        names.discard("data-translate-attribute")
+        return names
+
     def attribute_source(self, tag, attrname, attrvalue, attrs):
         """Return the normalized source used for both extraction and lookup."""
         if not attrvalue:
             return ""
-        if tag == "meta" and attrname == "content":
-            name = self.metadata_name(attrs)
-            if name not in self.TRANSLATABLE_METADATA and not (
-                name == "application-name" and dict(attrs).get("name")
+        if attrname.lower() not in self.extra_translatable_attributes(attrs):
+            if tag == "meta" and attrname == "content":
+                name = self.metadata_name(attrs)
+                if name not in self.TRANSLATABLE_METADATA and not (
+                    name == "application-name" and dict(attrs).get("name")
+                ):
+                    return ""
+            elif (
+                attrname not in self.TRANSLATABLE_ATTRIBUTES
+                and tag not in self.TRANSLATABLE_ATTRIBUTE_TAGS.get(attrname, ())
             ):
                 return ""
-        elif (
-            attrname not in self.TRANSLATABLE_ATTRIBUTES
-            and tag not in self.TRANSLATABLE_ATTRIBUTE_TAGS.get(attrname, ())
-        ):
-            return ""
         return self.WHITESPACE_RE.sub(" ", attrvalue).strip()
 
     def get_attribute_location(self, attrname: str) -> str:

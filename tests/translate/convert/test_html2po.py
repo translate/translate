@@ -1007,6 +1007,44 @@ ghi ?>"""
         self.countunits(pofile2, 1)
         self.compareunit(pofile2, 1, "Title text")
 
+    def test_data_translate_attribute(self) -> None:
+        """Extract custom attributes listed in data-translate-attribute."""
+        htmlsource = (
+            '<meta property="custom:description" content="Meta text" data-translate-attribute="content" />'
+            '<button data-popover-text="Text here" data-translate-attribute="data-popover-text">OK</button>'
+        )
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 3)
+        self.compareunit(pofile, 1, "Meta text")
+        self.compareunit(pofile, 2, "Text here")
+        self.compareunit(pofile, 3, "OK")
+
+    def test_data_translate_attribute_multiple_and_edge_cases(self) -> None:
+        """Support space/comma lists while ignoring empty, self, or ignored entries."""
+        # Blank data-translate-attribute leaves normal non-translatable attributes ignored
+        blank_markup = (
+            '<span data-hint="Skip" data-translate-attribute="">Visible</span>'
+        )
+        blank_po = self.html2po(blank_markup)
+        self.countunits(blank_po, 1)
+        self.compareunit(blank_po, 1, "Visible")
+
+        htmlsource = (
+            '<button data-popover="Hover text" data-error="Try later" '
+            'data-translate-attribute="data-popover data-error">Activate</button>'
+            '<button data-hint="Comma hint" title="Button title" data-empty="" '
+            'data-translate-attribute="DATA-HINT, title, data-empty, missing, data-translate-attribute">Go</button>'
+            '<p data-note="Ignored note" data-translate-attribute="data-note" data-translate-ignore>Skip</p>'
+        )
+        pofile = self.html2po(htmlsource)
+        self.countunits(pofile, 6)
+        self.compareunit(pofile, 1, "Hover text")
+        self.compareunit(pofile, 2, "Try later")
+        self.compareunit(pofile, 3, "Activate")
+        self.compareunit(pofile, 4, "Comma hint")
+        self.compareunit(pofile, 5, "Button title")
+        self.compareunit(pofile, 6, "Go")
+
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files."""
