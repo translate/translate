@@ -84,6 +84,9 @@ To extract additional attributes on a specific element, list them in
    <meta property="custom:description" content="Text here" data-translate-attribute="content" />
    <button data-popover="Click to activate" data-error="Unavailable" data-translate-attribute="data-popover data-error">OK</button>
 
+Listed attributes are extracted as plain text without recursive parsing, so
+avoid listing attributes such as ``srcdoc`` or ``style``.
+
 
 .. _html#ignoring_content:
 
