@@ -24,9 +24,11 @@ for examples and usage instructions.
 """
 
 import gettext
+from datetime import date
 from functools import cached_property
 
 from babel import Locale, UnknownLocaleError
+from ruamel.yaml.comments import CommentedMap
 
 from translate.convert import convert
 from translate.lang import data
@@ -184,15 +186,47 @@ class po2yaml:
         target format.
         """
         self.source_store.makeindex()
+        unit_paths = set()
 
         for template_unit in self.template_store.units:
             template_unit_id = template_unit.getid()
 
             if template_unit_id in self.source_store.locationindex:
                 input_unit = self.source_store.locationindex[template_unit_id]
-                self.target_store.addunit(
-                    self.convert_unit(input_unit, template_unit_id)
-                )
+                target_unit = self.convert_unit(input_unit, template_unit_id)
+                self.target_store.addunit(target_unit)
+                unit_paths.add(tuple(target_unit.get_unitid().parts))
+
+        self._keep_untranslatable_values(unit_paths)
+
+    def _keep_untranslatable_values(self, unit_paths) -> None:
+        """
+        Copy the template's float and date values, which have no unit, to the output.
+
+        The keys are laid out in template order first, so the units fill them in place.
+        """
+        parent_paths = {path[:i] for path in unit_paths for i in range(1, len(path))}
+
+        def layout(node, path):
+            out = CommentedMap()
+            for key, value in node.items():
+                child = (*path, ("key", key))
+                if isinstance(value, (float, date)):
+                    out[key] = value
+                elif child in unit_paths:
+                    out[key] = None
+                elif isinstance(value, dict):
+                    nested = layout(value, child)
+                    if nested or child in parent_paths:
+                        out[key] = nested
+                elif child in parent_paths:
+                    out[key] = None
+            return out
+
+        template_root = self.template_store.preprocess(self.template_store._original)
+        target_root = self.target_store.preprocess(self.target_store._original)
+        if isinstance(template_root, dict) and isinstance(target_root, dict):
+            target_root.update(layout(template_root, ()))
 
     def run(self) -> int:
         """Run the converter."""

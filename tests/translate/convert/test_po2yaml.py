@@ -61,6 +61,34 @@ msgstr ""
 """
         assert expected_output == self._convert_to_string(input_string, template_string)
 
+    def test_keeps_float_and_date_values(self) -> None:
+        input_string = """
+#: site->title
+msgid "My Blog"
+msgstr "Mon blog"
+
+#: 404
+msgid "Not found"
+msgstr "Introuvable"
+"""
+        template_string = """site:
+  title: My Blog
+  version: 2.1
+  updated: 2026-01-15
+config:
+  ratio: 0.5
+404: Not found
+"""
+        expected_output = """site:
+  title: Mon blog
+  version: 2.1
+  updated: 2026-01-15
+config:
+  ratio: 0.5
+'404': Introuvable
+"""
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
     def test_simple(self) -> None:
         """Check that a simple single entry PO converts to a YAML unit."""
         input_string = """
@@ -396,6 +424,27 @@ msgstr "Adéu!"
         output = self._convert_to_string(input_string, template_string)
         assert "greeting: Hola!" in output
         assert "farewell: Adéu!" in output
+
+    def test_keeps_float_and_date_values(self) -> None:
+        input_string = """msgid ""
+msgstr ""
+"Language: fr\\n"
+
+#: greeting
+msgid "Hello!"
+msgstr "Bonjour !"
+"""
+        template_string = """en:
+  version: 2.1
+  greeting: Hello!
+  updated: 2026-01-15
+"""
+        expected_output = """fr:
+  version: 2.1
+  greeting: Bonjour !
+  updated: 2026-01-15
+"""
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_ruby_nested_roundtrip(self) -> None:
         """Check PO converts back to nested Ruby YAML."""
