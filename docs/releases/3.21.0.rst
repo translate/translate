@@ -1,0 +1,61 @@
+Translate Toolkit 3.21.0
+************************
+
+*Released on 26 November 2026*
+
+This release adds support for named plural forms, expands HTML attribute
+translation, and adds browser extension message support to ``json2po``.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- Plural forms
+
+  - Add named plural support for Android and i18next v4 so edits and merges
+    can match translations by category across locales with different plural
+    rules.
+  - Preserve explicit categories and sparse plural forms when editing Apple
+    Stringsdict and XLIFF, Go-i18n JSON and TOML, Go text selectors, GWT
+    properties, and Ruby YAML.
+
+- HTML
+
+  - Extract and write back human-readable HTML and ARIA attributes while
+    preserving ID references.
+  - Use ``data-translate-attribute`` to mark custom attributes for translation.
+
+- JSON and YAML
+
+  - Convert browser extension messages and their descriptions to PO with the
+    ``webextension`` personality in ``json2po``.
+  - Skip numbers and booleans during JSON extraction.
+  - Skip floating-point numbers and dates during YAML extraction and preserve
+    them from the template when converting back to YAML.
+
+- Markdown and MDX
+
+  - Switch to markdown-it-py and preserve soft line breaks next to inline HTML
+    and closing markers on empty ATX headings.
+
+- Escape PHP translation values during serialization and limit the work done
+  when parsing incomplete Windows resource files.
+
+Other
+-----
+
+- Sort multiple ``poterminology`` translations by frequency.
+- Keep signed phone numbers together during sentence segmentation.
+- Speed up brace placeholder checks, number scanning, Java properties parsing,
+  Trados reads, and Gettext MO serialization.
+- Update dependencies and separate package validation from publishing in CI.
+
+Contributors
+============
+
+This release was made possible by the following contributors:
+
+Michal Čihař, Dixing Xu, Prince Nzamuwe, Jay Hemnani, Kristofers Jurevics,
+Aiden
