@@ -61,7 +61,7 @@ Here are some examples that demonstrate the usefulness of poconflict ::
 
   poconflicts --accelerator=~ -I xhosa conflicts
 
-This extracts messages from the PO files in the *xhosa* directory and places a
+This extracts messages from the PO files in the *xhosa* directory and places
 PO report files in *conflicts*. By default related conflicts are grouped by
 their longest word. Use ``--per-string`` to keep every complete conflicting
 string in a separate report. Reports in that mode are numbered in sorted
