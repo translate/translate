@@ -132,7 +132,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                 )
                 success = False
             progress_bar.report_progress(inputpath, success)
-        self.buildconflictmap()
+        self.buildconflictmap(per_string=getattr(options, "per_string", False))
         self.outputconflicts(options)
 
     @staticmethod
@@ -173,13 +173,17 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                 flattext += joinchar
         return flattext.rstrip(joinchar)
 
-    def buildconflictmap(self) -> None:
+    def buildconflictmap(self, *, per_string=False) -> None:
         """Work out which strings are conflicting."""
         self.conflictmap = {}
         for source, translations in self.textmap.items():
-            source = self.flatten(source, " ")
-            if len(source) <= 1:
-                continue
+            if per_string:
+                if not source:
+                    continue
+            else:
+                source = self.flatten(source, " ")
+                if len(source) <= 1:
+                    continue
             if len(translations) > 1:
                 uniquetranslations = dict.fromkeys(
                     [target for target, unit, filename in translations]
@@ -187,11 +191,8 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                 if len(uniquetranslations) > 1:
                     self.conflictmap[source] = translations
 
-    def outputconflicts(self, options) -> None:
-        """Saves the result of the conflict match."""
-        print(
-            f"{len(self.conflictmap)}/{len(self.textmap)} different strings have conflicts"
-        )
+    def grouped_conflicts(self):
+        """Group conflicts by their longest word, merging simple plurals."""
         reducedmap = {}
 
         def str_len(x):
@@ -209,9 +210,26 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         for word, pluralword in plurals.items():
             if word in reducedmap and pluralword in reducedmap:
                 reducedmap[word].extend(reducedmap.pop(pluralword))
-        for source, translations in reducedmap.items():
-            flatsource = self.flatten(source, "-")
-            fulloutputpath = os.path.join(options.output, f"{flatsource}{os.extsep}po")
+        return reducedmap
+
+    def outputconflicts(self, options) -> None:
+        """Saves the result of the conflict match."""
+        print(
+            f"{len(self.conflictmap)}/{len(self.textmap)} different strings have conflicts"
+        )
+        per_string = getattr(options, "per_string", False)
+        conflicts = (
+            sorted(self.conflictmap.items())
+            if per_string
+            else self.grouped_conflicts().items()
+        )
+        for position, (source, translations) in enumerate(conflicts, 1):
+            stem = self.flatten(source[:48] if per_string else source, "-")
+            if per_string:
+                # A numeric prefix prevents collisions between similar names
+                # and avoids reserved filename stems such as CON on Windows.
+                stem = f"{position:04d}-{stem or 'message'}"
+            fulloutputpath = os.path.join(options.output, f"{stem}{os.extsep}po")
             conflictfile = po.pofile()
             for _target, unit, filename in translations:
                 unit.othercomments.append(f"# (poconflicts) {filename}\n")
@@ -246,6 +264,12 @@ def main() -> None:
         default="",
         metavar="ACCELERATORS",
         help="ignores the given accelerator characters when matching",
+    )
+    parser.add_option(
+        "--per-string",
+        action="store_true",
+        default=False,
+        help="write a separate report for each complete conflicting string",
     )
     parser.set_usage()
     parser.description = __doc__
