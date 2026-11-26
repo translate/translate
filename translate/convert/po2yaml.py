@@ -209,8 +209,17 @@ class po2yaml:
 
         def layout(node, path):
             out = CommentedMap()
-            for key, value in node.items():
-                child = (*path, ("key", key))
+            # merged items are skipped, as the parser does; they have no units of their own
+            items = (
+                node.non_merged_items()
+                if hasattr(node, "non_merged_items")
+                else node.items()
+            )
+            for key, value in items:
+                # unit paths come from the PO locations, where every key is a string
+                child = (*path, ("key", str(key)))
+                if child in unit_paths or child in parent_paths:
+                    key = str(key)
                 if isinstance(value, (float, date)):
                     out[key] = value
                 elif child in unit_paths:

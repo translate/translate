@@ -61,7 +61,7 @@ msgstr ""
 """
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_ruby_keeps_float_and_date_values(self) -> None:
+    def test_keeps_float_and_date_values(self) -> None:
         input_string = """
 #: site->title
 msgid "My Blog"
@@ -86,6 +86,47 @@ config:
 config:
   ratio: 0.5
 '404': Introuvable
+"""
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
+    def test_keeps_float_next_to_translated_numeric_key(self) -> None:
+        input_string = """
+#: 404->title
+msgid "Not found"
+msgstr "Introuvable"
+"""
+        template_string = """404:
+  title: Not found
+  version: 2.1
+"""
+        expected_output = """'404':
+  title: Introuvable
+  version: 2.1
+"""
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
+    def test_does_not_copy_merged_values(self) -> None:
+        input_string = """
+#: base->title
+msgid "Base"
+msgstr "Basis"
+
+#: child->title
+msgid "Child"
+msgstr "Kind"
+"""
+        template_string = """base: &base
+  ratio: 0.5
+  title: Base
+child:
+  <<: *base
+  title: Child
+"""
+        expected_output = """base:
+  ratio: 0.5
+  title: Basis
+child:
+  title: Kind
 """
         assert expected_output == self._convert_to_string(input_string, template_string)
 
@@ -443,6 +484,57 @@ msgstr "Bonjour !"
   version: 2.1
   greeting: Bonjour !
   updated: 2026-01-15
+"""
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
+    def test_keeps_float_next_to_translated_numeric_key(self) -> None:
+        input_string = """msgid ""
+msgstr ""
+"Language: fr\\n"
+
+#: 404->title
+msgid "Not found"
+msgstr "Introuvable"
+"""
+        template_string = """en:
+  404:
+    title: Not found
+    version: 2.1
+"""
+        expected_output = """fr:
+  '404':
+    title: Introuvable
+    version: 2.1
+"""
+        assert expected_output == self._convert_to_string(input_string, template_string)
+
+    def test_does_not_copy_merged_values(self) -> None:
+        input_string = """msgid ""
+msgstr ""
+"Language: fr\\n"
+
+#: base->title
+msgid "Base"
+msgstr "Basis"
+
+#: child->title
+msgid "Child"
+msgstr "Kind"
+"""
+        template_string = """en:
+  base: &base
+    ratio: 0.5
+    title: Base
+  child:
+    <<: *base
+    title: Child
+"""
+        expected_output = """fr:
+  base:
+    ratio: 0.5
+    title: Basis
+  child:
+    title: Kind
 """
         assert expected_output == self._convert_to_string(input_string, template_string)
 
