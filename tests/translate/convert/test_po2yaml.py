@@ -61,7 +61,7 @@ msgstr ""
 """
         assert expected_output == self._convert_to_string(input_string, template_string)
 
-    def test_keeps_float_and_date_values(self) -> None:
+    def test_ruby_keeps_float_and_date_values(self) -> None:
         input_string = """
 #: site->title
 msgid "My Blog"
