@@ -41,16 +41,34 @@ if TYPE_CHECKING:
     from iniparse.ini import INISection
 
 try:
-    from iniparse import INIConfig, change_comment_syntax
+    from iniparse import INIConfig
+    from iniparse.ini import (
+        CommentLine,
+        ContinuationLine,
+        EmptyLine,
+        OptionLine,
+        SectionLine,
+    )
 except ImportError as error:
     raise ImportError("Missing iniparse library.") from error
 
 
 location_re = re.compile(r"\[(?P<section>.+)\](?P<entry>.+)")
 
-# Disable treating anything starting with rem as a comment, this changes
-# global iniparse state
-change_comment_syntax(allow_rem=False)
+
+class _ToolkitCommentLine(CommentLine):
+    regex = re.compile(r"^(?P<csep>[%;#])(?P<comment>.*)$")
+
+
+class _ToolkitINIConfig(INIConfig):
+    _line_types = [
+        EmptyLine,
+        _ToolkitCommentLine,
+        SectionLine,
+        OptionLine,
+        ContinuationLine,
+    ]
+
 
 dialects = {}
 
@@ -149,7 +167,7 @@ class inifile(base.TranslationStore):
         )
 
     def serialize(self, out) -> None:
-        outinifile = self._inifile or INIConfig(optionxformvalue=str)
+        outinifile = self._inifile or _ToolkitINIConfig(optionxformvalue=str)
         for unit in self.units:
             for location in unit.getlocations():
                 match = location_re.match(location)
@@ -193,7 +211,7 @@ class inifile(base.TranslationStore):
             decoded = input
 
         self.newline = self._detect_newline(decoded)
-        self._inifile = INIConfig(StringIO(decoded), optionxformvalue=str)
+        self._inifile = _ToolkitINIConfig(StringIO(decoded), optionxformvalue=str)
 
         for section in self._inifile:
             section_data = cast("INISection", self._inifile[section])

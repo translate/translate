@@ -27,6 +27,7 @@ Classes that hold units of .rc files (:class:`rcunit`) or entire files
 """
 
 import re
+from threading import Lock
 
 from pyparsing import (
     AtLineStart,
@@ -54,6 +55,8 @@ from pyparsing import (
 from pyparsing.common import pyparsing_common
 
 from translate.storage import base
+
+_left_recursion_lock = Lock()
 
 
 def escape_to_python(string):
@@ -470,7 +473,13 @@ class rcfile(base.TranslationStore):
         decoded = decoded.replace("\r", "")  # ty:ignore[missing-union-attribute]
 
         # Parse the strings into a structure.
-        results = rc_statement().search_string(decoded)
+        statement_parser = rc_statement()
+        if ParserElement._left_recursion_enabled:  # pylint: disable=protected-access
+            # A new scan can clear another scan's active recursion memo.
+            with _left_recursion_lock:
+                results = statement_parser.search_string(decoded)
+        else:
+            results = statement_parser.search_string(decoded)
 
         processblocks = True
 

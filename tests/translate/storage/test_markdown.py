@@ -18,12 +18,52 @@
 
 """Tests for the Markdown classes."""
 
+from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
+from threading import Event
 from unittest import TestCase
 
 import pytest
+from markdown_it.ruler import Ruler
 
 from translate.storage import base, markdown
+from translate.storage.mdxfile import MDXFile
+
+
+@pytest.mark.parametrize("store_class", [markdown.MarkdownFile, MDXFile])
+def test_concurrent_markdown_parses_compile_rules_independently(
+    monkeypatch, store_class: type[markdown.MarkdownFile]
+) -> None:
+    compiling_rules = Event()
+    finish_compiling = Event()
+    compile_rules = Ruler.__compile__
+
+    def interrupt_rule_compilation(ruler):
+        if not compiling_rules.is_set():
+            # Pause at the point where MarkdownIt publishes its empty rule cache.
+            ruler.__cache__ = {}
+            compiling_rules.set()
+            assert finish_compiling.wait(5)
+        compile_rules(ruler)
+
+    def parse_document(label: str):
+        document = f"Read [{label}][ref].\n\n[ref]: /{label}\n"
+        return store_class.parsefile(BytesIO(document.encode()))
+
+    monkeypatch.setattr(Ruler, "__compile__", interrupt_rule_compilation)
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        first = executor.submit(parse_document, "alpha")
+        try:
+            assert compiling_rules.wait(5)
+            second = executor.submit(parse_document, "beta").result(5)
+        finally:
+            finish_compiling.set()
+        first = first.result(5)
+
+    assert first.filesrc == "Read [alpha][ref].\n\n[ref]: /alpha\n"
+    assert second.filesrc == "Read [beta][ref].\n\n[ref]: /beta\n"
+    assert [unit.source for unit in first.units] == ["ref", "Read [alpha]{1}.", "ref"]
+    assert [unit.source for unit in second.units] == ["ref", "Read [beta]{1}.", "ref"]
 
 
 @pytest.mark.parametrize("no_placeholders", [False, True])

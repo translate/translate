@@ -54,7 +54,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-_parsed_unit_limit: ContextVar[list[int] | None] = ContextVar(
+_parsed_unit_limit: ContextVar[int | None] = ContextVar(
     "parsed_unit_limit", default=None
 )
 
@@ -91,14 +91,17 @@ class ParseError(TranslateToolkitError):
 
 @contextmanager
 def limit_parsed_units(max_units: int | None):
-    """Apply an optional unit limit to stores parsed in this context."""
+    """
+    Apply an optional unit limit to stores parsed in this context.
+
+    A copied context inherits the remaining allowance and consumes it independently.
+    """
     if max_units is None:
         yield
         return
     if max_units < 0:
         raise ValueError("unit extraction limit must be nonnegative")
-    remaining = [max_units]
-    token = _parsed_unit_limit.set(remaining)
+    token = _parsed_unit_limit.set(max_units)
     try:
         yield
     finally:
@@ -1340,9 +1343,9 @@ class TranslationStore(Generic[U]):
         """
         remaining = _parsed_unit_limit.get()
         if remaining is not None:
-            if remaining[0] == 0:
+            if remaining == 0:
                 raise ParseError("translation file exceeds the unit extraction limit")
-            remaining[0] -= 1
+            _parsed_unit_limit.set(remaining - 1)
         self._indexes_ready = False
         unit._store = self
         self.units.append(unit)

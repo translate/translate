@@ -35,6 +35,7 @@ import re
 import sys
 import tempfile
 import threading
+from contextlib import contextmanager, nullcontext
 from ctypes import (
     CFUNCTYPE,
     POINTER,
@@ -146,6 +147,10 @@ def trigger_exception(severity, filename, lineno, column, message_text) -> None:
         xerror_storage.exception = ValueError(detail)
 
 
+def _queue_diagnostic(message, *args) -> None:
+    xerror_storage.diagnostics.append((message, args))
+
+
 # Callback functions for po_xerror_handler
 def xerror_cb(
     severity, message, filename, lineno, column, multiline_p, message_text
@@ -153,7 +158,7 @@ def xerror_cb(
     message_text = message_text.decode()
     if filename:
         filename = filename.decode()
-    logger.error(
+    _queue_diagnostic(
         "xerror_cb %s %s %s %s %s %s %s",
         severity,
         message,
@@ -187,7 +192,7 @@ def xerror2_cb(
         filename1 = filename1.decode()
     if filename2:
         filename2 = filename2.decode()
-    logger.error(
+    _queue_diagnostic(
         "xerror2_cb %s %s %s %s %s %s %s %s %s %s %s %s",
         severity,
         message1,
@@ -345,6 +350,40 @@ def get_libgettextpo_version() -> tuple[int, int, int]:
     minor = (libversion.value >> 8) & 0xFF
     subminor = libversion.value - (major << 16) - (minor << 8)
     return major, minor, subminor
+
+
+def _get_native_io_guard():
+    if gpo is not None:
+        try:
+            if get_libgettextpo_version() >= (0, 23, 0):
+                return nullcontext()
+        except ValueError:
+            # The loaded library might not export its version.
+            pass
+    # Older releases share native parser state and diagnostic handlers.
+    return threading.Lock()
+
+
+_native_io_guard = _get_native_io_guard()
+
+
+@contextmanager
+def _native_io():
+    diagnostics = []
+    xerror_storage.diagnostics = diagnostics
+    xerror_storage.exception = None
+    try:
+        with _native_io_guard:
+            yield
+    finally:
+        # A logging handler can call back into PO I/O on this thread.
+        exception = xerror_storage.exception
+        del xerror_storage.diagnostics
+        del xerror_storage.exception
+        for message, args in diagnostics:
+            logger.error(message, *args)
+    if exception is not None:
+        raise exception
 
 
 def gpo_encode(value):
@@ -941,12 +980,10 @@ class pofile(pocommon.pofile):
                         location = gpo.po_message_filepos(unit._gpo_message, 0)  # ty:ignore[missing-union-attribute]
 
         def writefile(filename):
-            xerror_storage.exception = None
-            result = gpo.po_file_write_v2(  # ty:ignore[missing-union-attribute]
-                self._gpo_memory_file, gpo_encode(filename), xerror_handler
-            )
-            if xerror_storage.exception is not None:
-                raise xerror_storage.exception
+            with _native_io():
+                result = gpo.po_file_write_v2(  # ty:ignore[missing-union-attribute]
+                    self._gpo_memory_file, gpo_encode(filename), xerror_handler
+                )
             if result is None:
                 raise ValueError("Unknown error while saving file")
             with open(filename, "rb") as tfile:
@@ -1017,13 +1054,11 @@ class pofile(pocommon.pofile):
                 raise
 
         def read_gpo_memory_file() -> None:
-            xerror_storage.exception = None
             self._free_memory_file()
-            self._gpo_memory_file = gpo.po_file_read_v3(  # ty:ignore[missing-union-attribute]
-                gpo_encode(input), xerror_handler
-            )
-            if xerror_storage.exception is not None:
-                raise xerror_storage.exception
+            with _native_io():
+                self._gpo_memory_file = gpo.po_file_read_v3(  # ty:ignore[missing-union-attribute]
+                    gpo_encode(input), xerror_handler
+                )
             if self._gpo_memory_file is None:
                 logger.error("Error:")
 

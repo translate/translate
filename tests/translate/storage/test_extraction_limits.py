@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import bz2
 import gzip
+from concurrent.futures import ThreadPoolExecutor
+from contextvars import copy_context
 from io import BytesIO
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -11,7 +13,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 import pytest
 
 from translate.storage import factory, po
-from translate.storage.base import ParseError
+from translate.storage.base import ParseError, limit_parsed_units
 from translate.storage.extraction_limits import ExtractionBudget
 from translate.storage.idml import INLINE_ELEMENTS, NO_TRANSLATE_ELEMENTS, open_idml
 from translate.storage.odf_io import open_odf
@@ -27,6 +29,24 @@ from translate.storage.xml_extract.extract import (
 
 OFFICE_NS = "urn:oasis:names:tc:opendocument:xmlns:office:1.0"
 TEXT_NS = "urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+
+
+def test_copied_contexts_consume_unit_limits_independently(tmp_path) -> None:
+    path = tmp_path / "message.lang"
+    path.write_bytes(b";one\ntwo\n")
+
+    with limit_parsed_units(1), ThreadPoolExecutor(max_workers=2) as executor:
+        contexts = [copy_context(), copy_context()]
+        futures = [
+            executor.submit(context.run, factory.getobject, str(path))
+            for context in contexts
+        ]
+        for future in futures:
+            assert [unit.source for unit in future.result(5).units] == ["one"]
+
+        assert len(factory.getobject(str(path)).units) == 1
+        with pytest.raises(ParseError, match="unit extraction limit"):
+            factory.getobject(str(path))
 
 
 def _odf_xml(paragraphs: int) -> bytes:
