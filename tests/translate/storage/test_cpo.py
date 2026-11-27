@@ -1,14 +1,177 @@
+import logging
+import subprocess
+import sys
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import nullcontext
 from io import BytesIO, StringIO
+from pathlib import Path
+from threading import Barrier
 from typing import cast
 
-from pytest import importorskip, mark, raises
+from pytest import MonkeyPatch, importorskip, mark, raises
 
 from translate.misc.multistring import multistring
-from translate.storage import pypo
+from translate.storage import base, pypo
 
 from . import test_po
 
 cpo = importorskip("translate.storage.cpo", exc_type=ImportError)
+
+PO_HEADER = b'msgid ""\nmsgstr ""\n"Content-Type: text/plain; charset=UTF-8\\n"\n\n'
+
+
+@mark.parametrize(
+    ("version", "thread_safe"),
+    [((0, 22, 5), False), ((0, 23, 0), True), (None, False)],
+)
+def test_native_io_guard_for_library_version(monkeypatch, version, thread_safe) -> None:
+    def get_version():
+        if version is None:
+            raise ValueError("missing version symbol")
+        return version
+
+    monkeypatch.setattr(cpo, "get_libgettextpo_version", get_version)
+    assert isinstance(cpo._get_native_io_guard(), nullcontext) == thread_safe
+
+
+def test_legacy_native_reads_and_writes_share_guard(monkeypatch) -> None:
+    monkeypatch.setattr(cpo, "get_libgettextpo_version", lambda: (0, 22, 5))
+    guard = cpo._get_native_io_guard()
+    monkeypatch.setattr(cpo, "_native_io_guard", guard)
+    read = cpo.gpo.po_file_read_v3
+    write = cpo.gpo.po_file_write_v2
+
+    def read_locked(*args):
+        assert guard.locked()
+        return read(*args)
+
+    def write_locked(*args):
+        assert guard.locked()
+        return write(*args)
+
+    monkeypatch.setattr(cpo.gpo, "po_file_read_v3", read_locked)
+    monkeypatch.setattr(cpo.gpo, "po_file_write_v2", write_locked)
+
+    store = cpo.pofile(b'msgid "first"\nmsgstr "second"\n', noheader=True)
+    assert b'msgstr "second"' in bytes(store)
+    assert not guard.locked()
+
+
+def _run_native_po_test(worker: str, argument: str) -> None:
+    # The parent must be able to stop the test even if a worker is deadlocked.
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            f"import sys; from {__name__} import {worker}; {worker}(sys.argv[1])",
+            argument,
+        ],
+        cwd=Path(__file__).resolve().parents[3],
+        check=True,
+        timeout=20,
+    )
+
+
+def _check_concurrent_round_trips(backend: str) -> None:
+    store_class = importorskip(f"translate.storage.{backend}").pofile
+    start = Barrier(4)
+
+    def round_trip(index: int):
+        start.wait(5)
+        if index == 0:
+            with raises((ValueError, base.ParseError)):
+                store_class(PO_HEADER + b'msgid "missing translation"\n', noheader=True)
+        key = f"source {index}"
+        value = f"target {index}"
+        data = f'msgid "{key}"\nmsgstr "{value}"\n'.encode()
+        store = store_class(PO_HEADER + data, noheader=True)
+        parsed_again = store_class(bytes(store), noheader=True)
+        unit = parsed_again.units[-1]
+        return unit.source, unit.target
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        results = list(executor.map(round_trip, range(4)))
+    assert results == [(f"source {index}", f"target {index}") for index in range(4)]
+
+
+@mark.parametrize("backend", ["cpo", "fpo"])
+def test_concurrent_native_po_round_trips(backend: str) -> None:
+    _run_native_po_test("_check_concurrent_round_trips", backend)
+
+
+def _check_reentrant_diagnostic_logging(operation: str) -> None:
+    content = PO_HEADER + b'msgid "source"\nmsgstr "target"\n'
+    store = cpo.pofile(content, noheader=True)
+    filename = b"outer.po"
+    message = "outer diagnostic"
+    error_pattern = r"outer\.po:3:4: outer diagnostic"
+    logged = []
+
+    class ReentrantHandler(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            diagnostic = record.getMessage()
+            if message in diagnostic:
+                if operation == "read":
+                    assert b'msgstr "target"' in bytes(store)
+                else:
+                    nested = cpo.pofile(content, noheader=True)
+                    assert nested.units[-1].target == "target"
+                logged.append(diagnostic)
+
+    handler = ReentrantHandler()
+    with MonkeyPatch.context() as monkeypatch:
+        monkeypatch.setattr(cpo, "get_libgettextpo_version", lambda: (0, 22, 5))
+        monkeypatch.setattr(cpo, "_native_io_guard", cpo._get_native_io_guard())
+        cpo.logger.addHandler(handler)
+        try:
+            if operation == "read":
+                read = cpo.gpo.po_file_read_v3
+
+                def read_with_error(*args):
+                    result = read(*args)
+                    cpo.xerror_handler.xerror(
+                        1, None, filename, 3, 4, 0, message.encode()
+                    )
+                    return result
+
+                monkeypatch.setattr(cpo.gpo, "po_file_read_v3", read_with_error)
+                with raises(ValueError, match=error_pattern):
+                    cpo.pofile(content, noheader=True)
+            else:
+                write = cpo.gpo.po_file_write_v2
+
+                def write_with_error(*args):
+                    result = write(*args)
+                    cpo.xerror_handler.xerror2(
+                        1,
+                        None,
+                        filename,
+                        3,
+                        4,
+                        0,
+                        message.encode(),
+                        None,
+                        filename,
+                        5,
+                        6,
+                        0,
+                        b"related diagnostic",
+                    )
+                    return result
+
+                monkeypatch.setattr(cpo.gpo, "po_file_write_v2", write_with_error)
+                with raises(ValueError, match=error_pattern):
+                    bytes(store)
+        finally:
+            cpo.logger.removeHandler(handler)
+    assert len(logged) == 1
+    if operation == "write":
+        assert "related diagnostic" in logged[0]
+
+
+@mark.parametrize("operation", ["read", "write"])
+def test_native_po_diagnostic_logging_can_reenter_io(operation: str) -> None:
+    _run_native_po_test("_check_reentrant_diagnostic_logging", operation)
 
 
 class TestCPOUnit(test_po.TestPOUnit):

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from functools import cache
+from threading import local
 from typing import TYPE_CHECKING
 
 from markdown_it import MarkdownIt, rules_block, rules_inline
@@ -222,8 +222,22 @@ def _table_end(state: StateBlock, start: int, _end: int, silent: bool) -> bool:
     )
 
 
-@cache
+class _ParserCache(local):
+    def __init__(self) -> None:
+        self.parsers: dict[bool, MarkdownIt] = {}
+
+
+_parser_cache = _ParserCache()
+
+
 def markdown_parser(*, block_only: bool = False) -> MarkdownIt:
+    # MarkdownIt populates its rule caches lazily during parsing.
+    if block_only not in _parser_cache.parsers:
+        _parser_cache.parsers[block_only] = _build_parser(block_only)
+    return _parser_cache.parsers[block_only]
+
+
+def _build_parser(block_only: bool) -> MarkdownIt:
     parser = _MarkdownParser(
         "commonmark",
         {

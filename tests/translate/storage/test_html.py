@@ -18,9 +18,48 @@
 
 """Tests for the HTML classes."""
 
+import subprocess
+import sys
+
 from pytest import raises
 
 from translate.storage import base, html
+
+
+def test_html_import_preserves_stdlib_processing_instructions() -> None:
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            """
+import importlib
+from html.parser import HTMLParser
+
+class Probe(HTMLParser):
+    def handle_pi(self, data):
+        self.pi = data
+
+before = Probe()
+before.feed("<? code > zero ?>")
+importlib.import_module("translate.storage.html")
+after = Probe()
+after.feed("<? code > zero ?>")
+assert after.pi == before.pi
+""",
+        ],
+        check=True,
+        timeout=10,
+    )
+
+
+def test_processing_instruction_split_across_feeds() -> None:
+    store = html.htmlfile()
+    store.feed("<?php if ($x > 1) { echo '<p>hidden</p>'; } ?")
+    store.feed("><p>Visible</p>")
+    assert [unit.source for unit in store.units] == ["Visible"]
+    assert (
+        store.filesrc == "<?php if ($x > 1) { echo '<p>hidden</p>'; } ?><p>Visible</p>"
+    )
 
 
 def test_guess_encoding() -> None:

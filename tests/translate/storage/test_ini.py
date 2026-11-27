@@ -1,9 +1,35 @@
+import subprocess
+import sys
 from io import BytesIO, StringIO
 from pathlib import Path
 
 from translate.storage import ini
 
 from . import test_monolingual
+
+
+def test_ini_import_preserves_iniparse_comment_rules() -> None:
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            r"""
+import importlib
+from io import StringIO
+from iniparse import INIConfig
+
+def entries():
+    config = INIConfig(StringIO("[section]\nremaining=value\n"))
+    return list(config["section"])
+
+before = entries()
+importlib.import_module("translate.storage.ini")
+assert entries() == before
+""",
+        ],
+        check=True,
+        timeout=10,
+    )
 
 
 class TestINIUnit(test_monolingual.TestMonolingualUnit):
@@ -23,7 +49,7 @@ class TestINIStore(test_monolingual.TestMonolingualStore):
         assert out.getvalue() == content
 
     def test_rem(self) -> None:
-        content = b"[default]\nremaining=None"
+        content = b"% first\n; second\n# third\n[default]\nremaining=None"
         store = self.StoreClass()
         store.parse(content)
         assert len(store.units) == 1

@@ -56,6 +56,7 @@ implemented as outlined in the PHP documentation for the
 
 import string
 from bisect import bisect_left, bisect_right
+from threading import Lock
 
 from phply.phpast import (
     Array,
@@ -76,6 +77,8 @@ from phply.phpparse import make_parser
 
 from translate.misc.multistring import multistring
 from translate.storage import base
+
+_parser_build_lock = Lock()
 
 
 def _skip_php_spaces(name: str, pos: int) -> int:
@@ -464,7 +467,10 @@ def wrap_production(func):
 
 class PHPLexer(FilteredLexer):
     def __init__(self) -> None:
-        super().__init__(full_lexer.clone())
+        lexer = full_lexer.clone()
+        # PLY clones the lexer shallowly, including its mutable state stack.
+        lexer.lexstatestack = []
+        super().__init__(lexer)
         self.tokens = []
         self.pos = 0
         self.codepos = 0
@@ -1093,7 +1099,9 @@ class phpfile(base.TranslationStore):
             assert isinstance(item, BinaryOp)
             return concatenate(item.left) + concatenate(item.right)
 
-        parser = make_parser()
+        # PLY uses module globals when building a parser.
+        with _parser_build_lock:
+            parser = make_parser()
         for item in parser.productions:
             item.callable = wrap_production(item.callable)
         lexer = PHPLexer()

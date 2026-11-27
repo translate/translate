@@ -1,4 +1,6 @@
+from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
+from threading import Event
 from time import perf_counter
 
 import pytest
@@ -8,6 +10,39 @@ from translate.misc.multistring import multistring
 from translate.storage import base, php
 
 from . import test_monolingual
+
+
+def test_concurrent_php_parses_keep_lexer_states_separate(monkeypatch) -> None:
+    array_started = Event()
+    string_started = Event()
+    array_finished = Event()
+    array_source = "<?php return ['a' => 'alpha'];"
+    next_token = php.PHPLexer.next_lexer_token
+
+    def interleave(lexer):
+        token = next_token(lexer)
+        if token is None:
+            return None
+        if token.type == "LBRACKET" and lexer.lexer.lexdata == array_source:
+            array_started.set()
+            assert string_started.wait(5)
+        elif token.type == "VARIABLE":
+            string_started.set()
+            assert array_finished.wait(5)
+        return token
+
+    monkeypatch.setattr(php.PHPLexer, "next_lexer_token", interleave)
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        array = executor.submit(php.phpfile.parsefile, BytesIO(array_source.encode()))
+        try:
+            assert array_started.wait(5)
+            quoted = executor.submit(
+                php.phpfile.parsefile, BytesIO(b'<?php return ["b" => "$var suffix"];')
+            )
+            assert [unit.source for unit in array.result(5).units] == ["alpha"]
+        finally:
+            array_finished.set()
+        assert [unit.source for unit in quoted.result(5).units] == ["{$var} suffix"]
 
 
 @mark.parametrize(

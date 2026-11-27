@@ -27,10 +27,6 @@ from translate.lang.data import is_rtl
 from translate.storage import base
 from translate.storage.base import ParseError
 
-# Override the piclose tag from simple > to ?> otherwise we consume HTML
-# within the processing instructions
-html.parser.piclose = re.compile(r"\?>")  # ty:ignore[missing-attribute]
-
 
 class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content."""
@@ -292,6 +288,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self._translated_lang = None
         htmlsrc = self.do_encoding(htmlsrc)
         self.feed(htmlsrc)
+
+    def parse_pi(self, i: int) -> int:
+        # Allow embedded '>' in processing instructions, including PHP code.
+        end = self.rawdata.find("?>", i + 2)
+        if end == -1:
+            return -1
+        self.handle_pi(self.rawdata[i + 2 : end])
+        return end + 2
 
     def is_extraction_ignored(self):
         """Check if we're currently in an ignored section."""

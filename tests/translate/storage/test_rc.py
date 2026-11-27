@@ -1,9 +1,36 @@
+from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
+from threading import Barrier
 
 import pytest
-from pyparsing import Keyword
+from pyparsing import Keyword, ParserElement, testing
 
 from translate.storage import rc
+
+
+@pytest.mark.parametrize("left_recursion", [False, True])
+def test_concurrent_rc_parses(monkeypatch, left_recursion: bool) -> None:
+    start = Barrier(4)
+    search_string = ParserElement.search_string
+
+    def check_guard(parser, text, *args, **kwargs):
+        assert rc._left_recursion_lock.locked() == left_recursion
+        return search_string(parser, text, *args, **kwargs)
+
+    def parse_menu(index: int):
+        start.wait(5)
+        menu = f'MAIN MENU\nBEGIN\nPOPUP "File {index}"\nBEGIN\nMENUITEM "Open", ID_OPEN\nEND\nEND\n'
+        return [
+            unit.source for unit in rc.rcfile.parsefile(BytesIO(menu.encode())).units
+        ]
+
+    monkeypatch.setattr(ParserElement, "search_string", check_guard)
+    with testing.reset_pyparsing_context():
+        if left_recursion:
+            ParserElement.enable_left_recursion()
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            results = list(executor.map(parse_menu, range(4), timeout=10))
+    assert results == [[f"File {index}", "Open"] for index in range(4)]
 
 
 def test_compact_resource_boundary_checks_scale_linearly() -> None:
