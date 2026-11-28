@@ -29,6 +29,15 @@ class TestHelpers:
         assert pypo.unescape(r"\"\\koei\"\\") == '"\\koei"\\'
         assert pypo.unescape(r"\\\rkoei\r\\") == "\\\rkoei\r\\"
 
+    def test_unescape_control_characters(self) -> None:
+        r"""GNU gettext reads \a, \b, \f and \v as control characters."""
+        assert pypo.unescape(r"a\ab\bc\fd\ve") == "a\ab\bc\fd\ve"
+        assert pypo.unescape(r"\\a\\b\\f\\v") == r"\a\b\f\v"
+
+    def test_quoteforpo_control_characters(self) -> None:
+        """Control characters are written as escapes, like msgcat does."""
+        assert pypo.quoteforpo("a\ab\bc\fd\ve") == [r'"a\ab\bc\fd\ve"']
+
     def test_quoteforpo(self) -> None:
         """Special escaping routine to manage newlines and linewrap in PO."""
         # Simple case
@@ -350,6 +359,18 @@ class TestPYPOFile(test_po.TestPOFile):
         assert len(pofile.units) == self.LARGE_PO_ENTRY_COUNT + 1
         assert pofile.units[0].isheader()
         return pofile
+
+    def test_control_character_escapes(self) -> None:
+        r"""\a, \b, \f and \v are parsed and written back like GNU gettext."""
+        posource = 'msgid "a\\ab\\bc\\fd\\ve"\nmsgstr ""\n'
+        pofile = self.poparse(posource)
+        unit = pofile.units[0]
+        assert unit.source == "a\ab\bc\fd\ve"
+        unit.target = "x\ay\bz\fw\vv"
+        assert bytes(pofile).decode("utf-8") == (
+            'msgid "a\\ab\\bc\\fd\\ve"\nmsgstr "x\\ay\\bz\\fw\\vv"\n'
+        )
+        assert self.poparse(bytes(pofile)).units[0].target == "x\ay\bz\fw\vv"
 
     def test_combine_msgidcomments(self) -> None:
         """Checks that we don't get duplicate msgid comments."""

@@ -56,6 +56,11 @@ po_unescape_map = {
     r"\"": '"',
     r"\n": "\n",
     r"\\": "\\",
+    # Control characters GNU gettext reads and msgcat writes as escapes
+    r"\a": "\a",
+    r"\b": "\b",
+    r"\f": "\f",
+    r"\v": "\v",
 }
 po_unescape_re = re.compile(r"\\.")
 po_escape_map = {value: key for (key, value) in po_unescape_map.items()}
