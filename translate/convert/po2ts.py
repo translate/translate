@@ -81,6 +81,12 @@ class po2ts:
     def convertstore(inputstore, outputfile, templatefile=None, context=None) -> None:
         """Converts a .po file to .ts format (using a template .ts file if given)."""
         tsfile = ts2.tsfile() if templatefile is None else ts2.tsfile(templatefile)
+        # Messages already in the template get the translation in place;
+        # adding them again would leave the untranslated copy first.
+        template_units = {
+            (unit.getcontextname(), unit.source, unit._get_disambiguation()): unit
+            for unit in tsfile.units
+        }
         for inputunit in inputstore.units:
             if inputunit.isheader() or inputunit.isblank():
                 continue
@@ -118,6 +124,16 @@ class po2ts:
                         contextname = ""
                 else:
                     contextname = context
+                tsunit = template_units.get(
+                    (contextname, source, inputunit.getcontext())
+                )
+                if tsunit is not None:
+                    tsunit.target = translation
+                    if is_obsolete:
+                        tsunit.set_state_n(tsunit.S_OBSOLETE)
+                    else:
+                        tsunit.markfuzzy(not inputunit.istranslated())
+                    continue
                 tsunit = ts2.tsunit(source)
                 tsunit.target = translation
                 tsunit._set_disambiguation(inputunit.getcontext())
